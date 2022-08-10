@@ -29,10 +29,13 @@
     "url": "https://github.com/FreenameDomains/web3-domain-resolver/issues"
   },
   "homepage": "https://github.com/FreenameDomains/web3-domain-resolver#readme",
-  "peer-dependencies": {
-    "punycode": "^2.1.1"
-  },
   "devDependencies": {
+    "@types/lodash": "^4.14.182",
     "@types/node": "^18.6.5"
+  },
+  "peerDependencies": {
+    "lodash": "^4.17.21",
+    "punycode": "^2.1.1",
+    "ethers": "^5.6.9"
   }
 }

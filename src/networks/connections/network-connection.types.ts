@@ -1,7 +1,10 @@
-import { NetworkName } from "../nework-name";
+export enum NetworkName {
+    POLYGON = "polygon",
+    ETHEREUM_MAINNET = "ethereum"
+}
 
 export type NetworkConnection = {
     network: NetworkName,
     rcpUrl: string,
-    infuraId: string
+    infuraId: string | undefined
 }

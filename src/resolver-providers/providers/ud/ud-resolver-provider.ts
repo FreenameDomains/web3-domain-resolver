@@ -1,31 +1,16 @@
-import { NetworkName } from "../../../networks/nework-name";
+
+import { NetworkConnection, NetworkName } from "../../../networks/connections/network-connection.types";
 import { ResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource";
 import { IResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource.interface";
 import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { IResolverProvider } from "../../resolver-provider.interface";
+import { BaseResolverProvider } from "../base-resolver-provider";
 import { UD_SUPPORTED_TLDS } from "./ud-resolver-provider.consts";
 
-export class UDResolverProvider implements IResolverProvider {
+export class UDResolverProvider extends BaseResolverProvider implements IResolverProvider {
 
-    constructor() {
-        this._name = ResolverName.UD;
-        this._supportedTlds = UD_SUPPORTED_TLDS
-    }
-
-    private _name: ResolverName;
-    public get name(): ResolverName {
-        return this._name;
-    }
-    public set name(value: ResolverName) {
-        this._name = value;
-    }
-
-    private _supportedTlds: string[];
-    public get supportedTlds(): string[] {
-        return this._supportedTlds;
-    }
-    public set supportedTlds(value: string[]) {
-        this._supportedTlds = value;
+    constructor(connections: NetworkConnection[]) {
+        super(ResolverName.UD, UD_SUPPORTED_TLDS, connections);
     }
 
     getName(): string {
@@ -37,10 +22,10 @@ export class UDResolverProvider implements IResolverProvider {
     getRegistries(): { proxyReaderAddress: string; proxyWriterAddress: string; network: NetworkName; }[] {
         throw new Error("Method not implemented.");
     }
-    resolve(domainOrTld: string, options?: { resolvers?: { [key: string]: boolean; } | undefined; } | undefined): Promise<IResolvedResource | null> {
+    resolve(domainOrTld: string, options?: { resolvers?: { [key: string]: boolean; } | undefined; } | undefined): Promise<IResolvedResource | undefined> {
         throw new Error("Method not implemented.");
     }
-    resolveFromTokenId(tokenId: string, resolverProvider: ResolverName, network?: string | undefined): Promise<IResolvedResource | null> {
+    resolveFromTokenId(tokenId: string, network?: string | undefined): Promise<IResolvedResource | undefined> {
         throw new Error("Method not implemented.");
     }
     getRecord(resolvedResource: ResolvedResource, key: string): Promise<string> {

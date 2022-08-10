@@ -1,31 +1,19 @@
-import { NetworkName } from "../../../networks/nework-name";
+import { ethers } from "ethers";
+import { NetworkConnection, NetworkName } from "../../../networks/connections/network-connection.types";
 import { ResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource";
 import { IResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource.interface";
 import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { IResolverProvider } from "../../resolver-provider.interface";
+import { BaseResolverProvider } from "../base-resolver-provider";
+import { FNS_CONTRACT_ADDRESS, FREENAME_NS_ABI } from "./freename-resolver-provider.consts";
 
-export class FreenameResolverProvider implements IResolverProvider {
+export class FreenameResolverProvider extends BaseResolverProvider implements IResolverProvider {
 
-    constructor() {
-        this._name = ResolverName.FREENAME;
-        this._supportedTlds = []
+    constructor(connections: NetworkConnection[]) {
+        super(ResolverName.FREENAME, ['*'], connections);
     }
-    
-    private _name: ResolverName;
-    public get name(): ResolverName {
-        return this._name;
-    }
-    public set name(value: ResolverName) {
-        this._name = value;
-    }
-    
-    private _supportedTlds: string[];
-    public get supportedTlds(): string[] {
-        return this._supportedTlds;
-    }
-    public set supportedTlds(value: string[]) {
-        this._supportedTlds = value;
-    }
+
+    private _fnsContract = new ethers.Contract(FNS_CONTRACT_ADDRESS, FREENAME_NS_ABI)//TODO: set an array of contract, based on the array on connections like {networkname: NetworkName, contract: Contract}[]
 
     getSupportedNetworks(): NetworkName[] {
         throw new Error("Method not implemented.");
@@ -33,10 +21,10 @@ export class FreenameResolverProvider implements IResolverProvider {
     getRegistries(): { proxyReaderAddress: string, proxyWriterAddress: string, network: NetworkName; }[] {
         throw new Error("Method not implemented.");
     }
-    resolve(domainOrTld: string, options?: { resolvers?: { [key: string]: boolean, } | undefined } | undefined): Promise<IResolvedResource | null> {
+    resolve(domainOrTld: string): Promise<IResolvedResource | undefined> {
         throw new Error("Method not implemented.");
     }
-    resolveFromTokenId(tokenId: string, resolverProvider: ResolverName, network?: string | undefined): Promise<IResolvedResource | null> {
+    resolveFromTokenId(tokenId: string, network?: string | undefined): Promise<IResolvedResource | undefined> {
         throw new Error("Method not implemented.");
     }
     getRecord(resolvedResource: ResolvedResource, key: string): Promise<string> {
@@ -69,5 +57,4 @@ export class FreenameResolverProvider implements IResolverProvider {
     getSupportedTlds(): string[] {
         throw new Error("Method not implemented.");
     }
-    
 }

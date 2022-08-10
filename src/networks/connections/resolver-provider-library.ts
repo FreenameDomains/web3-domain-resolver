@@ -1,7 +1,6 @@
-import { NetworkName } from "../nework-name";
-import { NetworkConnection } from "./network-connection.types";
+import { NetworkConnection, NetworkName } from "./network-connection.types";
 
-export class ResolverProviderLibrary {
+export class ConnectionLibrary {
 
     constructor(connections: NetworkConnection[]) {
         this._connections = connections
@@ -11,7 +10,7 @@ export class ResolverProviderLibrary {
     public get connections(): NetworkConnection[] {
         return this._connections;
     }
-    public set connections(value: NetworkConnection[]) {
+    protected set connections(value: NetworkConnection[]) {
         this._connections = value;
     }
 
