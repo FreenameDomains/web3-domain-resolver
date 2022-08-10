@@ -1,0 +1,41 @@
+import { NetworkName } from "../nework-name";
+import { NetworkConnection } from "./network-connection.types";
+
+export class ResolverProviderLibrary {
+
+    constructor(connections: NetworkConnection[]) {
+        this._connections = connections
+    }
+
+    private _connections: NetworkConnection[];
+    public get connections(): NetworkConnection[] {
+        return this._connections;
+    }
+    public set connections(value: NetworkConnection[]) {
+        this._connections = value;
+    }
+
+    public getConnection(network: NetworkName) {
+        if (this._connections && network) {
+            const connection = this._connections.find(x => x.network == network);
+            return connection;
+        }
+        return undefined;
+    };
+
+    public setConnection(network: NetworkName, input: { rcpUrl: string; infuraId: string }) {
+        if (this._connections && network && input) {
+            const indexFound = this._connections.findIndex(x => x.network == network);
+            const newConnection: NetworkConnection = {
+                network: network,
+                infuraId: input.infuraId,
+                rcpUrl: input.rcpUrl
+            }
+            if (indexFound !== -1) {
+                this._connections[indexFound] = newConnection
+            } else {
+                this._connections.push(newConnection);
+            }
+        }
+    };
+}
