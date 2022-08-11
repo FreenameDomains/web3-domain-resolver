@@ -12,8 +12,8 @@ export const DEFAULT_UD_JSON_RCP_CONNECTION: NetworkConnection = {
     rcpUrl: ""
 }
 
-export const DEFAULT_FNS_POLYGON_JSON_RCP_CONNECTION: NetworkConnection = {
+export const DEFAULT_FNS_POLYGON_MUMBAI_JSON_RCP_CONNECTION: NetworkConnection = {
     infuraId: undefined,
-    network: NetworkName.POLYGON,
+    network: NetworkName.POLYGON_MUMBAI,
     rcpUrl: ""
 }

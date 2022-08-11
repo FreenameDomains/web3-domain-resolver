@@ -35,19 +35,16 @@ export class Resolver {
         return undefined;
     };
 
-    // async getOwner(domainOrTld: string, options?: { resolvers?: { [key: string]: boolean } }): Promise<string | undefined> {
-    //     const resolved = await this.resolve(domainOrTld, options);
-    //     return resolved?.ownerAddress;
-    // };
+    async getOwner(domainOrTld: string): Promise<string | undefined> {
+        const resolved = await this.resolve(domainOrTld);
+        return resolved?.ownerAddress;
+    };
 
-    // async isApprovedOrOwner(domainOrTld: string, addressToCheck: string, options?: { resolvers?: { [key: string]: boolean }; }): Promise<boolean> {
-    //     const resolver = this.resolverProviderRouter.getResolver(domainOrTld);
-    //     if (resolver) {
-    //         return await resolver.isApprovedOrOwner(domainOrTld, options);
-    //     }
-    // };
-
-    // getDomainNameFromTokenId(tokenId: string, resolverProvider: ResolverName, network?: string): Promise<string> {
-    //     throw new Error("Method not implemented.");
-    // };
+    async isApprovedOrOwner(domainOrTld: string, addressToCheck: string): Promise<boolean> {
+        const resolver = this._resolverProviderRouter.getResolverByDomainOrTld(domainOrTld);
+        if (resolver) {
+            return await resolver.isApprovedOrOwner(domainOrTld, addressToCheck);
+        }
+        return false;
+    };
 }

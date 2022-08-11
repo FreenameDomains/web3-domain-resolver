@@ -5,7 +5,7 @@ import { IResolvedResource } from "./resolved-resource.interface";
 
 export class ResolvedResource implements IResolvedResource {
 
-    constructor(
+    constructor(input: {
         fullname: string,
         tld: string,
         type: ResolvedResourceType,
@@ -18,19 +18,23 @@ export class ResolvedResource implements IResolvedResource {
         ownerAddress: string,
         metadataUri: string,
         imageUrl: string,
+        domain?: string | undefined,
+    }
     ) {
-        this._fullname = fullname
-        this._tld = tld
-        this._type = type
-        this._tokenId = tokenId
-        this._resolverName = resolverName
-        this._resolverProvider = resolverProvider
-        this._network = network
-        this._proxyReaderAddress = proxyReaderAddress
-        this._proxyWriterAddress = proxyWriterAddress
-        this._ownerAddress = ownerAddress
-        this._metadataUri = metadataUri
-        this._imageUrl = imageUrl
+        this._fullname = input.fullname
+        this._tld = input.tld
+        this._type = input.type
+        this._tokenId = input.tokenId
+        this._resolverName = input.resolverName
+        this._resolverProvider = input.resolverProvider
+        this._network = input.network
+        this._proxyReaderAddress = input.proxyReaderAddress
+        this._proxyWriterAddress = input.proxyWriterAddress
+        this._ownerAddress = input.ownerAddress
+        this._metadataUri = input.metadataUri
+        this._imageUrl = input.imageUrl
+
+        this._realTimeUpdate = false
     }
 
     private _fullname: string;
@@ -131,14 +135,25 @@ export class ResolvedResource implements IResolvedResource {
 
     private _imageUrl: string;
     public get imageUrl(): string {
+        if (this._realTimeUpdate) {
+            this.resolverProvider.getImageUrl(this.tokenId);
+        }
         return this._imageUrl;
     }
     public set imageUrl(value: string) {
         this._imageUrl = value;
     }
 
+    private _realTimeUpdate: boolean;
+    public get realTimeUpdate(): boolean {
+        return this._realTimeUpdate;
+    }
+    public set realTimeUpdate(value: boolean) {
+        this._realTimeUpdate = value;
+    }
+
     public get records(): Array<{ [key: string]: string; }> {
-        return this._resolverProvider.getAllRecords(this);
+        return this.records;
     }
 
     public getRecord(key: string): string {

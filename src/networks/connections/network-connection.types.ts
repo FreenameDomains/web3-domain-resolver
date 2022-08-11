@@ -1,6 +1,7 @@
 export enum NetworkName {
     POLYGON = "polygon",
-    ETHEREUM_MAINNET = "ethereum"
+    ETHEREUM_MAINNET = "ethereum",
+    POLYGON_MUMBAI = "polygon-mumbai",
 }
 
 export type NetworkConnection = {

@@ -1,3 +1,4 @@
+import { ResolvedResourceType } from "../resolvers/types/resolved-resource-type";
 import { MappedName, NameType } from "./name-tools.types";
 const punycode = require('punycode');
 
@@ -56,7 +57,7 @@ export class NameTools {
         return NameType.TLD
     }
 
-    static getDetailedName(name: string) {
+    private static getDetailedName(name: string) {
         let foundError: boolean = false
         const errors: string[] = []
 
@@ -126,6 +127,17 @@ export class NameTools {
         return {
             isAllowable,
             invalidCharacters
+        }
+    }
+
+    static getResolvedResourceType(type: NameType): ResolvedResourceType {
+        switch (type) {
+            case NameType.TLD:
+                return ResolvedResourceType.TLD;
+            case NameType.SECOND_LEVEL_DOMAIN:
+                return ResolvedResourceType.SECOND_LEVEL_DOMAIN
+            default:
+                return ResolvedResourceType.UNTYPED
         }
     }
 }

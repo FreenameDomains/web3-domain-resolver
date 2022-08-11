@@ -1,4 +1,4 @@
-export const FNS_CONTRACT_ADDRESS: string = "0x567Ad89Eb9dd7Bf4B88b694424D8F3A33ce60983"//mubai
+export const FNS_CONTRACT_ADDRESS: string = ""//mubai
 
 export const FREENAME_NS_ABI =  [
     {
