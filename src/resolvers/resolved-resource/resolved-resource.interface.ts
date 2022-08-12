@@ -1,3 +1,4 @@
+import { NetworkName } from "../../networks/connections/network-connection.types";
 import { IResolverProvider } from "../../resolver-providers/resolver-provider.interface";
 import { ResolvedResourceType } from "../types/resolved-resource-type";
 import { ResolverName } from "../types/resolver-name";
@@ -17,7 +18,7 @@ export interface IResolvedResource {
 
     resolverProvider: IResolverProvider;
 
-    network: string;
+    network: NetworkName;
 
     proxyReaderAddress: string;
 
@@ -27,9 +28,11 @@ export interface IResolvedResource {
 
     metadataUri: string;
 
-    imageUrl: string;
+    imageUrl: string | undefined;
 
-    records: Array<{ [key: string]: string }>;
+    records: { [key: string]: string } | undefined;
+
+    metadata: any | undefined
 
     /**
     * If enabled every time a `get` of a field is requested a call to the resolver provider is made, to get the real time update from the blockchain registry.
@@ -37,7 +40,7 @@ export interface IResolvedResource {
     */
     realTimeUpdate: boolean
 
-    getRecord(key: string): string;
+    getRecord(key: string): string | undefined;
 
     isApprovedOrOwner(address: string): boolean
 }

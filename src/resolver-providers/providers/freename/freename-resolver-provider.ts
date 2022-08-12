@@ -1,43 +1,52 @@
 import { ethers } from "ethers";
-import { NetworkConnection, NetworkName } from "../../../networks/connections/network-connection.types";
+import { NetworkName } from "../../../networks/connections/network-connection.types";
+import { RegistryContractConnection } from "../../../networks/registry-contract/registry-contract";
 import { ResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource";
 import { IResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource.interface";
 import { ResolvedResourceType } from "../../../resolvers/types/resolved-resource-type";
 import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { NameTools } from "../../../tools/name-tools";
-import { MappedName, NameType } from "../../../tools/name-tools.types";
+import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
 import { BaseResolverProvider } from "../base-resolver-provider";
-import { FNS_CONTRACT_ADDRESS, FREENAME_NS_ABI } from "./freename-resolver-provider.consts";
+import { FREENAME_METADATA_URL } from "./freename-resolver-provider.consts";
+import { FreenameMetadata } from "./freename-resolver-provider.types";
+import { FreenameResolverTools } from "./freename-resolver-tools";
 
 export class FreenameResolverProvider extends BaseResolverProvider implements IResolverProvider {
 
-    constructor(connections: NetworkConnection[]) {
-        super(ResolverName.FREENAME, ['*'], connections);
-
-        let providers: ethers.providers.JsonRpcProvider[] = []
-        for (const connection of connections) {
-            const newProvider = new ethers.providers.JsonRpcProvider(connection.rcpUrl)
-            providers.push(newProvider);
-        }
-        this._providers = providers;
-        this._fnsContract = new ethers.Contract(FNS_CONTRACT_ADDRESS, FREENAME_NS_ABI, this._providers[0]);//TODO: set an array of contract, based on the array on connections like {networkname: NetworkName, contract: Contract}[]
+    constructor(registryContracts: RegistryContractConnection[]) {
+        super(ResolverName.FREENAME, ['*'], registryContracts, FREENAME_METADATA_URL);
     }
-
-    private _providers: ethers.providers.JsonRpcProvider[];
-    private _fnsContract: ethers.Contract
 
     async resolve(domainOrTld: string, options?: {}): Promise<IResolvedResource | undefined> {
         return await this.generateResolvedResource({ fullName: domainOrTld });
     }
 
-    async resolveFromTokenId(tokenId: string, network?: string | undefined): Promise<IResolvedResource | undefined> {
+    async resolveFromTokenId(tokenId: string): Promise<IResolvedResource | undefined> {
         return await this.generateResolvedResource({ tokenId: tokenId });
     }
 
-    async exists(tokenId: string): Promise<boolean> {
-        const exists = await this._fnsContract.exists(tokenId);
+    async getMetadata(tokenId: string): Promise<FreenameMetadata | undefined> {
+        return await super.getMetadata(tokenId);
+    }
+
+    async exists(tokenId: string, network: NetworkName): Promise<boolean> {
+        const registryConnection = this.getRegistryContractConnectionByNetwork(network);
+        if (!registryConnection) {
+            return false;
+        }
+        const exists: boolean = await registryConnection.registryContract.exists(tokenId);
         return exists;
+    }
+
+    async getOwnerAddress(tokenId: string, network: NetworkName): Promise<string | undefined> {
+        const registry = this.getRegistryContractConnectionByNetwork(network);
+        if (!registry) {
+            return undefined;
+        }
+        const ownerAddress: string = await registry.registryContract.ownerOf(tokenId);
+        return ownerAddress;
     }
 
     protected generateTokenId(mappedName: MappedName) {
@@ -59,44 +68,50 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
     }
 
     protected async generateResolvedResource(input: { tokenId?: string, fullName?: string }): Promise<ResolvedResource | undefined> {
-        if (!input || (!input.fullName && !input.tokenId)) {
+        if (!input) {
+            return undefined;
+        }
+        if (!input.fullName && !input.tokenId) {
             return undefined;
         }
 
-        console.log("START")
         let mappedName: MappedName | undefined;
         let tokenId: string | undefined;
         if (input.fullName) {
-            const mappedNameOrUnd = NameTools.mapName(input.fullName);
-            if (!mappedNameOrUnd) {
-                console.log("mappedname")
+            mappedName = NameTools.mapName(input.fullName);
+            if (!mappedName) {
                 return undefined;
             }
-            mappedName = mappedNameOrUnd
 
-            const tokenIdOrUnd = this.generateTokenId(mappedName);
-            if (!tokenIdOrUnd) {
-                console.log("tokenId")
-                return undefined;
-            }
-            tokenId = tokenIdOrUnd;
+            tokenId = this.generateTokenId(mappedName);
         } else if (input.tokenId) {
-            //TODO needs a metadata uri to get the additional data
             tokenId = input.tokenId;
-            mappedName = {//MOCK
-                fullname: "test",
-                tld: "test",
-                type: NameType.TLD,
-                domain: undefined
-            }
         }
-        if (!tokenId || !mappedName) {
+        if (!tokenId) {
             return undefined;
         }
 
-        const exists = await this.exists(tokenId);
+        const metadata = await this.getMetadata(tokenId);
+        if (!metadata) {
+            return undefined;
+        }
+
+        if (!mappedName) {
+            mappedName = NameTools.mapName(metadata.name);
+        }
+        if (!mappedName) {
+            return undefined;
+        }
+
+        const network = FreenameResolverTools.networkNameFormFreenameNetwork(metadata.network)
+
+        const exists = await this.exists(tokenId, network);
         if (!exists) {
-            console.log("exists")
+            return undefined;
+        }
+
+        const ownerAddress = await this.getOwnerAddress(tokenId, network);
+        if (!ownerAddress) {
             return undefined;
         }
 
@@ -109,13 +124,15 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
             tokenId: tokenId,
             resolverName: ResolverName.FREENAME,
             resolverProvider: this,
-            imageUrl: "",
-            metadataUri: "",
-            network: "",
-            ownerAddress: "",
+            imageUrl: metadata.image_url,
+            metadataUri: this._metadataUrl,
+            network: NetworkName.POLYGON_MUMBAI,
+            ownerAddress: ownerAddress,
             proxyReaderAddress: "",
             proxyWriterAddress: "",
             domain: mappedName.domain,
+            metadata: metadata,
+            records: metadata.properties
         })
 
         return resolvedResource;

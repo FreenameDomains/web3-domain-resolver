@@ -1,3 +1,4 @@
+import { NetworkName } from "../../networks/connections/network-connection.types";
 import { IResolverProvider } from "../../resolver-providers/resolver-provider.interface";
 import { ResolvedResourceType } from "../types/resolved-resource-type";
 import { ResolverName } from "../types/resolver-name";
@@ -12,12 +13,14 @@ export class ResolvedResource implements IResolvedResource {
         tokenId: string,
         resolverName: ResolverName,
         resolverProvider: IResolverProvider,
-        network: string,
+        network: NetworkName,
         proxyReaderAddress: string,
         proxyWriterAddress: string,
         ownerAddress: string,
         metadataUri: string,
-        imageUrl: string,
+        imageUrl: string | undefined,
+        metadata: any | undefined
+        records: { [key: string]: string } | undefined,
         domain?: string | undefined,
     }
     ) {
@@ -33,8 +36,16 @@ export class ResolvedResource implements IResolvedResource {
         this._ownerAddress = input.ownerAddress
         this._metadataUri = input.metadataUri
         this._imageUrl = input.imageUrl
-
+        this._metadata = input.metadata
+        this._records = input.records
         this._realTimeUpdate = false
+    }
+    private _metadata: any | undefined;
+    public get metadata(): any | undefined {
+        return this._metadata;
+    }
+    public set metadata(value: any | undefined) {
+        this._metadata = value;
     }
 
     private _fullname: string;
@@ -93,11 +104,11 @@ export class ResolvedResource implements IResolvedResource {
         this._resolverProvider = value;
     }
 
-    private _network: string;
-    public get network(): string {
+    private _network: NetworkName;
+    public get network(): NetworkName {
         return this._network;
     }
-    public set network(value: string) {
+    public set network(value: NetworkName) {
         this._network = value;
     }
 
@@ -133,14 +144,14 @@ export class ResolvedResource implements IResolvedResource {
         this._metadataUri = value;
     }
 
-    private _imageUrl: string;
-    public get imageUrl(): string {
+    private _imageUrl: string | undefined;
+    public get imageUrl(): string | undefined {
         if (this._realTimeUpdate) {
             this.resolverProvider.getImageUrl(this.tokenId);
         }
         return this._imageUrl;
     }
-    public set imageUrl(value: string) {
+    public set imageUrl(value: string | undefined) {
         this._imageUrl = value;
     }
 
@@ -152,12 +163,13 @@ export class ResolvedResource implements IResolvedResource {
         this._realTimeUpdate = value;
     }
 
-    public get records(): Array<{ [key: string]: string; }> {
-        return this.records;
+    private _records: { [key: string]: string; } | undefined
+    public get records(): { [key: string]: string; } | undefined {
+        return this._records;
     }
 
-    public getRecord(key: string): string {
-        throw new Error("Method not implemented");
+    public getRecord(key: string): string | undefined {
+        return this.records ? this.records[key] : undefined;
     }
 
     isApprovedOrOwner(address: string): boolean {

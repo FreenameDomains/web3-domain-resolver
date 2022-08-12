@@ -1,11 +1,12 @@
 export enum NetworkName {
     POLYGON = "polygon",
-    ETHEREUM_MAINNET = "ethereum",
     POLYGON_MUMBAI = "polygon-mumbai",
+    ETHEREUM = "ethereum",
+    BSC = "bsc"
 }
 
 export type NetworkConnection = {
-    network: NetworkName,
+    networkName: NetworkName,
     rcpUrl: string,
-    infuraId: string | undefined
+    // infuraId: string | undefined
 }

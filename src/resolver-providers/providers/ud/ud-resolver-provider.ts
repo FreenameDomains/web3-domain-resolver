@@ -1,15 +1,13 @@
 
-import { NetworkConnection, NetworkName } from "../../../networks/connections/network-connection.types";
-import { ResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource";
-import { IResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource.interface";
+import { RegistryContractConnection } from "../../../networks/registry-contract/registry-contract";
 import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { IResolverProvider } from "../../resolver-provider.interface";
 import { BaseResolverProvider } from "../base-resolver-provider";
-import { UD_SUPPORTED_TLDS } from "./ud-resolver-provider.consts";
+import { UD_METADATA_URL, UD_SUPPORTED_TLDS } from "./ud-resolver-provider.consts";
 
 export class UDResolverProvider extends BaseResolverProvider implements IResolverProvider {
 
-    constructor(connections: NetworkConnection[]) {
-        super(ResolverName.UD, UD_SUPPORTED_TLDS, connections);
+    constructor(registryContracts: RegistryContractConnection[]) {
+        super(ResolverName.UD, UD_SUPPORTED_TLDS, registryContracts, UD_METADATA_URL);
     }
 }

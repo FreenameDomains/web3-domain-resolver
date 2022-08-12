@@ -1,19 +1,13 @@
-import { ENSResolverProvider } from "../resolver-providers/providers/ens/ens-resolver-provider";
+import { RegistryContractConnection } from "../networks/registry-contract/registry-contract";
 import { FreenameResolverProvider } from "../resolver-providers/providers/freename/freename-resolver-provider";
-import { UDResolverProvider } from "../resolver-providers/providers/ud/ud-resolver-provider";
+import { DEFAULT_FNS_POLYGON_MUMBAI_JSON_RCP_CONNECTION, FNS_CONTRACT_ADDRESS, FREENAME_NS_ABI } from "../resolver-providers/providers/freename/freename-resolver-provider.consts";
 import { Resolver } from "../resolvers/resolver";
-import { DEFAULT_ENS_JSON_RCP_CONNECTION, DEFAULT_FNS_POLYGON_MUMBAI_JSON_RCP_CONNECTION, DEFAULT_UD_JSON_RCP_CONNECTION } from "./default-connections.consts";
 
 export class Web3Resolver extends Resolver {
     constructor() {
-        try {
-            super([
-                new FreenameResolverProvider([DEFAULT_FNS_POLYGON_MUMBAI_JSON_RCP_CONNECTION]),
-                new UDResolverProvider([DEFAULT_UD_JSON_RCP_CONNECTION]),
-                new ENSResolverProvider([DEFAULT_ENS_JSON_RCP_CONNECTION])
-            ])
-        }catch(e) {
-            console.log("Web3Resolver constructor error ", e);
-        }
-        }
+
+        const freenameRegistry: RegistryContractConnection = new RegistryContractConnection(DEFAULT_FNS_POLYGON_MUMBAI_JSON_RCP_CONNECTION, FNS_CONTRACT_ADDRESS, FREENAME_NS_ABI)
+
+        super([new FreenameResolverProvider([freenameRegistry])])
+    }
 }
