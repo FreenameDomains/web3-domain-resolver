@@ -7,7 +7,7 @@ export const DEFAULT_FNS_POLYGON_MUMBAI_JSON_RCP_CONNECTION: NetworkConnection =
   rcpUrl: ""
 }
 
-export const FREENAME_NS_ABI = [
+export const FNS_ABI = [
   {
     "anonymous": false,
     "inputs": [

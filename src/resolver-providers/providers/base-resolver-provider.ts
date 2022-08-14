@@ -3,11 +3,11 @@ import { ResolvedResource } from "../../resolvers/resolved-resource/resolved-res
 import { IResolvedResource } from "../../resolvers/resolved-resource/resolved-resource.interface";
 import { ResolverName } from "../../resolvers/types/resolver-name";
 import { IResolverProvider } from "../resolver-provider.interface";
-import { RegistryContractConnection } from "../../networks/registry-contract/registry-contract";
+import { ContractConnection } from "../../networks/connections/contract-connection";
 import axios from 'axios';
 
 export class BaseResolverProvider implements IResolverProvider {
-    constructor(name: ResolverName, supportedTlds: string[], regisitryContracts: RegistryContractConnection[], metadataUrl: string) {
+    constructor(name: ResolverName, supportedTlds: string[], regisitryContracts: ContractConnection[], metadataUrl: string) {
         this._name = name;
         this._supportedTlds = supportedTlds;
         this._regisitryContracts = regisitryContracts;
@@ -30,11 +30,11 @@ export class BaseResolverProvider implements IResolverProvider {
         this._supportedTlds = value;
     }
 
-    protected _regisitryContracts: RegistryContractConnection[];
-    public get regisitryContracts(): RegistryContractConnection[] {
+    protected _regisitryContracts: ContractConnection[];
+    public get regisitryContracts(): ContractConnection[] {
         return this._regisitryContracts;
     }
-    protected set regisitryContracts(value: RegistryContractConnection[]) {
+    protected set regisitryContracts(value: ContractConnection[]) {
         this._regisitryContracts = value;
     }
 
@@ -44,7 +44,7 @@ export class BaseResolverProvider implements IResolverProvider {
     }
 
     getSupportedNetworks(): NetworkName[] {
-        throw new Error("Method not implemented.");
+        return this.regisitryContracts.map(x => x.network);
     }
     getRegistries(): { proxyReaderAddress: string; proxyWriterAddress: string; network: NetworkName; }[] {
         throw new Error("Method not implemented.");
@@ -54,12 +54,13 @@ export class BaseResolverProvider implements IResolverProvider {
         throw new Error("Method not implemented.");
     }
 
-    async resolveFromTokenId(tokenId: string, network?: string | undefined): Promise<IResolvedResource | undefined> {
+    async resolveFromTokenId(tokenId: string): Promise<IResolvedResource | undefined> {
         throw new Error("Method not implemented.");
     }
 
-    async getImageUrl(tokenId: string): Promise<string> {
-        throw new Error("Method not implemented.");
+    async getImageUrl(tokenId: string): Promise<string | undefined> {
+        const metadata = await this.getMetadata(tokenId);
+        return metadata?.image_url;
     }
 
     async transfer(resource: ResolvedResource, to: string): Promise<boolean> {
@@ -83,11 +84,21 @@ export class BaseResolverProvider implements IResolverProvider {
     }
 
     async exists(tokenId: string, network: NetworkName): Promise<boolean> {
-        throw new Error("Method not implemented.");
+        const registryConnection = this.getRegistryContractConnectionByNetwork(network);
+        if (!registryConnection) {
+            return false;
+        }
+        const exists: boolean = await registryConnection.contract.exists(tokenId);
+        return exists;
     }
 
-    async isApprovedOrOwner(domainOrTld: string, addressToCheck: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    async isApprovedOrOwner(tokenId: string, addressToCheck: string, network: NetworkName): Promise<boolean> {
+        const registryConnection = this.getRegistryContractConnectionByNetwork(network);
+        if (!registryConnection) {
+            return false;
+        }
+        const isApprovedOrOwner: boolean = await registryConnection.contract.isApprovedOrOwner(tokenId, addressToCheck);
+        return isApprovedOrOwner;
     }
 
     async getMetadata(tokenId: string): Promise<any | undefined> {
@@ -95,7 +106,17 @@ export class BaseResolverProvider implements IResolverProvider {
     }
 
     async getOwnerAddress(tokenId: string, network: NetworkName): Promise<string | undefined> {
-        throw new Error("Method not implemented.");
+        const registry = this.getRegistryContractConnectionByNetwork(network);
+        if (!registry) {
+            return undefined;
+        }
+        const ownerAddress: string = await registry.contract.ownerOf(tokenId);
+        return ownerAddress;
+    }
+
+    async getRecords(tokenId: string): Promise<{ [key: string]: string } | undefined> {
+        const metadata = await this.getMetadata(tokenId);
+        return metadata?.properties?.records;
     }
 
     protected async getHttpsCall(url: string): Promise<any | undefined> {
@@ -110,7 +131,7 @@ export class BaseResolverProvider implements IResolverProvider {
         }
     }
 
-    protected getRegistryContractConnectionByNetwork(networkName: NetworkName): RegistryContractConnection | undefined {
+    protected getRegistryContractConnectionByNetwork(networkName: NetworkName): ContractConnection | undefined {
         const registry = this._regisitryContracts.find(x => x.network == networkName);
         return registry;
     }

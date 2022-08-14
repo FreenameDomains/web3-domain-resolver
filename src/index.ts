@@ -1,4 +1,4 @@
-import { Web3Resolver } from "./defaults/web3-default-resolver";
+import { Web3Resolver } from "./defaults/web3-resolver";
 
 async function start() {
     console.log("Start!");

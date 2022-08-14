@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { NetworkName } from "../../../networks/connections/network-connection.types";
-import { RegistryContractConnection } from "../../../networks/registry-contract/registry-contract";
+import { ContractConnection } from "../../../networks/connections/contract-connection";
 import { ResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource";
 import { IResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource.interface";
 import { ResolvedResourceType } from "../../../resolvers/types/resolved-resource-type";
@@ -10,12 +10,12 @@ import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
 import { BaseResolverProvider } from "../base-resolver-provider";
 import { FREENAME_METADATA_URL } from "./freename-resolver-provider.consts";
-import { FreenameMetadata } from "./freename-resolver-provider.types";
 import { FreenameResolverTools } from "./freename-resolver-tools";
+import { FreenameMetadata } from "./freename-resolver-provider.types";
 
 export class FreenameResolverProvider extends BaseResolverProvider implements IResolverProvider {
 
-    constructor(registryContracts: RegistryContractConnection[]) {
+    constructor(registryContracts: ContractConnection[]) {
         super(ResolverName.FREENAME, ['*'], registryContracts, FREENAME_METADATA_URL);
     }
 
@@ -31,25 +31,7 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
         return await super.getMetadata(tokenId);
     }
 
-    async exists(tokenId: string, network: NetworkName): Promise<boolean> {
-        const registryConnection = this.getRegistryContractConnectionByNetwork(network);
-        if (!registryConnection) {
-            return false;
-        }
-        const exists: boolean = await registryConnection.registryContract.exists(tokenId);
-        return exists;
-    }
-
-    async getOwnerAddress(tokenId: string, network: NetworkName): Promise<string | undefined> {
-        const registry = this.getRegistryContractConnectionByNetwork(network);
-        if (!registry) {
-            return undefined;
-        }
-        const ownerAddress: string = await registry.registryContract.ownerOf(tokenId);
-        return ownerAddress;
-    }
-
-    protected generateTokenId(mappedName: MappedName) {
+    protected getTokenIdFromMappedName(mappedName: MappedName) {
         if (!mappedName) {
             return undefined;
         }
@@ -83,7 +65,7 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
                 return undefined;
             }
 
-            tokenId = this.generateTokenId(mappedName);
+            tokenId = this.getTokenIdFromMappedName(mappedName);
         } else if (input.tokenId) {
             tokenId = input.tokenId;
         }

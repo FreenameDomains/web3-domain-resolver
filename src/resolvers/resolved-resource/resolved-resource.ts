@@ -42,7 +42,10 @@ export class ResolvedResource implements IResolvedResource {
     }
     private _metadata: any | undefined;
     public get metadata(): any | undefined {
-        return this._metadata;
+        if (this._realTimeUpdate) {
+            this.resolverProvider.getMetadata(this.tokenId);
+        }
+        return this._metadata
     }
     public set metadata(value: any | undefined) {
         this._metadata = value;
@@ -130,6 +133,9 @@ export class ResolvedResource implements IResolvedResource {
 
     private _ownerAddress: string;
     public get ownerAddress(): string {
+        if (this._realTimeUpdate) {
+            this.resolverProvider.getOwnerAddress(this.tokenId, this._network);
+        }
         return this._ownerAddress;
     }
     public set ownerAddress(value: string) {
@@ -155,6 +161,14 @@ export class ResolvedResource implements IResolvedResource {
         this._imageUrl = value;
     }
 
+    private _records: { [key: string]: string; } | undefined
+    public get records(): { [key: string]: string; } | undefined {
+        if (this._realTimeUpdate) {
+            this.resolverProvider.getRecords(this.tokenId);
+        }
+        return this._records;
+    }
+
     private _realTimeUpdate: boolean;
     public get realTimeUpdate(): boolean {
         return this._realTimeUpdate;
@@ -163,16 +177,11 @@ export class ResolvedResource implements IResolvedResource {
         this._realTimeUpdate = value;
     }
 
-    private _records: { [key: string]: string; } | undefined
-    public get records(): { [key: string]: string; } | undefined {
-        return this._records;
-    }
-
     public getRecord(key: string): string | undefined {
         return this.records ? this.records[key] : undefined;
     }
 
-    isApprovedOrOwner(address: string): boolean {
-        return false;
+    public async isApprovedOrOwner(address: string): Promise<boolean> {
+        return await this.resolverProvider.isApprovedOrOwner(this._tokenId, address, this._network);
     }
 }

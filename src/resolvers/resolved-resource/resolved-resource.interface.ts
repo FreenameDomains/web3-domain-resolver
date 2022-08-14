@@ -42,5 +42,5 @@ export interface IResolvedResource {
 
     getRecord(key: string): string | undefined;
 
-    isApprovedOrOwner(address: string): boolean
+    isApprovedOrOwner(address: string): Promise<boolean>
 }

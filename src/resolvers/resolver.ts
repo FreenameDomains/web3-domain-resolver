@@ -27,24 +27,11 @@ export class Resolver {
         return undefined;
     };
 
-    async resolveFromTokenId(tokenId: string, resolverProviderName: ResolverName, network?: string): Promise<IResolvedResource | undefined> {
+    async resolveFromTokenId(tokenId: string, resolverProviderName: ResolverName): Promise<IResolvedResource | undefined> {
         const resolverProvider = this._resolverProviderRouter.getResolver(resolverProviderName);
         if (resolverProvider) {
-            return resolverProvider.resolveFromTokenId(tokenId, network);
+            return resolverProvider.resolveFromTokenId(tokenId);
         }
         return undefined;
-    };
-
-    async getOwner(domainOrTld: string): Promise<string | undefined> {
-        const resolved = await this.resolve(domainOrTld);
-        return resolved?.ownerAddress;
-    };
-
-    async isApprovedOrOwner(domainOrTld: string, addressToCheck: string): Promise<boolean> {
-        const resolver = this._resolverProviderRouter.getResolverByDomainOrTld(domainOrTld);
-        if (resolver) {
-            return await resolver.isApprovedOrOwner(domainOrTld, addressToCheck);
-        }
-        return false;
     };
 }

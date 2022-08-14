@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
-import { NetworkConnection, NetworkName } from "../connections/network-connection.types";
+import { NetworkConnection, NetworkName } from "./network-connection.types";
 
-export class RegistryContractConnection {
+export class ContractConnection {
 
     constructor(
         connection: NetworkConnection,
@@ -11,7 +11,7 @@ export class RegistryContractConnection {
         this._connection = connection;
         this._address = address;
         this._provider = new ethers.providers.JsonRpcProvider(connection.rcpUrl)
-        this._registryContract = new ethers.Contract(address, abi, this._provider);//TODO: set an array of contract, based on the array on connections like {networkname: NetworkName, contract: Contract}[]
+        this._contract = new ethers.Contract(address, abi, this._provider);
     }
 
     private _connection: NetworkConnection;
@@ -29,9 +29,9 @@ export class RegistryContractConnection {
         return this._provider;
     }
 
-    private _registryContract: ethers.Contract
-    public get registryContract(): ethers.Contract {
-        return this._registryContract;
+    private _contract: ethers.Contract
+    public get contract(): ethers.Contract {
+        return this._contract;
     }
 
     public get network(): NetworkName {
