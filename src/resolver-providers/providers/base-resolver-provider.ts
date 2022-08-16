@@ -1,14 +1,24 @@
+import { ConnectionLibrary } from "../../networks/connections/connection-library";
 import { NetworkName } from "../../networks/connections/network-connection.types";
 import { ResolvedResource } from "../../resolvers/resolved-resource/resolved-resource";
 import { IResolvedResource } from "../../resolvers/resolved-resource/resolved-resource.interface";
 import { ResolverName } from "../../resolvers/types/resolver-name";
+import { ApiCaller } from "../../tools/api-caller";
 import { IResolverProvider } from "../resolver-provider.interface";
-import axios from 'axios';
 
 export class BaseResolverProvider implements IResolverProvider {
-    constructor(name: ResolverName, supportedTlds: string[]) {
+    constructor(name: ResolverName, supportedTlds: string[], options: { connectionLibrary?: ConnectionLibrary } = {}) {
         this._name = name;
         this._supportedTlds = supportedTlds;
+        this._connectionLibrary = options.connectionLibrary
+    }
+
+    protected _connectionLibrary?: ConnectionLibrary | undefined;
+    public get connectionLibrary(): ConnectionLibrary | undefined {
+        return this._connectionLibrary;
+    }
+    public set connectionLibrary(value: ConnectionLibrary | undefined) {
+        this._connectionLibrary = value;
     }
 
     protected _name: ResolverName;
@@ -86,7 +96,7 @@ export class BaseResolverProvider implements IResolverProvider {
         if (!metadataUrl) {
             return undefined;
         }
-        return await this.getHttpsCall(metadataUrl);
+        return await ApiCaller.getHttpsCall(metadataUrl);
     }
 
     async getOwnerAddress(tokenId: string, network: NetworkName): Promise<string | undefined> {
@@ -96,17 +106,5 @@ export class BaseResolverProvider implements IResolverProvider {
     async getRecords(tokenId: string): Promise<{ [key: string]: string } | undefined> {
         const metadata = await this.getMetadata(tokenId);
         return metadata?.properties?.records;
-    }
-
-    protected async getHttpsCall(url: string): Promise<any | undefined> {
-        try {
-            const response = await axios.get(url)
-            if (response) {
-                console.log("Response ", response.data)
-                return response.data
-            }
-        } catch {
-            return undefined;
-        }
     }
 }

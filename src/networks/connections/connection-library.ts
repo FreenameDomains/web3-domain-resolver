@@ -3,7 +3,7 @@ import { NetworkConnection, NetworkName } from "./network-connection.types";
 export class ConnectionLibrary {
 
     constructor(connections: NetworkConnection[]) {
-        this._connections = connections
+        this._connections = connections || [];
     }
 
     private _connections: NetworkConnection[];
@@ -22,13 +22,12 @@ export class ConnectionLibrary {
         return undefined;
     };
 
-    public setConnection(network: NetworkName, input: { rcpUrl: string; infuraId: string }) {
-        if (this._connections && network && input) {
-            const indexFound = this._connections.findIndex(x => x.networkName == network);
+    public setConnection(connection: NetworkConnection) {
+        if (this._connections && connection.networkName && connection.rpcUrl) {
+            const indexFound = this._connections.findIndex(x => x.networkName == connection.networkName);
             const newConnection: NetworkConnection = {
-                networkName: network,
-                // infuraId: input.infuraId,
-                rcpUrl: input.rcpUrl
+                networkName: connection.networkName,
+                rpcUrl: connection.rpcUrl
             }
             if (indexFound !== -1) {
                 this._connections[indexFound] = newConnection

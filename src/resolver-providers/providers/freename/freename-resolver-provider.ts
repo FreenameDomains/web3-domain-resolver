@@ -9,15 +9,18 @@ import { NameTools } from "../../../tools/name-tools";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
 import { BaseResolverProvider } from "../base-resolver-provider";
-import { FREENAME_METADATA_URL } from "./freename-resolver-provider.consts";
+import { DEFAULT_FNS_POLYGON_MUMBAI_PROVIDER, FNS_ABI, FNS_CONTRACT_ADDRESS, FREENAME_METADATA_URL } from "./freename-resolver-provider.consts";
 import { FreenameResolverTools } from "./freename-resolver-tools";
 import { FreenameMetadata } from "./freename-resolver-provider.types";
+import { ConnectionLibrary } from "../../../networks/connections/connection-library";
 
 export class FreenameResolverProvider extends BaseResolverProvider implements IResolverProvider {
 
-    constructor(registryContracts: ContractConnection[]) {
-        super(ResolverName.FREENAME, ['*'],);
-        this._regisitryContracts = registryContracts;
+    constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
+        super(ResolverName.FREENAME, ['*'], options);
+
+        const mumbaiConnection = this._connectionLibrary?.getConnection(NetworkName.POLYGON_MUMBAI) || DEFAULT_FNS_POLYGON_MUMBAI_PROVIDER;
+        this._regisitryContracts = [new ContractConnection(mumbaiConnection, FNS_CONTRACT_ADDRESS, FNS_ABI)];
     }
 
     protected _regisitryContracts: ContractConnection[];

@@ -1,12 +1,13 @@
 
 import { NetworkName } from "../networks/connections/network-connection.types";
-import { ContractConnection } from "../networks/connections/contract-connection";
 import { IResolvedResource } from "../resolvers/resolved-resource/resolved-resource.interface";
+import { ConnectionLibrary } from "../networks/connections/connection-library";
 
 export interface IResolverProvider {
 
     name: string
     supportedTlds: string[]
+    connectionLibrary?: ConnectionLibrary
 
     getSupportedNetworks(): NetworkName[];
     getRegistries(): {

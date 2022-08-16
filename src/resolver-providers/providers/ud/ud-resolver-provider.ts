@@ -1,25 +1,62 @@
 
-import { ContractConnection } from "../../../networks/connections/contract-connection";
 import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { IResolverProvider } from "../../resolver-provider.interface";
 import { BaseResolverProvider } from "../base-resolver-provider";
 import { UD_METADATA_URL, UD_SUPPORTED_TLDS, UD_ZIL_TLDS } from "./ud-resolver-provider.consts";
 import { MappedName } from "../../../tools/name-tools.types";
 import { ethers } from "ethers";
-import { default as Resolution, NamingServiceName, TokenUriMetadata } from '@unstoppabledomains/resolution';
+import { default as Resolution, NamingServiceName, TokenUriMetadata, UnsSource, ZnsSource } from '@unstoppabledomains/resolution';
 import { IResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource.interface";
 import { ResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource";
 import { NameTools } from "../../../tools/name-tools";
 import { NetworkName } from "../../../networks/connections/network-connection.types";
 import { ResolvedResourceType } from "../../../resolvers/types/resolved-resource-type";
+import { ConnectionLibrary } from "../../../networks/connections/connection-library";
 
 export class UDResolverProvider extends BaseResolverProvider implements IResolverProvider {
 
-    private _resolution = new Resolution();
+    constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
+        super(ResolverName.UD, UD_SUPPORTED_TLDS, options);
 
-    constructor() {
-        super(ResolverName.UD, UD_SUPPORTED_TLDS);
+        let unsSource: UnsSource | undefined;
+        const ethConnection = this._connectionLibrary?.getConnection(NetworkName.ETHEREUM);
+        const polygonConnection = this._connectionLibrary?.getConnection(NetworkName.POLYGON)
+        if (ethConnection && polygonConnection) {
+            unsSource = {
+                locations: {
+                    Layer1: {
+                        url: ethConnection.rpcUrl,
+                        network: 'mainnet'
+                    },
+                    Layer2: {
+                        url: polygonConnection.rpcUrl,
+                        network: 'polygon-mainnet',
+                    },
+                },
+            }
+        }
+
+        let znsSource: ZnsSource | undefined;
+        const zilConnection = this._connectionLibrary?.getConnection(NetworkName.ZILLIQA);
+        if (zilConnection) {
+            znsSource = {
+                network: 'mainnet',
+                url: zilConnection.rpcUrl
+            }
+        }
+
+
+        this._resolution = new Resolution(
+            {
+                sourceConfig: {
+                    uns: unsSource,
+                    zns: znsSource
+                }
+            }
+        );
     }
+
+    private _resolution;
 
     async resolve(domainOrTld: string): Promise<IResolvedResource | undefined> {
         return await this.generateResolvedResource({ fullName: domainOrTld });

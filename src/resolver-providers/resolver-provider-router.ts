@@ -25,7 +25,7 @@ export class ResolverProviderRouter {
         }
     }
 
-    public getResolverByDomainOrTld(domainOrTld: string): IResolverProvider | undefined {
+    public getResolverProviderByDomainOrTld(domainOrTld: string): IResolverProvider | undefined {
         const mappedName = NameTools.mapName(domainOrTld);
         if (!mappedName) {
             return undefined;
@@ -44,7 +44,7 @@ export class ResolverProviderRouter {
         return undefined;
     }
 
-    public getResolver(name: ResolverName): IResolverProvider | undefined {
+    public getResolverProvider(name: ResolverName): IResolverProvider | undefined {
         const resolverProvider = this._resolverProviders.find(x => x.name == name);
         return resolverProvider;
     }

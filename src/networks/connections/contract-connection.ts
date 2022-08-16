@@ -10,7 +10,7 @@ export class ContractConnection {
     ) {
         this._connection = connection;
         this._address = address;
-        this._provider = new ethers.providers.JsonRpcProvider(connection.rcpUrl)
+        this._provider = new ethers.providers.JsonRpcProvider(connection.rpcUrl);
         this._contract = new ethers.Contract(address, abi, this._provider);
     }
 
