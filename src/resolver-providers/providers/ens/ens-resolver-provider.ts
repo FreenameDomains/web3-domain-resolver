@@ -1,14 +1,76 @@
 
-// import { ResolverName } from "../../../resolvers/types/resolver-name";
-// import { IResolverProvider } from "../../resolver-provider.interface";
-// import { BaseResolverProvider } from "../base-resolver-provider";
-// import { ENS_SUPPORTED_TLDS } from "./ens-resolver-provider.consts";
+import { NetworkConnection, NetworkName } from "../../../networks/connections/network-connection.types";
+import { ResolverName } from "../../../resolvers/types/resolver-name";
+import { MappedName } from "../../../tools/name-tools.types";
+import { IResolverProvider } from "../../resolver-provider.interface";
+import { DefaultResolverProvider } from "../default-resolver-provider";
+import { ENS_ABI, ENS_CONTRACT_ADDRESS, ENS_MAINNET_METADATA_URL, ENS_SUPPORTED_TLDS } from "./ens-resolver-provider.consts";
+import { ContractConnection } from "../../../networks/connections/contract-connection";
+import { ethers } from "ethers";
+import { ApiCaller } from "../../../tools/api-caller";
 
-// export class ENSResolverProvider extends BaseResolverProvider implements IResolverProvider {
-//     constructor() {
-//         super(ResolverName.ENS, ENS_SUPPORTED_TLDS);
-//     }
+export class ENSResolverProvider extends DefaultResolverProvider implements IResolverProvider {
 
-    
+    constructor() {
+        const connection: NetworkConnection = { networkName: NetworkName.ETHEREUM, rpcUrl: "" }
+        const readContractAddress = new ContractConnection(connection, ENS_CONTRACT_ADDRESS, ENS_ABI);
 
-// }
+        super(ResolverName.ENS, ENS_SUPPORTED_TLDS, [readContractAddress], [readContractAddress]);
+    }
+
+    public async exists(tokenId: string, network?: NetworkName | undefined): Promise<boolean> {
+        const readContractConnection = await super.getReadContractConnectionFromToken(tokenId, network);
+        if (!readContractConnection) {
+            return false;
+        }
+        const res = await readContractConnection.contract.available(tokenId);
+        return !res;
+    }
+
+    public async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
+        if (!mappedName.domain) {
+            return undefined;
+        }
+        const labelHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(mappedName.domain));
+        const tokenId = ethers.BigNumber.from(labelHash).toString();
+        return tokenId;
+    }
+
+    public async getTokenUri(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
+        //There is no token uri https://docs.ens.domains/dapp-developer-guide/ens-as-nft#metadata
+        return undefined;
+    }
+
+    public async getMetadata(tokenId: string, network?: NetworkName | undefined): Promise<any | undefined> {
+        const readContractConnection = await super.getReadContractConnectionFromToken(tokenId, network);
+        if (!readContractConnection) {
+            return false;
+        }
+        //https://metadata.ens.domains/docs
+        const metadataUrl = ENS_MAINNET_METADATA_URL + readContractConnection.address + "/" + tokenId;
+        console.log(metadataUrl)
+        return ApiCaller.getHttpsCall(metadataUrl);
+    }
+
+    public async getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined> {
+        return NetworkName.ETHEREUM;
+    }
+
+    public async getRecords(tokenId: string): Promise<{ [key: string]: string; } | undefined> {
+        return undefined;
+    }
+
+    public async getNameFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
+        const metadata = await this.getMetadata(tokenId, network);
+        return metadata?.name;
+    }
+
+    protected async getTokenIdNetwork(tokenId: string): Promise<NetworkName | undefined> {
+        for (const readContractConnection of this.readContractConnections) {
+            const res = await readContractConnection.contract.available(tokenId);
+            if (!res) {
+                return readContractConnection.network;
+            }
+        }
+    }
+}

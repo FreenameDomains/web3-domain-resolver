@@ -138,7 +138,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
         if (!readContractConnection) {
             return undefined;
         }
-        return await readContractConnection.contract.ownerAddress(tokenId);
+        return await readContractConnection.contract.ownerOf(tokenId);
     }
 
     public async isApprovedOrOwner(tokenId: string, addressToCheck: string, network?: NetworkName | undefined): Promise<boolean> {
@@ -177,14 +177,23 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
             return undefined;
         }
 
-        const exists = await readContractConnection.contract.exists(tokenId);
+        const exists = await this.exists(tokenId, readContractConnection.network);
         if (!exists) {
             return undefined;
         }
 
-        const ownerAddress = await readContractConnection.contract.ownerOf(tokenId);
-        const tokenUri = await readContractConnection.contract.tokenURI(tokenId);
-        const metadata = await ApiCaller.getHttpsCall(tokenUri);
+        const ownerAddress = await this.getOwnerAddress(tokenId, readContractConnection.network);
+        if (!ownerAddress) {
+            return undefined;
+        }
+
+        const tokenUri = await this.getTokenUri(tokenId, readContractConnection.network);
+
+        let metadata: any | undefined;
+        if (tokenUri) {
+            metadata = await ApiCaller.getHttpsCall(tokenUri);
+        }
+
         const resolverResourceType: ResolvedResourceType = NameTools.getResolvedResourceType(mappedName.type);
         const records = await this.getRecords(tokenId);
 
@@ -209,7 +218,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
         return resolvedResource;
     }
 
-    private async getTokenIdNetwork(tokenId: string): Promise<NetworkName | undefined> {
+    protected async getTokenIdNetwork(tokenId: string): Promise<NetworkName | undefined> {
         for (const readContractConnection of this.readContractConnections) {
             const exists = readContractConnection.contract.exists(tokenId);
             if (exists) {
@@ -218,7 +227,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
         }
     }
 
-    private async getReadContractConnectionFromToken(tokenId: string, network?: NetworkName | undefined): Promise<ContractConnection | undefined> {
+    protected async getReadContractConnectionFromToken(tokenId: string, network?: NetworkName | undefined): Promise<ContractConnection | undefined> {
         let networkToUse: NetworkName | undefined = network;
         if (!network) {
             networkToUse = await this.getTokenIdNetwork(tokenId);
