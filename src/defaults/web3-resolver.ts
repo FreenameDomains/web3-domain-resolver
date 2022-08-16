@@ -7,8 +7,8 @@ import { Resolver } from "../resolvers/resolver";
 export class Web3Resolver extends Resolver {
     constructor(connectionLibrary?: ConnectionLibrary) {
         const freenameResolverProvider = new FreenameResolverProvider({ connectionLibrary: connectionLibrary });
-        const udResolverProvider = new UDResolverProvider();
-        const ensResolverProvider = new ENSResolverProvider();
+        const udResolverProvider = new UDResolverProvider({ connectionLibrary: connectionLibrary });
+        const ensResolverProvider = new ENSResolverProvider({ connectionLibrary: connectionLibrary });
 
         super([freenameResolverProvider, udResolverProvider, ensResolverProvider])
     }
