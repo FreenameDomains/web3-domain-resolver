@@ -16,25 +16,68 @@ import { FreenameMetadata } from "./freename-resolver-provider.types";
 export class FreenameResolverProvider extends BaseResolverProvider implements IResolverProvider {
 
     constructor(registryContracts: ContractConnection[]) {
-        super(ResolverName.FREENAME, ['*'], registryContracts, FREENAME_METADATA_URL);
+        super(ResolverName.FREENAME, ['*'],);
+        this._regisitryContracts = registryContracts;
+    }
+
+    protected _regisitryContracts: ContractConnection[];
+    public get regisitryContracts(): ContractConnection[] {
+        return this._regisitryContracts;
+    }
+    protected set regisitryContracts(value: ContractConnection[]) {
+        this._regisitryContracts = value;
+    }
+
+    getSupportedNetworks(): NetworkName[] {
+        return this.regisitryContracts.map(x => x.network);
     }
 
     async resolve(domainOrTld: string, options?: {}): Promise<IResolvedResource | undefined> {
+        console.log("FREENAME resolve of ", domainOrTld)
         return await this.generateResolvedResource({ fullName: domainOrTld });
     }
 
     async resolveFromTokenId(tokenId: string): Promise<IResolvedResource | undefined> {
+        console.log("FREENAME resolveFromTokenId of ", tokenId)
         return await this.generateResolvedResource({ tokenId: tokenId });
+    }
+
+    async getTokenUri(tokenId: string): Promise<string | undefined> {
+        return FREENAME_METADATA_URL + tokenId;
     }
 
     async getMetadata(tokenId: string): Promise<FreenameMetadata | undefined> {
         return await super.getMetadata(tokenId);
     }
 
-    protected getTokenIdFromMappedName(mappedName: MappedName) {
-        if (!mappedName) {
+    async getOwnerAddress(tokenId: string, network: NetworkName): Promise<string | undefined> {
+        const registry = this.getRegistryContractConnectionByNetwork(network);
+        if (!registry) {
             return undefined;
         }
+        const ownerAddress: string = await registry.contract.ownerOf(tokenId);
+        return ownerAddress;
+    }
+
+    async exists(tokenId: string, network: NetworkName): Promise<boolean> {
+        const registryConnection = this.getRegistryContractConnectionByNetwork(network);
+        if (!registryConnection) {
+            return false;
+        }
+        const exists: boolean = await registryConnection.contract.exists(tokenId);
+        return exists;
+    }
+
+    async isApprovedOrOwner(tokenId: string, addressToCheck: string, network: NetworkName): Promise<boolean> {
+        const registryConnection = this.getRegistryContractConnectionByNetwork(network);
+        if (!registryConnection) {
+            return false;
+        }
+        const isApprovedOrOwner: boolean = await registryConnection.contract.isApprovedOrOwner(tokenId, addressToCheck);
+        return isApprovedOrOwner;
+    }
+
+    protected getTokenIdFromMappedName(mappedName: MappedName) {
         let fullnameKeccak: string;
         if (mappedName.domain) {
             const domainKeccak = ethers.utils.solidityKeccak256(["string"], [mappedName.domain]);
@@ -51,9 +94,11 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 
     protected async generateResolvedResource(input: { tokenId?: string, fullName?: string }): Promise<ResolvedResource | undefined> {
         if (!input) {
+            console.log("Missing input");
             return undefined;
         }
         if (!input.fullName && !input.tokenId) {
+            console.log("Missing input");
             return undefined;
         }
 
@@ -62,6 +107,7 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
         if (input.fullName) {
             mappedName = NameTools.mapName(input.fullName);
             if (!mappedName) {
+                console.log("unable to map name");
                 return undefined;
             }
 
@@ -70,18 +116,22 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
             tokenId = input.tokenId;
         }
         if (!tokenId) {
+            console.log("Missing tokenId");
             return undefined;
         }
 
         const metadata = await this.getMetadata(tokenId);
         if (!metadata) {
+            console.log("Missing metadata");
             return undefined;
         }
 
         if (!mappedName) {
+            console.log("Missing mapped name");
             mappedName = NameTools.mapName(metadata.name);
         }
         if (!mappedName) {
+            console.log("Missing mapped name");
             return undefined;
         }
 
@@ -89,13 +139,17 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 
         const exists = await this.exists(tokenId, network);
         if (!exists) {
+            console.log("exists: false");
             return undefined;
         }
 
         const ownerAddress = await this.getOwnerAddress(tokenId, network);
         if (!ownerAddress) {
+            console.log("Missing owner address");
             return undefined;
         }
+
+        const metadataUri = await this.getTokenUri(tokenId);
 
         const resolverResourceType: ResolvedResourceType = NameTools.getResolvedResourceType(mappedName.type);
 
@@ -107,7 +161,7 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
             resolverName: ResolverName.FREENAME,
             resolverProvider: this,
             imageUrl: metadata.image_url,
-            metadataUri: this._metadataUrl,
+            metadataUri: metadataUri,
             network: NetworkName.POLYGON_MUMBAI,
             ownerAddress: ownerAddress,
             proxyReaderAddress: "",
@@ -118,5 +172,10 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
         })
 
         return resolvedResource;
+    }
+
+    protected getRegistryContractConnectionByNetwork(networkName: NetworkName): ContractConnection | undefined {
+        const registry = this._regisitryContracts.find(x => x.network == networkName);
+        return registry;
     }
 }

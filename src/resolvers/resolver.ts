@@ -21,6 +21,7 @@ export class Resolver {
 
     async resolve(domainOrTld: string): Promise<IResolvedResource | undefined> {
         const resolverProvider = this._resolverProviderRouter.getResolverByDomainOrTld(domainOrTld);
+        console.log("Resolver provider ", resolverProvider);
         if (resolverProvider) {
             return await resolverProvider.resolve(domainOrTld);
         }

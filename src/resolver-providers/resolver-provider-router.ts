@@ -32,7 +32,12 @@ export class ResolverProviderRouter {
         }
 
         for (const resolverProvider of this.resolverProviders) {
-            if (resolverProvider.supportedTlds.includes(mappedName.tld) || resolverProvider.supportedTlds.includes("*")) {
+            if (resolverProvider.supportedTlds.includes(mappedName.tld)) {
+                return resolverProvider;
+            }
+        }
+        for (const resolverProvider of this.resolverProviders) {
+            if (resolverProvider.supportedTlds.includes("*")) {
                 return resolverProvider;
             }
         }

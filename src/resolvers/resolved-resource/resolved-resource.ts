@@ -17,7 +17,7 @@ export class ResolvedResource implements IResolvedResource {
         proxyReaderAddress: string,
         proxyWriterAddress: string,
         ownerAddress: string,
-        metadataUri: string,
+        metadataUri: string | undefined,
         imageUrl: string | undefined,
         metadata: any | undefined
         records: { [key: string]: string } | undefined,
@@ -142,11 +142,11 @@ export class ResolvedResource implements IResolvedResource {
         this._ownerAddress = value;
     }
 
-    private _metadataUri: string;
-    public get metadataUri(): string {
+    private _metadataUri: string | undefined;
+    public get metadataUri(): string | undefined {
         return this._metadataUri;
     }
-    public set metadataUri(value: string) {
+    public set metadataUri(value: string | undefined) {
         this._metadataUri = value;
     }
 

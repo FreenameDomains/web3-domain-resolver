@@ -26,7 +26,7 @@ export interface IResolvedResource {
 
     ownerAddress: string;
 
-    metadataUri: string;
+    metadataUri: string | undefined;
 
     imageUrl: string | undefined;
 

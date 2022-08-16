@@ -2,13 +2,11 @@
 import { NetworkName } from "../networks/connections/network-connection.types";
 import { ContractConnection } from "../networks/connections/contract-connection";
 import { IResolvedResource } from "../resolvers/resolved-resource/resolved-resource.interface";
-import { ResolverName } from "../resolvers/types/resolver-name";
 
 export interface IResolverProvider {
 
-    name: ResolverName
+    name: string
     supportedTlds: string[]
-    regisitryContracts: ContractConnection[];
 
     getSupportedNetworks(): NetworkName[];
     getRegistries(): {
@@ -25,6 +23,7 @@ export interface IResolverProvider {
     setRecord(resource: IResolvedResource, key: string, value: string): Promise<boolean>;
     setRecords(resource: IResolvedResource, keys: string[], values: string[]): Promise<boolean>;
 
+    getTokenUri(tokenId: string): Promise<string | undefined>
     getMetadata(tokenId: string): Promise<any | undefined>
     getImageUrl(tokenId: string): Promise<string | undefined>;
     exists(tokenId: string, network: NetworkName): Promise<boolean>;

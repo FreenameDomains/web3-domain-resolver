@@ -13,4 +13,8 @@ export const UD_SUPPORTED_TLDS: string[] = [
     'unstoppable'
 ];
 
+export const UD_ZIL_TLDS: string[] = [
+    "zil"
+]
+
 export const UD_METADATA_URL: string = "https://metadata.unstoppabledomains.com/metadata/";
