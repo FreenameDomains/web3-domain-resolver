@@ -8,12 +8,14 @@ import { ENS_ABI, ENS_CONTRACT_ADDRESS, ENS_MAINNET_METADATA_URL, ENS_SUPPORTED_
 import { ContractConnection } from "../../../networks/connections/contract-connection";
 import { ethers } from "ethers";
 import { ApiCaller } from "../../../tools/api-caller";
+import { ConnectionLibrary } from "../../../networks/connections/connection-library";
+import { DefaultTools } from "../../../defaults/default-connections";
 
 export class ENSResolverProvider extends DefaultResolverProvider implements IResolverProvider {
 
-    constructor() {
-        const connection: NetworkConnection = { networkName: NetworkName.ETHEREUM, rpcUrl: "" }
-        const readContractAddress = new ContractConnection(connection, ENS_CONTRACT_ADDRESS, ENS_ABI);
+    constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
+        const ethConnection = options.connectionLibrary?.getConnection(NetworkName.ETHEREUM) || DefaultTools.getDefaultConnection(NetworkName.ETHEREUM);
+        const readContractAddress = new ContractConnection(ethConnection, ENS_CONTRACT_ADDRESS, ENS_ABI);
 
         super(ResolverName.ENS, ENS_SUPPORTED_TLDS, [readContractAddress], [readContractAddress]);
     }

@@ -1,8 +1,10 @@
 import { default as Resolution, Locations, NamingServiceName } from "@unstoppabledomains/resolution";
 import { ethers } from "ethers";
+import { DefaultTools } from "../../../defaults/default-connections";
 import { ERC721_UD_PROXY_ABI } from "../../../defaults/erc721.ud.proxy.abi";
+import { ConnectionLibrary } from "../../../networks/connections/connection-library";
 import { ContractConnection } from "../../../networks/connections/contract-connection";
-import { NetworkConnection, NetworkName } from "../../../networks/connections/network-connection.types";
+import { NetworkName } from "../../../networks/connections/network-connection.types";
 import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
@@ -12,9 +14,9 @@ import { UDResolverTools } from "./ud-resolver-tools";
 
 export class UDResolverProvider extends DefaultResolverProvider implements IResolverProvider {
 
-    constructor() {
-        const connection: NetworkConnection = { networkName: NetworkName.POLYGON, rpcUrl: "" }
-        const readContractAddress = new ContractConnection(connection, UNS_POLYGON_CONTRACT_ADDRESS, ERC721_UD_PROXY_ABI);
+    constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
+        const polygonConnection = options.connectionLibrary?.getConnection(NetworkName.POLYGON) || DefaultTools.getDefaultConnection(NetworkName.POLYGON);
+        const readContractAddress = new ContractConnection(polygonConnection, UNS_POLYGON_CONTRACT_ADDRESS, ERC721_UD_PROXY_ABI);
 
         super(ResolverName.UD, UD_SUPPORTED_TLDS, [readContractAddress], [readContractAddress]);
         this._resolution = new Resolution();

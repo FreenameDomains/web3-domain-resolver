@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import { DefaultTools } from "../../../defaults/default-connections";
 import { ConnectionLibrary } from "../../../networks/connections/connection-library";
 import { ContractConnection } from "../../../networks/connections/contract-connection";
 import { NetworkName } from "../../../networks/connections/network-connection.types";
@@ -6,13 +7,13 @@ import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
 import { DefaultResolverProvider } from "../default-resolver-provider";
-import { DEFAULT_FNS_POLYGON_MUMBAI_PROVIDER, FNS_ABI, FNS_CONTRACT_ADDRESS } from "./freename-resolver-provider.consts";
+import { FNS_ABI, FNS_CONTRACT_ADDRESS } from "./freename-resolver-provider.consts";
 import { FreenameMetadata } from "./freename-resolver-provider.types";
 import { FreenameResolverTools } from "./freename-resolver-tools";
 
 export class FreenameResolverProvider extends DefaultResolverProvider implements IResolverProvider {
     constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
-        const mumbaiConnection = options.connectionLibrary?.getConnection(NetworkName.POLYGON_MUMBAI) || DEFAULT_FNS_POLYGON_MUMBAI_PROVIDER;
+        const mumbaiConnection = options.connectionLibrary?.getConnection(NetworkName.POLYGON_MUMBAI) || DefaultTools.getDefaultConnection(NetworkName.POLYGON_MUMBAI);
 
         const readContractAddress = new ContractConnection(mumbaiConnection, FNS_CONTRACT_ADDRESS, FNS_ABI);
         super(ResolverName.FREENAME, ['*'], [readContractAddress], [readContractAddress]);

@@ -1,11 +1,4 @@
-import { NetworkConnection, NetworkName } from "../../../networks/connections/network-connection.types"
-
-export const FREENAME_METADATA_URL: string = ""
-export const FNS_CONTRACT_ADDRESS: string = ""//mubai
-export const DEFAULT_FNS_POLYGON_MUMBAI_JSON_RCP_CONNECTION: NetworkConnection = {
-  networkName: NetworkName.POLYGON_MUMBAI,
-  rcpUrl: ""
-}
+export const FNS_CONTRACT_ADDRESS: string = "0x57d6a3B9f71e9eF4433c718cEACA2238B7E0e98E"
 
 export const FNS_ABI = [
   {
