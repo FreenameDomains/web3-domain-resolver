@@ -157,8 +157,11 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
         }
 
         try {
-
-            const contractConnected = writeContractConnection.contract.connect(signer);
+            let signerToUse = signer;
+            if (!signer.provider) {
+                signerToUse = signer.connect(writeContractConnection.provider);
+            }
+            const contractConnected = writeContractConnection.contract.connect(signerToUse);
             const tx = await contractConnected.transferFrom(resource.ownerAddress, addressTo, resource.tokenId);
             const approveReceipt = await tx.wait();
             console.log(approveReceipt);
