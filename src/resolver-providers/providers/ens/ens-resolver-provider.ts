@@ -13,78 +13,78 @@ import { DefaultTools } from "../../../defaults/default-connections";
 
 export class ENSResolverProvider extends DefaultResolverProvider implements IResolverProvider {
 
-    constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
-        const ethConnection = options.connectionLibrary?.getConnection(NetworkName.ETHEREUM) || DefaultTools.getDefaultConnection(NetworkName.ETHEREUM);
-        const readContractAddress = new ContractConnection(ethConnection, ENS_CONTRACT_ADDRESS, ENS_ABI);
+	constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
+		const ethConnection = options.connectionLibrary?.getConnection(NetworkName.ETHEREUM) || DefaultTools.getDefaultConnection(NetworkName.ETHEREUM);
+		const readContractAddress = new ContractConnection(ethConnection, ENS_CONTRACT_ADDRESS, ENS_ABI);
 
-        super(ResolverName.ENS, ENS_SUPPORTED_TLDS, [readContractAddress], [readContractAddress]);
-    }
+		super(ResolverName.ENS, ENS_SUPPORTED_TLDS, [readContractAddress], [readContractAddress]);
+	}
 
-    public override async exists(tokenId: string, network?: NetworkName | undefined): Promise<boolean> {
-        const readContractConnection = await super.getReadContractConnectionFromToken(tokenId, network);
-        if (!readContractConnection) {
-            return false;
-        }
-        try {
-            const res = await readContractConnection.contract.available(tokenId);
-            return !res;
-        } catch {
-            return false;
-        }
-    }
+	public override async exists(tokenId: string, network?: NetworkName | undefined): Promise<boolean> {
+		const readContractConnection = await super.getReadContractConnectionFromToken(tokenId, network);
+		if (!readContractConnection) {
+			return false;
+		}
+		try {
+			const res = await readContractConnection.contract.available(tokenId);
+			return !res;
+		} catch {
+			return false;
+		}
+	}
 
-    public override async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
-        if (!mappedName.domain) {
-            return undefined;
-        }
-        try {
-            const labelHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(mappedName.domain));
-            const tokenId = ethers.BigNumber.from(labelHash).toString();
-            return tokenId;
-        } catch {
-            return undefined;
-        }
-    }
+	public override async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
+		if (!mappedName.domain) {
+			return undefined;
+		}
+		try {
+			const labelHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(mappedName.domain));
+			const tokenId = ethers.BigNumber.from(labelHash).toString();
+			return tokenId;
+		} catch {
+			return undefined;
+		}
+	}
 
-    public override async getTokenUri(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
-        //There is no token uri https://docs.ens.domains/dapp-developer-guide/ens-as-nft#metadata
-        return undefined;
-    }
+	public override async getTokenUri(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
+		//There is no token uri https://docs.ens.domains/dapp-developer-guide/ens-as-nft#metadata
+		return undefined;
+	}
 
-    public override async getMetadata(tokenId: string, network?: NetworkName | undefined): Promise<any | undefined> {
-        const readContractConnection = await super.getReadContractConnectionFromToken(tokenId, network);
-        if (!readContractConnection) {
-            return false;
-        }
-        //https://metadata.ens.domains/docs
-        const metadataUrl = ENS_MAINNET_METADATA_URL + readContractConnection.address + "/" + tokenId;
-        console.log(metadataUrl)
-        return ApiCaller.getHttpsCall(metadataUrl);
-    }
+	public override async getMetadata(tokenId: string, network?: NetworkName | undefined): Promise<any | undefined> {
+		const readContractConnection = await super.getReadContractConnectionFromToken(tokenId, network);
+		if (!readContractConnection) {
+			return false;
+		}
+		//https://metadata.ens.domains/docs
+		const metadataUrl = ENS_MAINNET_METADATA_URL + readContractConnection.address + "/" + tokenId;
+		console.log(metadataUrl);
+		return ApiCaller.getHttpsCall(metadataUrl);
+	}
 
-    public override async getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined> {
-        return NetworkName.ETHEREUM;
-    }
+	public override async getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined> {
+		return NetworkName.ETHEREUM;
+	}
 
-    public override async getRecords(tokenId: string): Promise<{ [key: string]: string; } | undefined> {
-        return undefined;
-    }
+	public override async getRecords(tokenId: string): Promise<{ [key: string]: string; } | undefined> {
+		return undefined;
+	}
 
-    public override async getNameFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
-        const metadata = await this.getMetadata(tokenId, network);
-        return metadata?.name;
-    }
+	public override async getNameFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
+		const metadata = await this.getMetadata(tokenId, network);
+		return metadata?.name;
+	}
 
-    protected override async getTokenIdNetwork(tokenId: string): Promise<NetworkName | undefined> {
-        for (const readContractConnection of this.readContractConnections) {
-            try {
-                const res = await readContractConnection.contract.available(tokenId);
-                if (!res) {
-                    return readContractConnection.network;
-                }
-            } catch {
-                continue;
-            }
-        }
-    }
+	protected override async getTokenIdNetwork(tokenId: string): Promise<NetworkName | undefined> {
+		for (const readContractConnection of this.readContractConnections) {
+			try {
+				const res = await readContractConnection.contract.available(tokenId);
+				if (!res) {
+					return readContractConnection.network;
+				}
+			} catch {
+				continue;
+			}
+		}
+	}
 }
