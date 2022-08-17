@@ -41,9 +41,17 @@ export interface IResolvedResource {
     */
     realTimeUpdates: boolean
 
-    getRecord(key: string): string | undefined;
+    getRecord(key: string): Promise<string | undefined>;
+
+    getManyRecords(keys: string[]): Promise<string[] | undefined>;
 
     isApprovedOrOwner(address: string): Promise<boolean>
 
     transfer(addressTo: string, signer: ethers.Signer): Promise<boolean>;
+
+    setApproved(addessToApprove: string, signer: ethers.Signer): Promise<boolean>;
+
+    setRecord(key: string, value: string, signer: ethers.Signer): Promise<boolean>;
+
+    setRecords(keys: string[], values: string[], signer: ethers.Signer): Promise<boolean>;
 }

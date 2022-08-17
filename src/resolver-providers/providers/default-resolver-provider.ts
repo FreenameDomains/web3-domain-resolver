@@ -67,12 +67,26 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
         this._supportedTlds = value;
     }
 
-    public getReadContractConnection(networkName: NetworkName): ContractConnection | undefined {
+    protected getReadContractConnection(networkName: NetworkName): ContractConnection | undefined {
         return this.readContractConnections.find(x => x.network == networkName);
     }
 
-    public getWriteContractConnection(networkName: NetworkName): ContractConnection | undefined {
+    protected getWriteContractConnection(networkName: NetworkName): ContractConnection | undefined {
         return this.writeContractConnections.find(x => x.network == networkName);
+    }
+
+    protected getWriteContractWithSigner(networkName: NetworkName, signer: ethers.Signer) {
+        const writeContractConnection = this.getWriteContractConnection(networkName);
+        if (!writeContractConnection) {
+            return undefined;
+        }
+
+        let signerToUse = signer;
+        if (!signer.provider) {
+            signerToUse = signer.connect(writeContractConnection.provider);
+        }
+        const contractConnected = writeContractConnection.contract.connect(signerToUse);
+        return contractConnected;
     }
 
     public async resolve(domainOrTld: string): Promise<IResolvedResource | undefined> {
@@ -150,21 +164,33 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
         return await readContractConnection.contract.isApprovedOrOwner(tokenId, addressToCheck);
     }
 
+    public async getRecord(tokenId: string, key: string, network?: NetworkName | undefined): Promise<string | undefined> {
+        const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
+        if (!readContractConnection) {
+            return undefined;
+        }
+
+        return await readContractConnection.contract.get(key, tokenId);
+    }
+
+    public async getManyRecords(tokenId: string, keys: string[], network?: NetworkName | undefined): Promise<string[] | undefined> {
+        const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
+        if (!readContractConnection) {
+            return undefined;
+        }
+
+        return await readContractConnection.contract.getMany(keys, tokenId);
+    }
+
     public async transfer(resource: IResolvedResource, addressTo: string, signer: ethers.Signer): Promise<boolean> {
-        const writeContractConnection = this.getWriteContractConnection(resource.network);
-        if (!writeContractConnection) {
+        const writeContract = this.getWriteContractWithSigner(resource.network, signer);
+        if (!writeContract) {
             return false;
         }
 
         try {
-            let signerToUse = signer;
-            if (!signer.provider) {
-                signerToUse = signer.connect(writeContractConnection.provider);
-            }
-            const contractConnected = writeContractConnection.contract.connect(signerToUse);
-            const tx = await contractConnected.transferFrom(resource.ownerAddress, addressTo, resource.tokenId);
+            const tx = await writeContract.transferFrom(resource.ownerAddress, addressTo, resource.tokenId);
             const approveReceipt = await tx.wait();
-            console.log(approveReceipt);
             if (approveReceipt) {
                 return true;
             }
@@ -176,15 +202,60 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
     }
 
     public async setApproved(resource: IResolvedResource, addessToApprove: string, signer: ethers.Signer): Promise<boolean> {
-        throw new Error("Method not implemented.");
+        const writeContract = this.getWriteContractWithSigner(resource.network, signer);
+        if (!writeContract) {
+            return false;
+        }
+
+        try {
+            const tx = await writeContract.approve(addessToApprove, resource.tokenId);
+            const approveReceipt = await tx.wait();
+            if (approveReceipt) {
+                return true;
+            }
+            return false;
+        } catch (e) {
+            console.log(e)
+            return false;
+        }
     }
 
     public async setRecord(resource: IResolvedResource, key: string, value: string, signer: ethers.Signer): Promise<boolean> {
-        throw new Error("Method not implemented.");
+        const writeContract = this.getWriteContractWithSigner(resource.network, signer);
+        if (!writeContract) {
+            return false;
+        }
+
+        try {
+            const tx = await writeContract.set(key, value, resource.tokenId);
+            const approveReceipt = await tx.wait();
+            if (approveReceipt) {
+                return true;
+            }
+            return false;
+        } catch (e) {
+            console.log(e)
+            return false;
+        }
     }
 
     public async setRecords(resource: IResolvedResource, keys: string[], values: string[], signer: ethers.Signer): Promise<boolean> {
-        throw new Error("Method not implemented.");
+        const writeContract = this.getWriteContractWithSigner(resource.network, signer);
+        if (!writeContract) {
+            return false;
+        }
+
+        try {
+            const tx = await writeContract.setMany(keys, values, resource.tokenId);
+            const approveReceipt = await tx.wait();
+            if (approveReceipt) {
+                return true;
+            }
+            return false;
+        } catch (e) {
+            console.log(e)
+            return false;
+        }
     }
 
     private async generateResolvedResource(mappedName: MappedName, tokenId: string, network?: NetworkName): Promise<IResolvedResource | undefined> {

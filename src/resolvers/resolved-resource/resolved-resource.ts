@@ -179,8 +179,12 @@ export class ResolvedResource implements IResolvedResource {
         this._realTimeUpdates = value;
     }
 
-    public getRecord(key: string): string | undefined {
-        return this.records ? this.records[key] : undefined;
+    public async getRecord(key: string): Promise<string | undefined> {
+        return await this.resolverProvider.getRecord(this._tokenId, key, this._network);
+    }
+
+    public async getManyRecords(keys: string[]): Promise<string[] | undefined> {
+        return await this.resolverProvider.getManyRecords(this._tokenId, keys, this._network);
     }
 
     public async isApprovedOrOwner(address: string): Promise<boolean> {
@@ -189,5 +193,17 @@ export class ResolvedResource implements IResolvedResource {
 
     public async transfer(addressTo: string, signer: Signer): Promise<boolean> {
         return await this._resolverProvider.transfer(this, addressTo, signer);
+    }
+
+    public async setApproved(addessToApprove: string, signer: Signer): Promise<boolean> {
+        return await this._resolverProvider.setApproved(this, addessToApprove, signer);
+    }
+
+    public async setRecord(key: string, value: string, signer: Signer): Promise<boolean> {
+        return await this._resolverProvider.setRecord(this, key, value, signer);
+    }
+
+    public async setRecords(keys: string[], values: string[], signer: Signer): Promise<boolean> {
+        return await this._resolverProvider.setRecords(this, keys, values, signer);
     }
 }

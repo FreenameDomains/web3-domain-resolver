@@ -27,4 +27,6 @@ export interface IResolverProvider {
     exists(tokenId: string, network?: NetworkName | undefined): Promise<boolean>;
     getOwnerAddress(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined>;
     getRecords(tokenId: string): Promise<{ [key: string]: string } | undefined>;
+    getRecord(tokenId: string, key: string, network?: NetworkName | undefined): Promise<string | undefined>;
+    getManyRecords(tokenId: string, keys: string[], network?: NetworkName | undefined): Promise<string[] | undefined>;
 }
