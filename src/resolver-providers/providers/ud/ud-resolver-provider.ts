@@ -63,12 +63,14 @@ export class UDResolverProvider extends DefaultResolverProvider implements IReso
         try {
             unhash = await this._resolution.unhash(hash, NamingServiceName.UNS);
         } catch { }
+
         if (!unhash) {
             try {
-                unhash = await this._resolution.unhash(hash, NamingServiceName.UNS);
+                unhash = await this._resolution.unhash(hash, NamingServiceName.ZNS);
             }
             catch { }
         }
+
         return unhash;
     }
 }
