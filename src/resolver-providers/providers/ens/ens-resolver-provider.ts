@@ -20,7 +20,7 @@ export class ENSResolverProvider extends DefaultResolverProvider implements IRes
         super(ResolverName.ENS, ENS_SUPPORTED_TLDS, [readContractAddress], [readContractAddress]);
     }
 
-    public async exists(tokenId: string, network?: NetworkName | undefined): Promise<boolean> {
+    public override async exists(tokenId: string, network?: NetworkName | undefined): Promise<boolean> {
         const readContractConnection = await super.getReadContractConnectionFromToken(tokenId, network);
         if (!readContractConnection) {
             return false;
@@ -29,7 +29,7 @@ export class ENSResolverProvider extends DefaultResolverProvider implements IRes
         return !res;
     }
 
-    public async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
+    public override async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
         if (!mappedName.domain) {
             return undefined;
         }
@@ -38,12 +38,12 @@ export class ENSResolverProvider extends DefaultResolverProvider implements IRes
         return tokenId;
     }
 
-    public async getTokenUri(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
+    public override async getTokenUri(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
         //There is no token uri https://docs.ens.domains/dapp-developer-guide/ens-as-nft#metadata
         return undefined;
     }
 
-    public async getMetadata(tokenId: string, network?: NetworkName | undefined): Promise<any | undefined> {
+    public override async getMetadata(tokenId: string, network?: NetworkName | undefined): Promise<any | undefined> {
         const readContractConnection = await super.getReadContractConnectionFromToken(tokenId, network);
         if (!readContractConnection) {
             return false;
@@ -54,20 +54,20 @@ export class ENSResolverProvider extends DefaultResolverProvider implements IRes
         return ApiCaller.getHttpsCall(metadataUrl);
     }
 
-    public async getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined> {
+    public override async getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined> {
         return NetworkName.ETHEREUM;
     }
 
-    public async getRecords(tokenId: string): Promise<{ [key: string]: string; } | undefined> {
+    public override async getRecords(tokenId: string): Promise<{ [key: string]: string; } | undefined> {
         return undefined;
     }
 
-    public async getNameFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
+    public override async getNameFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
         const metadata = await this.getMetadata(tokenId, network);
         return metadata?.name;
     }
 
-    protected async getTokenIdNetwork(tokenId: string): Promise<NetworkName | undefined> {
+    protected override async getTokenIdNetwork(tokenId: string): Promise<NetworkName | undefined> {
         for (const readContractConnection of this.readContractConnections) {
             const res = await readContractConnection.contract.available(tokenId);
             if (!res) {

@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "noImplicitOverride": true,
     "skipLibCheck": true,
     "moduleResolution": "node",
     "outDir": "./lib",

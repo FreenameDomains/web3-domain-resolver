@@ -9,22 +9,25 @@ import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
 import { DefaultResolverProvider } from "../default-resolver-provider";
-import { UD_SUPPORTED_TLDS, UD_ZIL_TLDS, UNS_POLYGON_CONTRACT_ADDRESS } from "./ud-resolver-provider.consts";
+import { UD_SUPPORTED_TLDS, UD_ZIL_TLDS, UNS_ETH_CONTRACT_ADDRESS, UNS_POLYGON_CONTRACT_ADDRESS } from "./ud-resolver-provider.consts";
 import { UDResolverTools } from "./ud-resolver-tools";
 
 export class UDResolverProvider extends DefaultResolverProvider implements IResolverProvider {
 
     constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
-        const polygonConnection = options.connectionLibrary?.getConnection(NetworkName.POLYGON) || DefaultTools.getDefaultConnection(NetworkName.POLYGON);
-        const readContractAddress = new ContractConnection(polygonConnection, UNS_POLYGON_CONTRACT_ADDRESS, ERC721_UD_PROXY_ABI);
+        const ethereumConnection = options.connectionLibrary?.getConnection(NetworkName.ETHEREUM) || DefaultTools.getDefaultConnection(NetworkName.ETHEREUM);
+        const ethReadContractAddress = new ContractConnection(ethereumConnection, UNS_ETH_CONTRACT_ADDRESS, ERC721_UD_PROXY_ABI);
 
-        super(ResolverName.UD, UD_SUPPORTED_TLDS, [readContractAddress], [readContractAddress]);
+        const polygonConnection = options.connectionLibrary?.getConnection(NetworkName.POLYGON) || DefaultTools.getDefaultConnection(NetworkName.POLYGON);
+        const polygonReadContractAddress = new ContractConnection(polygonConnection, UNS_POLYGON_CONTRACT_ADDRESS, ERC721_UD_PROXY_ABI);
+
+        super(ResolverName.UD, UD_SUPPORTED_TLDS, [polygonReadContractAddress, ethReadContractAddress], [polygonReadContractAddress, ethReadContractAddress]);
         this._resolution = new Resolution();
     }
 
     private _resolution;
 
-    public async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
+    public override async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
         try {
             let namingService: NamingServiceName;
             if (UD_ZIL_TLDS.includes(mappedName.tld)) {
@@ -41,7 +44,7 @@ export class UDResolverProvider extends DefaultResolverProvider implements IReso
         }
     }
 
-    public async getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined> {
+    public override async getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined> {
         const network: Locations = await this._resolution.locations([mappedName.fullname]);
         const udNetwork = network[mappedName.fullname]?.blockchain;
         if (!udNetwork) {
@@ -51,12 +54,12 @@ export class UDResolverProvider extends DefaultResolverProvider implements IReso
         return UDResolverTools.networkNameFormUdNetwork(udNetwork);
     }
 
-    public async getRecords(tokenId: string): Promise<{ [key: string]: string; } | undefined> {
+    public override async getRecords(tokenId: string): Promise<{ [key: string]: string; } | undefined> {
         const metadata = await this.getMetadata(tokenId);
         return metadata?.properties?.records;
     }
 
-    public async getNameFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
+    public override async getNameFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
         const hash = ethers.BigNumber.from(tokenId).toHexString();
         let unhash: string | undefined;
 
