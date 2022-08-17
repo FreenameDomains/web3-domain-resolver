@@ -39,12 +39,12 @@ export class ResolvedResource implements IResolvedResource {
         this._imageUrl = input.imageUrl
         this._metadata = input.metadata
         this._records = input.records
-        this._realTimeUpdate = false
+        this._realTimeUpdates = false
     }
 
     private _metadata: any | undefined;
     public get metadata(): any | undefined {
-        if (this._realTimeUpdate) {
+        if (this._realTimeUpdates) {
             this.resolverProvider.getMetadata(this.tokenId);
         }
         return this._metadata
@@ -135,7 +135,7 @@ export class ResolvedResource implements IResolvedResource {
 
     private _ownerAddress: string;
     public get ownerAddress(): string {
-        if (this._realTimeUpdate) {
+        if (this._realTimeUpdates) {
             this.resolverProvider.getOwnerAddress(this.tokenId, this._network);
         }
         return this._ownerAddress;
@@ -154,7 +154,7 @@ export class ResolvedResource implements IResolvedResource {
 
     private _imageUrl: string | undefined;
     public get imageUrl(): string | undefined {
-        if (this._realTimeUpdate) {
+        if (this._realTimeUpdates) {
             this.resolverProvider.getImageUrl(this.tokenId);
         }
         return this._imageUrl;
@@ -165,18 +165,18 @@ export class ResolvedResource implements IResolvedResource {
 
     private _records: { [key: string]: string; } | undefined
     public get records(): { [key: string]: string; } | undefined {
-        if (this._realTimeUpdate) {
+        if (this._realTimeUpdates) {
             this.resolverProvider.getRecords(this.tokenId);
         }
         return this._records;
     }
 
-    private _realTimeUpdate: boolean;
-    public get realTimeUpdate(): boolean {
-        return this._realTimeUpdate;
+    private _realTimeUpdates: boolean;
+    public get realTimeUpdates(): boolean {
+        return this._realTimeUpdates;
     }
-    public set realTimeUpdate(value: boolean) {
-        this._realTimeUpdate = value;
+    public set realTimeUpdates(value: boolean) {
+        this._realTimeUpdates = value;
     }
 
     public getRecord(key: string): string | undefined {

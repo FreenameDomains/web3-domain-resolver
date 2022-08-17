@@ -39,7 +39,7 @@ export interface IResolvedResource {
     * If enabled every time a `get` of a field is requested a call to the resolver provider is made, to get the real time update from the blockchain registry.
     * Defaults to `false`
     */
-    realTimeUpdate: boolean
+    realTimeUpdates: boolean
 
     getRecord(key: string): string | undefined;
 
