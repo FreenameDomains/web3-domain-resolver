@@ -1,4 +1,4 @@
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
 import { ConnectionLibrary } from "../../networks/connections/connection-library";
 import { ContractConnection } from "../../networks/connections/contract-connection";
 import { NetworkName } from "../../networks/connections/network-connection.types";
@@ -150,19 +150,37 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
         return await readContractConnection.contract.isApprovedOrOwner(tokenId, addressToCheck);
     }
 
-    public async transfer(resource: IResolvedResource, to: string): Promise<boolean> {
+    public async transfer(resource: IResolvedResource, addressTo: string, signer: ethers.Signer): Promise<boolean> {
+        const writeContractConnection = this.getWriteContractConnection(resource.network);
+        if (!writeContractConnection) {
+            return false;
+        }
+
+        try {
+
+            const contractConnected = writeContractConnection.contract.connect(signer);
+            const tx = await contractConnected.transferFrom(resource.ownerAddress, addressTo, resource.tokenId);
+            const approveReceipt = await tx.wait();
+            console.log(approveReceipt);
+            if (approveReceipt) {
+                return true;
+            }
+            return false;
+        } catch (e) {
+            console.log(e)
+            return false;
+        }
+    }
+
+    public async setApproved(resource: IResolvedResource, addessToApprove: string, signer: ethers.Signer): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
-    public async transferFrom(resource: IResolvedResource, from: string, to: string): Promise<boolean> {
+
+    public async setRecord(resource: IResolvedResource, key: string, value: string, signer: ethers.Signer): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
-    public async setApproved(resource: IResolvedResource, addessToApprove: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
-    }
-    public async setRecord(resource: IResolvedResource, key: string, value: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
-    }
-    public async setRecords(resource: IResolvedResource, keys: string[], values: string[]): Promise<boolean> {
+
+    public async setRecords(resource: IResolvedResource, keys: string[], values: string[], signer: ethers.Signer): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
 

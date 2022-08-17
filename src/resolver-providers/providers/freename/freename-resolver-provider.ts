@@ -7,7 +7,7 @@ import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
 import { DefaultResolverProvider } from "../default-resolver-provider";
-import { FNS_ABI, FNS_CONTRACT_ADDRESS } from "./freename-resolver-provider.consts";
+import { FNS_ABI, FNS_CONTRACT_ADDRESS, FREENAME_WRITE_PROXY } from "./freename-resolver-provider.consts";
 import { FreenameMetadata } from "./freename-resolver-provider.types";
 import { FreenameResolverTools } from "./freename-resolver-tools";
 
@@ -16,7 +16,8 @@ export class FreenameResolverProvider extends DefaultResolverProvider implements
         const mumbaiConnection = options.connectionLibrary?.getConnection(NetworkName.POLYGON_MUMBAI) || DefaultTools.getDefaultConnection(NetworkName.POLYGON_MUMBAI);
 
         const readContractAddress = new ContractConnection(mumbaiConnection, FNS_CONTRACT_ADDRESS, FNS_ABI);
-        super(ResolverName.FREENAME, ['*'], [readContractAddress], [readContractAddress]);
+        const writeContractAddress = new ContractConnection(mumbaiConnection, FREENAME_WRITE_PROXY, FNS_ABI);
+        super(ResolverName.FREENAME, ['*'], [readContractAddress], [writeContractAddress]);
     }
 
     public async generateTokenId(mappedName: MappedName): Promise<string | undefined> {

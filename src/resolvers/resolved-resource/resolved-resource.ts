@@ -1,3 +1,4 @@
+import { Signer } from "ethers";
 import { NetworkName } from "../../networks/connections/network-connection.types";
 import { IResolverProvider } from "../../resolver-providers/resolver-provider.interface";
 import { ResolvedResourceType } from "../types/resolved-resource-type";
@@ -40,6 +41,7 @@ export class ResolvedResource implements IResolvedResource {
         this._records = input.records
         this._realTimeUpdate = false
     }
+
     private _metadata: any | undefined;
     public get metadata(): any | undefined {
         if (this._realTimeUpdate) {
@@ -183,5 +185,9 @@ export class ResolvedResource implements IResolvedResource {
 
     public async isApprovedOrOwner(address: string): Promise<boolean> {
         return await this.resolverProvider.isApprovedOrOwner(this._tokenId, address, this._network);
+    }
+
+    public async transfer(addressTo: string, signer: Signer): Promise<boolean> {
+        return await this._resolverProvider.transfer(this, addressTo, signer);
     }
 }

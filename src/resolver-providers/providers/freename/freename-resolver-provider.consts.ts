@@ -1,4 +1,5 @@
 export const FNS_CONTRACT_ADDRESS: string = "0x57d6a3B9f71e9eF4433c718cEACA2238B7E0e98E"
+export const FREENAME_WRITE_PROXY: string = "0x57d6a3B9f71e9eF4433c718cEACA2238B7E0e98E"
 
 export const FNS_ABI = [
   {

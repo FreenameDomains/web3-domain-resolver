@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { NetworkName } from "../../networks/connections/network-connection.types";
 import { IResolverProvider } from "../../resolver-providers/resolver-provider.interface";
 import { ResolvedResourceType } from "../types/resolved-resource-type";
@@ -43,4 +44,6 @@ export interface IResolvedResource {
     getRecord(key: string): string | undefined;
 
     isApprovedOrOwner(address: string): Promise<boolean>
+
+    transfer(addressTo: string, signer: ethers.Signer): Promise<boolean>;
 }

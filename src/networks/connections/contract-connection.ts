@@ -11,6 +11,7 @@ export class ContractConnection {
         this._connection = connection;
         this._address = address;
         this._provider = new ethers.providers.JsonRpcProvider(connection.rpcUrl);
+        this._abi = abi;
         this._contract = new ethers.Contract(address, abi, this._provider);
     }
 
@@ -37,4 +38,6 @@ export class ContractConnection {
     public get network(): NetworkName {
         return this._connection.networkName;
     }
+
+    private _abi: ethers.ContractInterface;
 }
