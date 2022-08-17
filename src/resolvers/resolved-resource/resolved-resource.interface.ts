@@ -35,12 +35,6 @@ export interface IResolvedResource {
 
     metadata: any | undefined
 
-    /**
-    * If enabled every time a `get` of a field is requested a call to the resolver provider is made, to get the real time update from the blockchain registry.
-    * Defaults to `false`
-    */
-    realTimeUpdates: boolean
-
     getRecord(key: string): Promise<string | undefined>;
 
     getManyRecords(keys: string[]): Promise<string[] | undefined>;
@@ -54,4 +48,6 @@ export interface IResolvedResource {
     setRecord(key: string, value: string, signer: ethers.Signer): Promise<boolean>;
 
     setRecords(keys: string[], values: string[], signer: ethers.Signer): Promise<boolean>;
+
+    refresh(): Promise<IResolvedResource | undefined>
 }

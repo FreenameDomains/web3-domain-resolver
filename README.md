@@ -70,25 +70,6 @@ const web3resolver = new Web3Resolver();
 const resolvedDomain = web3resolver.resolveFromTokenId("111068025256548295425145748205686048629728752166525026143111404611000478055970", ResolverName.UD);
 ```
 
-### Real-time updates
-
-If you want to get real-time updates of the `IResolvedResource` you can set the `realTimeUpdates` field to `true`.
-
-If you enable the `realTimeUpdates` every time you call a getter from a `IResolvedResource` instance a call to the blockchain is made to get the actual value.  
-This value is NOT then setted on the class instance.
-
-```ts
-const resolvedDomain = web3resolver.resolve("test.web3domain");
-
-resolvedDomain.realTimeUpdates = true;
-
-console.log(resolvedDomain.ownerAddress); //0x000..1
-
-//THE OWNER ADDRESS ON THE BLOCKCHAIN CHANGES...
-
-console.log(resolvedDomain.ownerAddress); //0x000..2
-```
-
 ### Transfer the ownership
 
 You can transfer the ownership of the domain directly from the `IResolvedResource` instance by calling the `transfer` function.  

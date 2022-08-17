@@ -1,4 +1,5 @@
 import { Signer } from "ethers";
+import * as _ from "lodash";
 import { NetworkName } from "../../networks/connections/network-connection.types";
 import { IResolverProvider } from "../../resolver-providers/resolver-provider.interface";
 import { ResolvedResourceType } from "../types/resolved-resource-type";
@@ -39,14 +40,10 @@ export class ResolvedResource implements IResolvedResource {
         this._imageUrl = input.imageUrl
         this._metadata = input.metadata
         this._records = input.records
-        this._realTimeUpdates = false
     }
 
     private _metadata: any | undefined;
     public get metadata(): any | undefined {
-        if (this._realTimeUpdates) {
-            this.resolverProvider.getMetadata(this.tokenId);
-        }
         return this._metadata
     }
     public set metadata(value: any | undefined) {
@@ -135,9 +132,6 @@ export class ResolvedResource implements IResolvedResource {
 
     private _ownerAddress: string;
     public get ownerAddress(): string {
-        if (this._realTimeUpdates) {
-            this.resolverProvider.getOwnerAddress(this.tokenId, this._network);
-        }
         return this._ownerAddress;
     }
     public set ownerAddress(value: string) {
@@ -154,9 +148,6 @@ export class ResolvedResource implements IResolvedResource {
 
     private _imageUrl: string | undefined;
     public get imageUrl(): string | undefined {
-        if (this._realTimeUpdates) {
-            this.resolverProvider.getImageUrl(this.tokenId);
-        }
         return this._imageUrl;
     }
     public set imageUrl(value: string | undefined) {
@@ -165,18 +156,7 @@ export class ResolvedResource implements IResolvedResource {
 
     private _records: { [key: string]: string; } | undefined
     public get records(): { [key: string]: string; } | undefined {
-        if (this._realTimeUpdates) {
-            this.resolverProvider.getRecords(this.tokenId);
-        }
         return this._records;
-    }
-
-    private _realTimeUpdates: boolean;
-    public get realTimeUpdates(): boolean {
-        return this._realTimeUpdates;
-    }
-    public set realTimeUpdates(value: boolean) {
-        this._realTimeUpdates = value;
     }
 
     public async getRecord(key: string): Promise<string | undefined> {
@@ -205,5 +185,28 @@ export class ResolvedResource implements IResolvedResource {
 
     public async setRecords(keys: string[], values: string[], signer: Signer): Promise<boolean> {
         return await this._resolverProvider.setRecords(this, keys, values, signer);
+    }
+
+    public async refresh(): Promise<IResolvedResource | undefined> {
+        let resolvedResource = await this.resolverProvider.resolve(this._fullname);
+        if (resolvedResource) {
+            this._fullname = resolvedResource.fullname
+            this._tld = resolvedResource.tld
+            this._type = resolvedResource.type
+            this._tokenId = resolvedResource.tokenId
+            this._resolverName = resolvedResource.resolverName
+            this._network = resolvedResource.network
+            this._proxyReaderAddress = resolvedResource.proxyReaderAddress
+            this._proxyWriterAddress = resolvedResource.proxyWriterAddress
+            this._ownerAddress = resolvedResource.ownerAddress
+            this._metadataUri = resolvedResource.metadataUri
+            this._imageUrl = resolvedResource.imageUrl
+            this._metadata = _.cloneDeep(resolvedResource.metadata)
+            this._records = _.cloneDeep(resolvedResource.records)
+            resolvedResource = undefined;
+        } else {
+            return undefined;
+        }
+        return this;
     }
 }
