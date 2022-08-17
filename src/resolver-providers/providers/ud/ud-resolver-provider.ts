@@ -45,13 +45,17 @@ export class UDResolverProvider extends DefaultResolverProvider implements IReso
     }
 
     public override async getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined> {
-        const network: Locations = await this._resolution.locations([mappedName.fullname]);
-        const udNetwork = network[mappedName.fullname]?.blockchain;
-        if (!udNetwork) {
+        try {
+            const network: Locations = await this._resolution.locations([mappedName.fullname]);
+            const udNetwork = network[mappedName.fullname]?.blockchain;
+            if (!udNetwork) {
+                return undefined;
+            }
+
+            return UDResolverTools.networkNameFormUdNetwork(udNetwork);
+        } catch {
             return undefined;
         }
-
-        return UDResolverTools.networkNameFormUdNetwork(udNetwork);
     }
 
     public override async getRecords(tokenId: string): Promise<{ [key: string]: string; } | undefined> {

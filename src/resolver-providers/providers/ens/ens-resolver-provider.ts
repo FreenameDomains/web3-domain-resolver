@@ -25,17 +25,25 @@ export class ENSResolverProvider extends DefaultResolverProvider implements IRes
         if (!readContractConnection) {
             return false;
         }
-        const res = await readContractConnection.contract.available(tokenId);
-        return !res;
+        try {
+            const res = await readContractConnection.contract.available(tokenId);
+            return !res;
+        } catch {
+            return false;
+        }
     }
 
     public override async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
         if (!mappedName.domain) {
             return undefined;
         }
-        const labelHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(mappedName.domain));
-        const tokenId = ethers.BigNumber.from(labelHash).toString();
-        return tokenId;
+        try {
+            const labelHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(mappedName.domain));
+            const tokenId = ethers.BigNumber.from(labelHash).toString();
+            return tokenId;
+        } catch {
+            return undefined;
+        }
     }
 
     public override async getTokenUri(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
@@ -69,9 +77,13 @@ export class ENSResolverProvider extends DefaultResolverProvider implements IRes
 
     protected override async getTokenIdNetwork(tokenId: string): Promise<NetworkName | undefined> {
         for (const readContractConnection of this.readContractConnections) {
-            const res = await readContractConnection.contract.available(tokenId);
-            if (!res) {
-                return readContractConnection.network;
+            try {
+                const res = await readContractConnection.contract.available(tokenId);
+                if (!res) {
+                    return readContractConnection.network;
+                }
+            } catch {
+                continue;
             }
         }
     }

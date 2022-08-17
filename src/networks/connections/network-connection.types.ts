@@ -1,5 +1,3 @@
-import { ethers } from "ethers"
-
 export enum NetworkName {
     POLYGON = "polygon",
     POLYGON_MUMBAI = "polygon-mumbai",
