@@ -3,10 +3,11 @@ import { NetworkName } from "../networks/connections/network-connection.types";
 import { IResolvedResource } from "../resolvers/resolved-resource/resolved-resource.interface";
 import { ConnectionLibrary } from "../networks/connections/connection-library";
 import { ethers } from "ethers";
+import { ResolverName } from "../resolvers/types/resolver-name";
 
 export interface IResolverProvider {
 
-    name: string
+    name: ResolverName
     supportedTlds: string[]
     connectionLibrary?: ConnectionLibrary
     supportedNetworks: NetworkName[];

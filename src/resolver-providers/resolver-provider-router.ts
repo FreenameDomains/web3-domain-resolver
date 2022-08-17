@@ -6,6 +6,7 @@ import { IResolverProvider } from "./resolver-provider.interface";
 export class ResolverProviderRouter {
     constructor(resolverProviders: IResolverProvider[]) {
         this._resolverProviders = resolverProviders || [];
+        console.log("Resolver providers ", this._resolverProviders);
     }
 
     private _resolverProviders: IResolverProvider[];
@@ -44,16 +45,41 @@ export class ResolverProviderRouter {
         return undefined;
     }
 
+    public async findTokenIdResolverProvider(tokenId: string): Promise<IResolverProvider | undefined> {
+        for (const resolverProvider of this._resolverProviders) {
+            try {
+                const exists = await resolverProvider.exists(tokenId);
+                if (exists) {
+                    return resolverProvider;
+                }
+            } catch {
+                continue;
+            }
+        }
+        return undefined;
+    }
+
     public getResolverProvider(name: ResolverName): IResolverProvider | undefined {
         const resolverProvider = this._resolverProviders.find(x => x.name == name);
         return resolverProvider;
     }
 
     public setResolverProvidersPriority(priority: ResolverName[]) {
+
+        let missing: ResolverName[] = [];
+        for (const resolverProvider of this._resolverProviders) {
+            if (!priority.includes(resolverProvider.name)) {
+                missing.push(resolverProvider.name);
+            }
+        }
+
+        let fullPriority = [...priority, ...missing];
+
         const sortedResolverProviders = _.sortBy(this._resolverProviders, function (resolverProvider: IResolverProvider) {
-            return _.indexOf(priority, resolverProvider.name);
+            return _.indexOf(fullPriority, resolverProvider.name);
         });
 
         this.resolverProviders = sortedResolverProviders;
+        console.log("PRIORITY ", sortedResolverProviders)
     }
 }

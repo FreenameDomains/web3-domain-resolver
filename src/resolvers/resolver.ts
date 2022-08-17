@@ -27,8 +27,13 @@ export class Resolver {
         return undefined;
     };
 
-    async resolveFromTokenId(tokenId: string, resolverProviderName: ResolverName): Promise<IResolvedResource | undefined> {
-        const resolverProvider = this._resolverProviderRouter.getResolverProvider(resolverProviderName);
+    async resolveFromTokenId(tokenId: string, resolverProviderName?: ResolverName): Promise<IResolvedResource | undefined> {
+        let resolverProvider
+        if (resolverProviderName) {
+            resolverProvider = this._resolverProviderRouter.getResolverProvider(resolverProviderName);
+        } else {
+            resolverProvider = await this._resolverProviderRouter.findTokenIdResolverProvider(tokenId);
+        }
         if (resolverProvider) {
             return resolverProvider.resolveFromTokenId(tokenId);
         }
