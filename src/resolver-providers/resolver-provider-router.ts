@@ -6,7 +6,6 @@ import { IResolverProvider } from "./resolver-provider.interface";
 export class ResolverProviderRouter {
 	constructor(resolverProviders: IResolverProvider[]) {
 		this._resolverProviders = resolverProviders || [];
-		console.log("Resolver providers ", this._resolverProviders);
 	}
 
 	private _resolverProviders: IResolverProvider[];

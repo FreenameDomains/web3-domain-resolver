@@ -58,7 +58,6 @@ export class ENSResolverProvider extends DefaultResolverProvider implements IRes
 		}
 		//https://metadata.ens.domains/docs
 		const metadataUrl = ENS_MAINNET_METADATA_URL + readContractConnection.address + "/" + tokenId;
-		console.log(metadataUrl);
 		return ApiCaller.getHttpsCall(metadataUrl);
 	}
 

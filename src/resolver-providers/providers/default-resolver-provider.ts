@@ -239,7 +239,6 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 			}
 			return false;
 		} catch (e) {
-			console.log(e);
 			return false;
 		}
 	}
@@ -258,7 +257,6 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 			}
 			return false;
 		} catch (e) {
-			console.log(e);
 			return false;
 		}
 	}
@@ -277,7 +275,6 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 			}
 			return false;
 		} catch (e) {
-			console.log(e);
 			return false;
 		}
 	}
@@ -296,7 +293,6 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 			}
 			return false;
 		} catch (e) {
-			console.log(e);
 			return false;
 		}
 	}
