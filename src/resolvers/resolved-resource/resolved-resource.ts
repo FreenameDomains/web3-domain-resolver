@@ -9,22 +9,22 @@ import { IResolvedResource } from "./resolved-resource.interface";
 export class ResolvedResource implements IResolvedResource {
 
 	constructor(input: {
-        fullname: string,
-        tld: string,
-        type: ResolvedResourceType,
-        tokenId: string,
-        resolverName: ResolverName,
-        resolverProvider: IResolverProvider,
-        network: NetworkName,
-        proxyReaderAddress: string,
-        proxyWriterAddress: string,
-        ownerAddress: string,
-        metadataUri: string | undefined,
-        imageUrl: string | undefined,
-        metadata: any | undefined
-        records: { [key: string]: string } | undefined,
-        domain?: string | undefined,
-    },
+		fullname: string,
+		tld: string,
+		type: ResolvedResourceType,
+		tokenId: string,
+		resolverName: ResolverName | string,
+		resolverProvider: IResolverProvider,
+		network: NetworkName | string,
+		proxyReaderAddress: string,
+		proxyWriterAddress: string,
+		ownerAddress: string,
+		metadataUri: string | undefined,
+		imageUrl: string | undefined,
+		metadata: any | undefined
+		records: { [key: string]: string } | undefined,
+		domain?: string | undefined,
+	},
 	) {
 		this._fullname = input.fullname;
 		this._tld = input.tld;
@@ -90,11 +90,11 @@ export class ResolvedResource implements IResolvedResource {
 		this._tokenId = value;
 	}
 
-	private _resolverName: ResolverName;
-	public get resolverName(): ResolverName {
+	private _resolverName: ResolverName | string;
+	public get resolverName(): ResolverName | string {
 		return this._resolverName;
 	}
-	public set resolverName(value: ResolverName) {
+	public set resolverName(value: ResolverName | string) {
 		this._resolverName = value;
 	}
 
@@ -106,11 +106,11 @@ export class ResolvedResource implements IResolvedResource {
 		this._resolverProvider = value;
 	}
 
-	private _network: NetworkName;
-	public get network(): NetworkName {
+	private _network: NetworkName | string;
+	public get network(): NetworkName | string {
 		return this._network;
 	}
-	public set network(value: NetworkName) {
+	public set network(value: NetworkName | string) {
 		this._network = value;
 	}
 

@@ -14,7 +14,7 @@ export class ConnectionLibrary {
 		this._connections = value;
 	}
 
-	public getConnection(network: NetworkName) {
+	public getConnection(network: NetworkName | string) {
 		if (this._connections && network) {
 			const connection = this._connections.find(x => x.networkName == network);
 			return connection;

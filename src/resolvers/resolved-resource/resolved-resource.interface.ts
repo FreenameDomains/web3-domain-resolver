@@ -15,11 +15,11 @@ export interface IResolvedResource {
 
     tokenId: string;
 
-    resolverName: ResolverName;
+    resolverName: ResolverName | string;
 
     resolverProvider: IResolverProvider;
 
-    network: NetworkName;
+    network: NetworkName | string;
 
     proxyReaderAddress: string;
 

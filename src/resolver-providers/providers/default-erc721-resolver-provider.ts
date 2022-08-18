@@ -11,9 +11,9 @@ import { NameTools } from "../../tools/name-tools";
 import { MappedName } from "../../tools/name-tools.types";
 import { IResolverProvider } from "../resolver-provider.interface";
 
-export abstract class DefaultResolverProvider implements IResolverProvider {
+export abstract class DefaultERC721ResolverProvider implements IResolverProvider {
 	constructor(
-		name: ResolverName,
+		name: ResolverName | string,
 		supportedTlds: string[],
 		readContractConnections: ContractConnection[],
 		writeContractConnections: ContractConnection[]) {
@@ -23,7 +23,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		this._writeContractConnections = writeContractConnections;
 	}
 
-	public get supportedNetworks(): NetworkName[] {
+	public get supportedNetworks(): (NetworkName | string)[] {
 		return this._readContractConnections.map(x => x.network);
 	}
 
@@ -51,11 +51,11 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		this._connectionLibrary = value;
 	}
 
-	protected _name: ResolverName;
-	public get name(): ResolverName {
+	protected _name: ResolverName | string;
+	public get name(): ResolverName | string {
 		return this._name;
 	}
-	public set name(value: ResolverName) {
+	public set name(value: ResolverName | string) {
 		this._name = value;
 	}
 
@@ -67,15 +67,15 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		this._supportedTlds = value;
 	}
 
-	protected getReadContractConnection(networkName: NetworkName): ContractConnection | undefined {
+	protected getReadContractConnection(networkName: NetworkName | string): ContractConnection | undefined {
 		return this.readContractConnections.find(x => x.network == networkName);
 	}
 
-	protected getWriteContractConnection(networkName: NetworkName): ContractConnection | undefined {
+	protected getWriteContractConnection(networkName: NetworkName | string): ContractConnection | undefined {
 		return this.writeContractConnections.find(x => x.network == networkName);
 	}
 
-	protected getWriteContractWithSigner(networkName: NetworkName, signer: ethers.Signer) {
+	protected getWriteContractWithSigner(networkName: NetworkName | string, signer: ethers.Signer) {
 		const writeContractConnection = this.getWriteContractConnection(networkName);
 		if (!writeContractConnection) {
 			return undefined;
@@ -109,7 +109,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async resolveFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<IResolvedResource | undefined> {
+	public async resolveFromTokenId(tokenId: string, network?: NetworkName | string | undefined): Promise<IResolvedResource | undefined> {
 		try {
 			const name = await this.getNameFromTokenId(tokenId, network);
 			if (!name) {
@@ -128,7 +128,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async getTokenUri(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
+	public async getTokenUri(tokenId: string, network?: NetworkName | string | undefined): Promise<string | undefined> {
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
 			return undefined;
@@ -140,7 +140,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async getMetadata(tokenId: string, network?: NetworkName | undefined): Promise<any | undefined> {
+	public async getMetadata(tokenId: string, network?: NetworkName | string | undefined): Promise<any | undefined> {
 		const tokenUri = await this.getTokenUri(tokenId, network);
 		if (!tokenUri) {
 			return undefined;
@@ -153,12 +153,12 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async getImageUrl(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
+	public async getImageUrl(tokenId: string, network?: NetworkName | string | undefined): Promise<string | undefined> {
 		const metadata = await this.getMetadata(tokenId, network);
 		return metadata?.image;
 	}
 
-	public async exists(tokenId: string, network?: NetworkName | undefined): Promise<boolean> {
+	public async exists(tokenId: string, network?: NetworkName | string | undefined): Promise<boolean> {
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
 			return false;
@@ -171,7 +171,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async getOwnerAddress(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
+	public async getOwnerAddress(tokenId: string, network?: NetworkName | string | undefined): Promise<string | undefined> {
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
 			return undefined;
@@ -184,7 +184,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async isApprovedOrOwner(tokenId: string, addressToCheck: string, network?: NetworkName | undefined): Promise<boolean> {
+	public async isApprovedOrOwner(tokenId: string, addressToCheck: string, network?: NetworkName | string | undefined): Promise<boolean> {
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
 			return false;
@@ -198,7 +198,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async getRecord(tokenId: string, key: string, network?: NetworkName | undefined): Promise<string | undefined> {
+	public async getRecord(tokenId: string, key: string, network?: NetworkName | string | undefined): Promise<string | undefined> {
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
 			return undefined;
@@ -212,7 +212,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async getManyRecords(tokenId: string, keys: string[], network?: NetworkName | undefined): Promise<string[] | undefined> {
+	public async getManyRecords(tokenId: string, keys: string[], network?: NetworkName | string | undefined): Promise<string[] | undefined> {
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
 			return undefined;
@@ -297,7 +297,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		}
 	}
 
-	private async generateResolvedResource(mappedName: MappedName, tokenId: string, network?: NetworkName): Promise<IResolvedResource | undefined> {
+	private async generateResolvedResource(mappedName: MappedName, tokenId: string, network?: NetworkName | string): Promise<IResolvedResource | undefined> {
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
 			return undefined;
@@ -349,7 +349,7 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		return resolvedResource;
 	}
 
-	protected async getTokenIdNetwork(tokenId: string): Promise<NetworkName | undefined> {
+	protected async getTokenIdNetwork(tokenId: string): Promise<NetworkName | string | undefined> {
 		for (const readContractConnection of this.readContractConnections) {
 			const exists = readContractConnection.contract.exists(tokenId);
 			if (exists) {
@@ -358,8 +358,8 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 		}
 	}
 
-	protected async getReadContractConnectionFromToken(tokenId: string, network?: NetworkName | undefined): Promise<ContractConnection | undefined> {
-		let networkToUse: NetworkName | undefined = network;
+	protected async getReadContractConnectionFromToken(tokenId: string, network?: NetworkName | string | undefined): Promise<ContractConnection | undefined> {
+		let networkToUse: NetworkName | string | undefined = network;
 		if (!network) {
 			networkToUse = await this.getTokenIdNetwork(tokenId);
 		}
@@ -375,11 +375,11 @@ export abstract class DefaultResolverProvider implements IResolverProvider {
 	}
 
 
-    abstract generateTokenId(mappedName: MappedName): Promise<string | undefined>
+	abstract generateTokenId(mappedName: MappedName): Promise<string | undefined>
 
-    abstract getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined>
+	abstract getNetworkFromName(mappedName: MappedName): Promise<NetworkName | string | undefined>
 
-    abstract getRecords(tokenId: string): Promise<{ [key: string]: string } | undefined>
+	abstract getRecords(tokenId: string): Promise<{ [key: string]: string } | undefined>
 
-    abstract getNameFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined>
+	abstract getNameFromTokenId(tokenId: string, network?: NetworkName | string | undefined): Promise<string | undefined>
 }

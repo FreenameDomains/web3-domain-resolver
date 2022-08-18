@@ -6,12 +6,12 @@ import { NetworkName } from "../../../networks/connections/network-connection.ty
 import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
-import { DefaultResolverProvider } from "../default-resolver-provider";
+import { DefaultERC721ResolverProvider } from "../default-erc721-resolver-provider";
 import { FNS_ABI, FNS_CONTRACT_ADDRESS, FREENAME_WRITE_PROXY } from "./freename-resolver-provider.consts";
 import { FreenameMetadata } from "./freename-resolver-provider.types";
 import { FreenameResolverTools } from "./freename-resolver-tools";
 
-export class FreenameResolverProvider extends DefaultResolverProvider implements IResolverProvider {
+export class FreenameResolverProvider extends DefaultERC721ResolverProvider implements IResolverProvider {
 	constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
 		const mumbaiConnection = options.connectionLibrary?.getConnection(NetworkName.POLYGON_MUMBAI) || DefaultTools.getDefaultConnection(NetworkName.POLYGON_MUMBAI);
 

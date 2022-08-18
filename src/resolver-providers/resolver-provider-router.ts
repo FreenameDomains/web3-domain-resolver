@@ -58,14 +58,14 @@ export class ResolverProviderRouter {
 		return undefined;
 	}
 
-	public getResolverProvider(name: ResolverName): IResolverProvider | undefined {
+	public getResolverProvider(name: ResolverName | string): IResolverProvider | undefined {
 		const resolverProvider = this._resolverProviders.find(x => x.name == name);
 		return resolverProvider;
 	}
 
-	public setResolverProvidersPriority(priority: ResolverName[]) {
+	public setResolverProvidersPriority(priority: (ResolverName | string)[]) {
 
-		const missing: ResolverName[] = [];
+		const missing: (ResolverName | string)[] = [];
 		for (const resolverProvider of this._resolverProviders) {
 			if (!priority.includes(resolverProvider.name)) {
 				missing.push(resolverProvider.name);

@@ -7,6 +7,6 @@ export enum NetworkName {
 }
 
 export type NetworkConnection = {
-    networkName: NetworkName,
+    networkName: NetworkName | string,
     rpcUrl: string
 }

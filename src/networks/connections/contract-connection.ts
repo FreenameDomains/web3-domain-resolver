@@ -35,7 +35,7 @@ export class ContractConnection {
 		return this._contract;
 	}
 
-	public get network(): NetworkName {
+	public get network(): NetworkName | string {
 		return this._connection.networkName;
 	}
 

@@ -11,7 +11,7 @@ export class Resolver {
 
 	private _resolverProviderRouter: ResolverProviderRouter;
 
-	public setResolversPriority(priority: Array<ResolverName>) {
+	public setResolversPriority(priority: Array<ResolverName | string>) {
 		this._resolverProviderRouter.setResolverProvidersPriority(priority);
 	}
 
@@ -27,7 +27,7 @@ export class Resolver {
 		return undefined;
 	}
 
-	async resolveFromTokenId(tokenId: string, resolverProviderName?: ResolverName): Promise<IResolvedResource | undefined> {
+	async resolveFromTokenId(tokenId: string, resolverProviderName?: ResolverName | string): Promise<IResolvedResource | undefined> {
 		let resolverProvider;
 		if (resolverProviderName) {
 			resolverProvider = this._resolverProviderRouter.getResolverProvider(resolverProviderName);

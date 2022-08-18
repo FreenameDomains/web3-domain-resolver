@@ -8,11 +8,11 @@ import { NetworkName } from "../../../networks/connections/network-connection.ty
 import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
-import { DefaultResolverProvider } from "../default-resolver-provider";
+import { DefaultERC721ResolverProvider } from "../default-erc721-resolver-provider";
 import { UD_SUPPORTED_TLDS, UD_ZIL_TLDS, UNS_ETH_CONTRACT_ADDRESS, UNS_POLYGON_CONTRACT_ADDRESS } from "./ud-resolver-provider.consts";
 import { UDResolverTools } from "./ud-resolver-tools";
 
-export class UDResolverProvider extends DefaultResolverProvider implements IResolverProvider {
+export class UDResolverProvider extends DefaultERC721ResolverProvider implements IResolverProvider {
 
 	constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
 		const ethereumConnection = options.connectionLibrary?.getConnection(NetworkName.ETHEREUM) || DefaultTools.getDefaultConnection(NetworkName.ETHEREUM);

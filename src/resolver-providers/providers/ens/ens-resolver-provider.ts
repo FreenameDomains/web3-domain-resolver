@@ -3,21 +3,22 @@ import { NetworkName } from "../../../networks/connections/network-connection.ty
 import { ResolverName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
-import { DefaultResolverProvider } from "../default-resolver-provider";
+import { DefaultERC721ResolverProvider } from "../default-erc721-resolver-provider";
 import { ENS_ABI, ENS_CONTRACT_ADDRESS, ENS_MAINNET_METADATA_URL, ENS_SUPPORTED_TLDS } from "./ens-resolver-provider.consts";
 import { ContractConnection } from "../../../networks/connections/contract-connection";
 import { ethers } from "ethers";
 import { ApiCaller } from "../../../tools/api-caller";
 import { ConnectionLibrary } from "../../../networks/connections/connection-library";
 import { DefaultTools } from "../../../defaults/default-connections";
+import { IResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource.interface";
 
-export class ENSResolverProvider extends DefaultResolverProvider implements IResolverProvider {
+export class ENSResolverProvider extends DefaultERC721ResolverProvider implements IResolverProvider {
 
 	constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
 		const ethConnection = options.connectionLibrary?.getConnection(NetworkName.ETHEREUM) || DefaultTools.getDefaultConnection(NetworkName.ETHEREUM);
-		const readContractAddress = new ContractConnection(ethConnection, ENS_CONTRACT_ADDRESS, ENS_ABI);
+		const ensContract = new ContractConnection(ethConnection, ENS_CONTRACT_ADDRESS, ENS_ABI);
 
-		super(ResolverName.ENS, ENS_SUPPORTED_TLDS, [readContractAddress], [readContractAddress]);
+		super(ResolverName.ENS, ENS_SUPPORTED_TLDS, [ensContract], [ensContract]);
 	}
 
 	public override async exists(tokenId: string, network?: NetworkName | undefined): Promise<boolean> {
@@ -39,6 +40,7 @@ export class ENSResolverProvider extends DefaultResolverProvider implements IRes
 		}
 		try {
 			const labelHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(mappedName.domain));
+			console.log(labelHash);
 			const tokenId = ethers.BigNumber.from(labelHash).toString();
 			return tokenId;
 		} catch {
@@ -74,7 +76,15 @@ export class ENSResolverProvider extends DefaultResolverProvider implements IRes
 		return metadata?.name;
 	}
 
-	protected override async getTokenIdNetwork(tokenId: string): Promise<NetworkName | undefined> {
+	public override async setRecord(resource: IResolvedResource, key: string, value: string, signer: ethers.Signer): Promise<boolean> {
+		return false;
+	}
+
+	public override async getManyRecords(tokenId: string, keys: string[], network?: NetworkName | undefined): Promise<string[] | undefined> {
+		return undefined;
+	}
+
+	protected override async getTokenIdNetwork(tokenId: string): Promise<NetworkName | string | undefined> {
 		for (const readContractConnection of this.readContractConnections) {
 			try {
 				const res = await readContractConnection.contract.available(tokenId);
