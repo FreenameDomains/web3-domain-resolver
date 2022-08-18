@@ -45,7 +45,7 @@ If the domain is valid, exists on the blockchain and can be resolved a `IResolve
         ownerAddress: string,
         metadataUri: string | undefined,
         imageUrl: string | undefined,
-        metadata: any | undefined
+        metadata: any | undefined,
         records: { [key: string]: string } | undefined,
         domain: string | undefined,
         realTimeUpdates: false
@@ -60,14 +60,14 @@ You can also obtain a `IResolvedResource` from a domain NFT tokenId, in this cas
 
 ```ts
 const web3resolver = new Web3Resolver();
-const resolvedDomain = web3resolver.resolveFromTokenId("111068025256548295425145748205686048629728752166525026143111404611000478055970");
+const resolvedDomain = web3resolver.resolveFromTokenId("web3-domain-nft-tokenId");
 ```
 To find the correct domain provider a call to every available provider is made, using the current priority of the `Web3Resolver` (see Priority chapter).
 
 To speed up the resolution the `ResolverName` can be provided, in this case only the given provider is checked.
 ```ts
 const web3resolver = new Web3Resolver();
-const resolvedDomain = web3resolver.resolveFromTokenId("111068025256548295425145748205686048629728752166525026143111404611000478055970", ResolverName.UD);
+const resolvedDomain = web3resolver.resolveFromTokenId("web3-domain-nft-tokenId", ResolverName.UD);
 ```
 
 ### Transfer the ownership
@@ -82,7 +82,7 @@ const resolvedDomain = web3resolver.resolve("test.web3domain");
 
 //Domain transfer
 const signer = new ethers.Wallet("wallet-secret-key")
-resolvedDomain.transfer("new-wallet-address", signer);
+resolvedDomain.transfer("receiver-wallet-address", signer);
 ```
 
 <!-- ### Get and Set Records -->
