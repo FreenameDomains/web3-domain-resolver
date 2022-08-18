@@ -122,7 +122,7 @@ console.log(updatedAddr);
 //0x00000...3
 ```
 
-## Refresh
+### Refresh
 If you want to update all the fields of a `IResolvedResource` you can call the `refresh` method.
 ```ts
 const resolvedDomain = web3resolver.resolve("test.web3domain");
@@ -166,9 +166,41 @@ The default priority is:
     const web3resolver = new Web3Resolver();
     web3resolver.setResolversPriority([ResolverName.ENS, ResolverName.UD, ResolverName.FREENAME]);
 ```
+## Use a custom ResolverProvider
+A `ResolverProvider` is a class that implements the `IResolverProvider` interface.  
+This class comunicate with the web3 domain NFT registry, reading and writing from and to the appropriate smart contracts.
 
 
-<!-- ## Add your custom resolver
+You can create a custom `ResolverProvider` and then use it on a custom `Resolver` (see "Use a custom Resolver" chapter).
+```ts
+export class CustomResolverProvider implements IResolverProvider {
+    //Implement interface
+}
+```
 
+If your custom `ResolverProvider` needs to interfce with a standard [ERC721 Contract](https://docs.openzeppelin.com/contracts/4.x/erc721) you can use the abstract class `DefaultERC721ResolverProvider` that already handles most of the work.
+
+```ts
+export class CustomResolverProvider extends DefaultERC721ResolverProvider implements IResolverProvider {
+    //Implement abstract methods
+}
+```
+
+## Use a custom Resolver
+The `Web3Resolver` class is an extension of the `Resolver` class that uses the Freename, Unstoppble Domains and ENS `ResolverProvider` implementations.
+
+You can configure a custom `Resolver` to use only your preferred resolver providers.
+```ts
+export class CustomResolver extends Resolver {
+	constructor(connectionLibrary?: ConnectionLibrary) {
+		const freenameResolverProvider = new FreenameResolverProvider({ connectionLibrary: connectionLibrary });
+		const customResolverProvider = new CustomResolverProvider({ connectionLibrary: connectionLibrary });
+
+		super([freenameResolverProvider, customResolverProvider]);
+	}
+}
+```
+
+<!-- 
 ## Support the project -->
 
