@@ -1,4 +1,5 @@
-import _ from "lodash";
+import sortBy from "lodash.sortby";
+import indexOf from "lodash.indexof";
 import { ProviderName } from "../resolvers/types/resolver-name";
 import { NameTools } from "../tools/name-tools";
 import { IResolverProvider } from "./resolver-provider.interface";
@@ -74,8 +75,8 @@ export class ResolverProviderRouter {
 
 		const fullPriority = [...priority, ...missing];
 
-		const sortedResolverProviders = _.sortBy(this._resolverProviders, function (resolverProvider: IResolverProvider) {
-			return _.indexOf(fullPriority, resolverProvider.name);
+		const sortedResolverProviders = sortBy(this._resolverProviders, function (resolverProvider: IResolverProvider) {
+			return indexOf(fullPriority, resolverProvider.name);
 		});
 
 		this.resolverProviders = sortedResolverProviders;

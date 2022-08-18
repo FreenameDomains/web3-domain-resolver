@@ -1,5 +1,5 @@
 import { Signer } from "ethers";
-import * as _ from "lodash";
+import cloneDeep from 'lodash.clonedeep';
 import { NetworkName } from "../../networks/connections/network-connection.types";
 import { IResolverProvider } from "../../resolver-providers/resolver-provider.interface";
 import { ResolvedResourceType } from "../types/resolved-resource-type";
@@ -201,8 +201,8 @@ export class ResolvedResource implements IResolvedResource {
 			this._ownerAddress = resolvedResource.ownerAddress;
 			this._metadataUri = resolvedResource.uri;
 			this._imageUrl = resolvedResource.imageUrl;
-			this._metadata = _.cloneDeep(resolvedResource.metadata);
-			this._records = _.cloneDeep(resolvedResource.records);
+			this._metadata = cloneDeep(resolvedResource.metadata);
+			this._records = cloneDeep(resolvedResource.records);
 			resolvedResource = undefined;
 		} else {
 			return undefined;
