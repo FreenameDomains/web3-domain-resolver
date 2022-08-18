@@ -5,7 +5,7 @@ import { NetworkName } from "../../networks/connections/network-connection.types
 import { ResolvedResource } from "../../resolvers/resolved-resource/resolved-resource";
 import { IResolvedResource } from "../../resolvers/resolved-resource/resolved-resource.interface";
 import { ResolvedResourceType } from "../../resolvers/types/resolved-resource-type";
-import { ResolverName } from "../../resolvers/types/resolver-name";
+import { ProviderName } from "../../resolvers/types/resolver-name";
 import { ApiCaller } from "../../tools/api-caller";
 import { NameTools } from "../../tools/name-tools";
 import { MappedName } from "../../tools/name-tools.types";
@@ -13,7 +13,7 @@ import { IResolverProvider } from "../resolver-provider.interface";
 
 export abstract class DefaultERC721ResolverProvider implements IResolverProvider {
 	constructor(
-		name: ResolverName | string,
+		name: ProviderName | string,
 		supportedTlds: string[],
 		readContractConnections: ContractConnection[],
 		writeContractConnections: ContractConnection[]) {
@@ -51,11 +51,11 @@ export abstract class DefaultERC721ResolverProvider implements IResolverProvider
 		this._connectionLibrary = value;
 	}
 
-	protected _name: ResolverName | string;
-	public get name(): ResolverName | string {
+	protected _name: ProviderName | string;
+	public get name(): ProviderName | string {
 		return this._name;
 	}
-	public set name(value: ResolverName | string) {
+	public set name(value: ProviderName | string) {
 		this._name = value;
 	}
 

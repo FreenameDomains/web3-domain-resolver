@@ -1,6 +1,5 @@
-
 import { NetworkName } from "../../../networks/connections/network-connection.types";
-import { ResolverName } from "../../../resolvers/types/resolver-name";
+import { ProviderName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
 import { DefaultERC721ResolverProvider } from "../default-erc721-resolver-provider";
@@ -18,7 +17,7 @@ export class ENSResolverProvider extends DefaultERC721ResolverProvider implement
 		const ethConnection = options.connectionLibrary?.getConnection(NetworkName.ETHEREUM) || DefaultTools.getDefaultConnection(NetworkName.ETHEREUM);
 		const ensContract = new ContractConnection(ethConnection, ENS_CONTRACT_ADDRESS, ENS_ABI);
 
-		super(ResolverName.ENS, ENS_SUPPORTED_TLDS, [ensContract], [ensContract]);
+		super(ProviderName.ENS, ENS_SUPPORTED_TLDS, [ensContract], [ensContract]);
 	}
 
 	public override async exists(tokenId: string, network?: NetworkName | undefined): Promise<boolean> {

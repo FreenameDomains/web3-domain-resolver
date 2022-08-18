@@ -37,7 +37,7 @@ If the domain is valid, exists on the blockchain and can be resolved a `IResolve
         tld: string,
         type: ResolvedResourceType,//'domain' | 'tld'
         tokenId: string,
-        resolverName: ResolverName,//'unstoppable' | 'ens' | 'freename'
+        providerName: ProviderName,//'unstoppable' | 'ens' | 'freename'
         resolverProvider: IResolverProvider,
         network: NetworkName,//'polygon' | 'ethereum' | ...
         proxyReaderAddress: string,
@@ -157,7 +157,7 @@ You can set the resolvers order in which a domain **tokenId** is resolved by cal
 At the moment Freename, Unstoppble Domains and ENS don't have overlapping top-level domains, therefore a resolve by **name** does not need a priority.  
 In the future a priority to resolve names could be necessary, in that case the priority setted by the `setResolversPriority` function will be followed.
 
-The default priority is:
+The default `Web3Resolver` priority is:
 
 1. Freename
 2. Unstoppable Domains

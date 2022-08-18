@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import { NetworkName } from "../../networks/connections/network-connection.types";
 import { IResolverProvider } from "../../resolver-providers/resolver-provider.interface";
 import { ResolvedResourceType } from "../types/resolved-resource-type";
-import { ResolverName } from "../types/resolver-name";
+import { ProviderName } from "../types/resolver-name";
 import { IResolvedResource } from "./resolved-resource.interface";
 
 export class ResolvedResource implements IResolvedResource {
@@ -13,7 +13,7 @@ export class ResolvedResource implements IResolvedResource {
 		tld: string,
 		type: ResolvedResourceType,
 		tokenId: string,
-		resolverName: ResolverName | string,
+		resolverName: ProviderName | string,
 		resolverProvider: IResolverProvider,
 		network: NetworkName | string,
 		proxyReaderAddress: string,
@@ -90,11 +90,11 @@ export class ResolvedResource implements IResolvedResource {
 		this._tokenId = value;
 	}
 
-	private _resolverName: ResolverName | string;
-	public get resolverName(): ResolverName | string {
+	private _resolverName: ProviderName | string;
+	public get providerName(): ProviderName | string {
 		return this._resolverName;
 	}
-	public set resolverName(value: ResolverName | string) {
+	public set providerName(value: ProviderName | string) {
 		this._resolverName = value;
 	}
 
@@ -139,10 +139,10 @@ export class ResolvedResource implements IResolvedResource {
 	}
 
 	private _metadataUri: string | undefined;
-	public get metadataUri(): string | undefined {
+	public get uri(): string | undefined {
 		return this._metadataUri;
 	}
-	public set metadataUri(value: string | undefined) {
+	public set uri(value: string | undefined) {
 		this._metadataUri = value;
 	}
 
@@ -194,12 +194,12 @@ export class ResolvedResource implements IResolvedResource {
 			this._tld = resolvedResource.tld;
 			this._type = resolvedResource.type;
 			this._tokenId = resolvedResource.tokenId;
-			this._resolverName = resolvedResource.resolverName;
+			this._resolverName = resolvedResource.providerName;
 			this._network = resolvedResource.network;
 			this._proxyReaderAddress = resolvedResource.proxyReaderAddress;
 			this._proxyWriterAddress = resolvedResource.proxyWriterAddress;
 			this._ownerAddress = resolvedResource.ownerAddress;
-			this._metadataUri = resolvedResource.metadataUri;
+			this._metadataUri = resolvedResource.uri;
 			this._imageUrl = resolvedResource.imageUrl;
 			this._metadata = _.cloneDeep(resolvedResource.metadata);
 			this._records = _.cloneDeep(resolvedResource.records);

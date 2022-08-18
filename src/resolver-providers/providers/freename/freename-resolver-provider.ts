@@ -3,7 +3,7 @@ import { DefaultTools } from "../../../defaults/default-connections";
 import { ConnectionLibrary } from "../../../networks/connections/connection-library";
 import { ContractConnection } from "../../../networks/connections/contract-connection";
 import { NetworkName } from "../../../networks/connections/network-connection.types";
-import { ResolverName } from "../../../resolvers/types/resolver-name";
+import { ProviderName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
 import { DefaultERC721ResolverProvider } from "../default-erc721-resolver-provider";
@@ -17,7 +17,7 @@ export class FreenameResolverProvider extends DefaultERC721ResolverProvider impl
 
 		const readContractAddress = new ContractConnection(mumbaiConnection, FNS_CONTRACT_ADDRESS, FNS_ABI);
 		const writeContractAddress = new ContractConnection(mumbaiConnection, FREENAME_WRITE_PROXY, FNS_ABI);
-		super(ResolverName.FREENAME, ["*"], [readContractAddress], [writeContractAddress]);
+		super(ProviderName.FREENAME, ["*"], [readContractAddress], [writeContractAddress]);
 	}
 
 	public async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
