@@ -64,10 +64,10 @@ const resolvedDomain = web3resolver.resolveFromTokenId("web3-domain-nft-tokenId"
 ```
 To find the correct domain provider a call to every available provider is made, using the current priority of the `Web3Resolver` (see Priority chapter).
 
-To speed up the resolution the `ResolverName` can be provided, in this case only the given provider is checked.
+To speed up the resolution the `ProviderName` can be provided, in this case only the given provider is checked.
 ```ts
 const web3resolver = new Web3Resolver();
-const resolvedDomain = web3resolver.resolveFromTokenId("web3-domain-nft-tokenId", ResolverName.UD);
+const resolvedDomain = web3resolver.resolveFromTokenId("web3-domain-nft-tokenId", ProviderName.UD);
 ```
 
 ### Transfer the ownership
@@ -164,7 +164,7 @@ The default `Web3Resolver` priority is:
 3. ENS
 ```ts
     const web3resolver = new Web3Resolver();
-    web3resolver.setResolversPriority([ResolverName.ENS, ResolverName.UD, ResolverName.FREENAME]);
+    web3resolver.setResolversPriority([ProviderName.ENS, ProviderName.UD, ProviderName.FREENAME]);
 ```
 ## Use a custom ResolverProvider
 A `ResolverProvider` is a class that implements the `IResolverProvider` interface.  
