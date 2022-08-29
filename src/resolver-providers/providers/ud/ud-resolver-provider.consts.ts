@@ -1,5 +1,3 @@
-import { NetworkConnection } from "../../../networks/connections/network-connection.types";
-
 export const UD_SUPPORTED_TLDS: string[] = [
 	"crypto",
 	"wallet",
@@ -20,5 +18,5 @@ export const UD_ZIL_TLDS: string[] = [
 ];
 
 export const UNS_ETH_CONTRACT_ADDRESS = "0xc3C2BAB5e3e52DBF311b2aAcEf2e40344f19494E";
-export const UNS_POLYGON_CONTRACT_ADDRESS = "0xA3f32c8cd786dc089Bd1fC175F2707223aeE5d00";
+export const UNS_POLYGON_CONTRACT_ADDRESS = "0xa9a6A3626993D487d2Dbda3173cf58cA1a9D9e9f";
 export const UD_METADATA_URL = "https://metadata.unstoppabledomains.com/metadata/";

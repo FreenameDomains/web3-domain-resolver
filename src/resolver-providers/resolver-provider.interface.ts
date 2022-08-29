@@ -46,6 +46,12 @@ export interface IResolverProvider {
     resolveFromTokenId(tokenId: string, network?: NetworkName | string | undefined): Promise<IResolvedResource | undefined>;
 
     /**
+     * Given a wallet address returns the NFT tokenId uint256 string rappresentation.
+     * @param address the wallet address set as the reverse resolve of a domain.
+     */
+    reverseResolve(address: string): Promise<string | undefined>;
+
+    /**
      * Checks on the blockchain registry if the given address is the owner or an approved address for the resolved resource NFT.
      * @param tokenId the NFT tokenId uint256 string rappresentation to resolve.
      * @param addressToCheck the address to check
@@ -80,13 +86,20 @@ export interface IResolverProvider {
 
     /**
      * Calls the blockchain registry to set the specified key-value pairs as records on the resolved resource NFT. 
-     * The `keys` and `values` array must be in order, so the first record will use the fist string of the `keys` array as key and the first string of the `values` array as value, and so on.
+     * The `keys` and `values` array must be in order: the first key-value pair will be the first string of the `keys` array as key and the first string of the `values` array as value, and so on.
      * @param resource an `IResolvedResource` instance.
      * @param keys the keys of the records
      * @param values the values of the records
      * @param signer a `ether.Signer` wallet. If `signer.provider` is `undefined` the `provider` of the resolved resource's `resolverProvider` is used. 
      */
     setRecords(resource: IResolvedResource, keys: string[], values: string[], signer: ethers.Signer): Promise<boolean>;
+
+    /**
+     * Set the `signer` address as a reverse resolution record of the resolved resource NFT.
+     * @param resource an `IResolvedResource` instance.
+     * @param signer a `ether.Signer` wallet. If `signer.provider` is `undefined` the `provider` of the resolved resource's `resolverProvider` is used.
+     */
+    setReverse(resource: IResolvedResource, signer: ethers.Signer): Promise<boolean>;
 
     /**
      * Gets the uri of the `tokenId` NFT.

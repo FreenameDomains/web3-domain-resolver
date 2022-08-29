@@ -34,7 +34,7 @@ export class Resolver {
 	 * @param domainOrTld the domain to resolve. Eg. `"test.web3domain"`
 	 * @returns an `IResolvedResource` instance or `undefined`.
 	 */
-	async resolve(domainOrTld: string): Promise<IResolvedResource | undefined> {
+	public async resolve(domainOrTld: string): Promise<IResolvedResource | undefined> {
 		const resolverProvider = this._resolverProviderRouter.getResolverProviderByDomainOrTld(domainOrTld);
 		if (resolverProvider) {
 			return await resolverProvider.resolve(domainOrTld);
@@ -51,15 +51,45 @@ export class Resolver {
 	 * @param resolverProviderName the provider of the tokenId to resolve
 	 * @returns an `IResolvedResource` instance or `undefined`.
 	 */
-	async resolveFromTokenId(tokenId: string, resolverProviderName?: ProviderName | string): Promise<IResolvedResource | undefined> {
+	public async resolveFromTokenId(tokenId: string, resolverProviderName?: ProviderName | string): Promise<IResolvedResource | undefined> {
 		let resolverProvider;
 		if (resolverProviderName) {
 			resolverProvider = this._resolverProviderRouter.getResolverProvider(resolverProviderName);
 		} else {
 			resolverProvider = await this._resolverProviderRouter.findTokenIdResolverProvider(tokenId);
 		}
+
 		if (resolverProvider) {
 			return resolverProvider.resolveFromTokenId(tokenId);
+		}
+		return undefined;
+	}
+
+	/**
+	 * 
+	 * @param address 
+	 * @param resolverProviderName 
+	 * @returns 
+	 */
+	public async reverseResolve(address: string, resolverProviderName?: ProviderName | string): Promise<IResolvedResource | undefined> {
+		if (resolverProviderName) {
+			const resolverProvider = this._resolverProviderRouter.getResolverProvider(resolverProviderName);
+			if (!resolverProvider) {
+				return undefined;
+			}
+
+			const tokenId = await resolverProvider.reverseResolve(address);
+			if (tokenId) {
+				return await this.resolveFromTokenId(tokenId, resolverProvider.name);
+			}
+
+		} else {
+			for (const resolverProvider of this._resolverProviderRouter.resolverProviders) {
+				const tokenId = await resolverProvider.reverseResolve(address);
+				if (tokenId) {
+					return await this.resolveFromTokenId(tokenId, resolverProvider.name);
+				}
+			}
 		}
 		return undefined;
 	}

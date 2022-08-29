@@ -10,6 +10,8 @@ import { ApiCaller } from "../../../tools/api-caller";
 import { ConnectionLibrary } from "../../../networks/connections/connection-library";
 import { DefaultTools } from "../../../defaults/default-connections";
 import { IResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource.interface";
+import { ENS } from '@ensdomains/ensjs'
+import { NameTools } from "../../../tools/name-tools";
 
 export class ENSResolverProvider extends DefaultERC721ResolverProvider implements IResolverProvider {
 
@@ -18,6 +20,46 @@ export class ENSResolverProvider extends DefaultERC721ResolverProvider implement
 		const ensContract = new ContractConnection(ethConnection, ENS_CONTRACT_ADDRESS, ENS_ABI);
 
 		super(ProviderName.ENS, ENS_SUPPORTED_TLDS, [ensContract], [ensContract]);
+
+		this._ensInstance = new ENS();
+
+		const jsonRpcProvider = new ethers.providers.JsonRpcProvider(ensContract.connection.rpcUrl);
+		this._ensInstance.setProvider(jsonRpcProvider);
+	}
+
+	private _ensInstance: ENS;
+
+	public override async reverseResolve(address: string, network?: NetworkName | string | undefined): Promise<string | undefined> {
+		let ensName: string | undefined = undefined;
+		const getNameRes = await this._ensInstance.getName(address);
+
+		ensName = getNameRes ? getNameRes.name : undefined;
+
+		if (!ensName) {
+			return undefined;
+		}
+
+		const mappedName = NameTools.mapName(ensName);
+		if (!mappedName) {
+			return undefined;
+		}
+
+		const tokenId = await this.generateTokenId(mappedName);
+		if (!tokenId) {
+			return undefined;
+		}
+
+		const owner = await this.getOwnerAddress(tokenId, network);
+		if (!owner) {
+			return undefined;
+		}
+
+		//check https://docs.ens.domains/dapp-developer-guide/resolving-names#reverse-resolution
+		if (owner !== address) {
+			return undefined;
+		}
+
+		return tokenId;
 	}
 
 	public override async exists(tokenId: string, network?: NetworkName | undefined): Promise<boolean> {
@@ -39,7 +81,6 @@ export class ENSResolverProvider extends DefaultERC721ResolverProvider implement
 		}
 		try {
 			const labelHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(mappedName.domain));
-			console.log(labelHash);
 			const tokenId = ethers.BigNumber.from(labelHash).toString();
 			return tokenId;
 		} catch {

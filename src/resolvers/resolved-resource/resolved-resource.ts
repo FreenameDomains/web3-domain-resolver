@@ -187,6 +187,10 @@ export class ResolvedResource implements IResolvedResource {
 		return await this._resolverProvider.setRecords(this, keys, values, signer);
 	}
 
+	public async setReverse(signer: Signer): Promise<boolean> {
+		return await this._resolverProvider.setReverse(this, signer);
+	}
+
 	public async refresh(): Promise<IResolvedResource | undefined> {
 		let resolvedResource = await this.resolverProvider.resolve(this._fullname);
 		if (resolvedResource) {

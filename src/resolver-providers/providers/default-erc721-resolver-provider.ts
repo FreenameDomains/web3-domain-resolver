@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { Contract, ethers } from "ethers";
 import { ConnectionLibrary } from "../../networks/connections/connection-library";
 import { ContractConnection } from "../../networks/connections/contract-connection";
 import { NetworkName } from "../../networks/connections/network-connection.types";
@@ -126,6 +126,34 @@ export abstract class DefaultERC721ResolverProvider implements IResolverProvider
 		catch {
 			return undefined;
 		}
+	}
+
+	public async reverseResolve(address: string, network?: NetworkName | string | undefined): Promise<string | undefined> {
+		let readContracts: ContractConnection[] = []
+		if (network) {
+			const readContract = this.getReadContractConnection(network);
+			if (readContract) {
+				readContracts.push(readContract);
+			}
+		} else {
+			readContracts = this.readContractConnections;
+		}
+
+		for (const readContractConnection of readContracts) {
+			try {
+				const reverseOfRes: ethers.BigNumber = await readContractConnection.contract.reverseOf(address);
+				if (reverseOfRes) {
+					const tokenId = reverseOfRes.toString()
+					if (tokenId !== "0") {
+						return tokenId;
+					}
+				}
+			}
+			catch (e) {
+				continue;
+			}
+		}
+		return undefined;
 	}
 
 	public async getTokenUri(tokenId: string, network?: NetworkName | string | undefined): Promise<string | undefined> {
@@ -297,6 +325,24 @@ export abstract class DefaultERC721ResolverProvider implements IResolverProvider
 		}
 	}
 
+	public async setReverse(resource: IResolvedResource, signer: ethers.Signer): Promise<boolean> {
+		const writeContract = this.getWriteContractWithSigner(resource.network, signer);
+		if (!writeContract) {
+			return false;
+		}
+
+		try {
+			const tx = await writeContract.setReverse(resource.tokenId);
+			const approveReceipt = await tx.wait();
+			if (approveReceipt) {
+				return true;
+			}
+			return false;
+		} catch (e) {
+			return false;
+		}
+	}
+
 	private async generateResolvedResource(mappedName: MappedName, tokenId: string, network?: NetworkName | string): Promise<IResolvedResource | undefined> {
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
@@ -373,7 +419,6 @@ export abstract class DefaultERC721ResolverProvider implements IResolverProvider
 
 		return readContractConnection;
 	}
-
 
 	abstract generateTokenId(mappedName: MappedName): Promise<string | undefined>
 

@@ -122,12 +122,18 @@ export interface IResolvedResource {
 
     /**
      * Calls the blockchain registry to set the specified key-value pairs as records on the resolved resource NFT. 
-     * The `keys` and `values` array must be in order, so the first record will use the fist string of the `keys` array as key and the first string of the `values` array as value, and so on.
+     * The `keys` and `values` array must be in order: the first key-value pair will be the first string of the `keys` array as key and the first string of the `values` array as value, and so on.
      * @param keys the keys of the records
      * @param values the values of the records
      * @param signer a `ether.Signer` wallet. If `signer.provider` is `undefined` the `provider` of the resolved resource's `resolverProvider` is used. 
      */
     setRecords(keys: string[], values: string[], signer: ethers.Signer): Promise<boolean>;
+
+    /**
+     * Set the `signer` address as a reverse resolution record of the resolved resource NFT.
+     * @param signer a `ether.Signer` wallet. If `signer.provider` is `undefined` the `provider` of the resolved resource's `resolverProvider` is used. 
+     */
+    setReverse(signer: ethers.Signer): Promise<boolean>;
 
     /**
      * Updates all the fields of the current resolved resource.
