@@ -1,0 +1,56 @@
+{
+  "name": "web3-domain-resolver",
+  "version": "0.1.0",
+  "description": "Web3 Library that enable with just one function to resolve domains on multiple web3 providers such as ENS, UnstoppableDomains and Freename",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && node --trace-warnings ./lib/index.js",
+    "lint:js:fix": "eslint --ignore-path .gitignore . --fix"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FreenameDomains/web3-domain-resolver.git"
+  },
+  "keywords": [
+    "web3",
+    "domain",
+    "resolver",
+    "freename",
+    "unstoppable",
+    "ens"
+  ],
+  "author": "Cardinal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FreenameDomains/web3-domain-resolver/issues"
+  },
+  "homepage": "https://github.com/FreenameDomains/web3-domain-resolver#readme",
+  "devDependencies": {
+    "@types/lodash": "^4.14.182",
+    "@types/lodash.clonedeep": "^4.5.7",
+    "@types/lodash.indexof": "^4.0.7",
+    "@types/lodash.sortby": "^4.7.7",
+    "@types/node": "^18.6.5",
+    "@typescript-eslint/eslint-plugin": "^5.33.1",
+    "@typescript-eslint/parser": "^5.33.1",
+    "eslint": "^8.22.0"
+  },
+  "peerDependencies": {
+    "ethers": "^5.6.9"
+  },
+  "dependencies": {
+    "@ensdomains/ensjs": "^3.0.0-alpha.16",
+    "@unstoppabledomains/resolution": "^8.3.1",
+    "axios": "^0.27.2",
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.indexof": "^4.0.5",
+    "lodash.sortby": "^4.7.0",
+    "punycode": "^2.1.1"
+  }
+}
