@@ -1,13 +1,17 @@
-import { Web3Resolver } from "./defaults/web3-resolver";
+export * from "./defaults/web3-resolver";
 
-async function start() {
-    console.log("Start!");
-    const web3res = new Web3Resolver();
-    try {
-        const res = await web3res.resolve("federicocosta.wallet");
-        console.log(res)
-    } catch (e) {
-        console.log(e)
-    }
-}
-start()
+export * from "./networks/connections/connection-library";
+export * from "./networks/connections/contract-connection";
+export * from "./networks/connections/network-connection.types";
+
+export * from "./resolver-providers/resolver-provider.interface";
+export * from "./resolver-providers/providers/ens/ens-resolver-provider";
+export * from "./resolver-providers/providers/freename/freename-resolver-provider";
+export * from "./resolver-providers/providers/ud/ud-resolver-provider";
+export * from "./resolver-providers/providers/default-erc721-resolver-provider";
+
+export * from "./resolvers/resolver";
+export * from "./resolvers/resolved-resource/resolved-resource.interface"
+export * from "./resolvers/resolved-resource/resolved-resource"
+export * from "./resolvers/types/resolved-resource-type"
+export * from "./resolvers/types/resolver-name"
