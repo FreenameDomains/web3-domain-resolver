@@ -27,7 +27,7 @@ const web3resolver = new Web3Resolver();
 From the `Web3Resolver` you can call the `resolve` function.
 
 ```ts
-const resolvedDomain = web3resolver.resolve("test.web3domain");
+const resolvedDomain = await web3resolver.resolve("test.web3domain");
 ```
 
 If the domain is valid, exists on the blockchain and can be resolved a `IResolvedResource` is given, otherwise the result is `undefined`.
@@ -60,14 +60,14 @@ You can also obtain a `IResolvedResource` from a domain NFT tokenId, in this cas
 
 ```ts
 const web3resolver = new Web3Resolver();
-const resolvedDomain = web3resolver.resolveFromTokenId("web3-domain-nft-tokenId");
+const resolvedDomain = await web3resolver.resolveFromTokenId("web3-domain-nft-tokenId");
 ```
 To find the correct domain provider a call to every available provider is made, using the current priority of the `Web3Resolver` (see Priority chapter).
 
 To speed up the resolution the `ProviderName` can be provided, in this case only the given provider is checked.
 ```ts
 const web3resolver = new Web3Resolver();
-const resolvedDomain = web3resolver.resolveFromTokenId("web3-domain-nft-tokenId", ProviderName.UD);
+const resolvedDomain = await web3resolver.resolveFromTokenId("web3-domain-nft-tokenId", ProviderName.UD);
 ```
 
 ### Reverse Resolution
@@ -75,11 +75,10 @@ The Reverse Resolution allows to get a `IResolvedResource` from a wallet address
 To be able to reverse-resolve a domain the reverse address must have been previously set.
 
 To set the reverse value you can use the `setReverse` function of a `IResolvedResource`.  
-To get a `IResolvedResource` you can use the `reverseResolve` function from the `Web3Resolver` instance.  
 
 ```ts
 const web3resolver = new Web3Resolver();
-const resolvedDomain = web3resolver.resolve("test.web3domain");
+const resolvedDomain = await web3resolver.resolve("test.web3domain");
 
 if(resolvedDomain){
     const signer = new ethers.Wallet("wallet-secret-key");
@@ -88,10 +87,11 @@ if(resolvedDomain){
 }
 ```
 
+To get a `IResolvedResource` you can use the `reverseResolve` function from the `Web3Resolver` instance.  
 ```ts
 //Reverse resolve
 const web3resolver = new Web3Resolver();
-const resolvedDomain = web3resolver.reverseResolve("0x1234...9");
+const resolvedDomain = await web3resolver.reverseResolve("0x1234...9");
 ```
 
 ### Transfer the ownership
@@ -102,7 +102,7 @@ To do so you need a `ethers.Wallet` to use as signer for the transaction.
 Usually for the transfer to work the signer wallet must be the owner or an approved wallet of the domain. 
 
 ```ts
-const resolvedDomain = web3resolver.resolve("test.web3domain");
+const resolvedDomain = await web3resolver.resolve("test.web3domain");
 
 //Domain transfer
 const signer = new ethers.Wallet("wallet-secret-key")
@@ -115,7 +115,7 @@ A web3 domain NFT can have a key-value object associated with it and saved on th
 Currently there is no way to get a list of all the keys of an NFT from the blockchain, so providers save all the records of a web3 domain in a centralized public metadata file, stored on the Web2.  
 The `records` field of a `IResolvedResource` contains the records available on the metadata file.
 ```ts
-const resolvedDomain = web3resolver.resolve("test.web3domain");
+const resolvedDomain = await web3resolver.resolve("test.web3domain");
 
 console.log(resolvedDomain.records);
 // {
@@ -149,7 +149,7 @@ console.log(updatedAddr);
 ### Refresh
 If you want to update all the fields of a `IResolvedResource` you can call the `refresh` method.
 ```ts
-const resolvedDomain = web3resolver.resolve("test.web3domain");
+const resolvedDomain = await web3resolver.resolve("test.web3domain");
 console.log(resolvedDomain.ownerAddress);
 //"0x12345...F"
 
