@@ -12,7 +12,7 @@ yarn add @freenamedomains/web3-domain-resolver
 ``` -->
 
 ```shell
-npm install @freenamedomains/web3-domain-resolver --save
+npm install web3-domain-resolver --save
 ```
 ## Usage
 
