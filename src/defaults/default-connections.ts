@@ -6,6 +6,7 @@ export const DEFAULT_RPC_URL: Record<NetworkName, string> = {
 	ethereum: "https://eth-mainnet.public.blastapi.io",
 	polygon: "https://rpc-mainnet.matic.quiknode.pro",
 	zil: "",
+	hardhat: "http://127.0.0.1:8545/"
 };
 
 export class DefaultTools {

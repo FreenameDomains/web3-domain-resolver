@@ -3,7 +3,8 @@ export enum NetworkName {
     POLYGON_MUMBAI = "polygon-mumbai",
     ETHEREUM = "ethereum",
     BSC = "bsc",
-    ZILLIQA = "zil"
+    ZILLIQA = "zil",
+    HARDHAT = "hardhat"
 }
 
 export type NetworkConnection = {
