@@ -10,7 +10,7 @@ export class ConnectionLibrary {
 	public get connections(): NetworkConnection[] {
 		return this._connections;
 	}
-	protected set connections(value: NetworkConnection[]) {
+	public set connections(value: NetworkConnection[]) {
 		this._connections = value;
 	}
 

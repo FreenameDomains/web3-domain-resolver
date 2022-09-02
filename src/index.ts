@@ -15,3 +15,6 @@ export * from "./resolvers/resolved-resource/resolved-resource.interface"
 export * from "./resolvers/resolved-resource/resolved-resource"
 export * from "./resolvers/types/resolved-resource-type"
 export * from "./resolvers/types/resolver-name"
+
+export * from "./tools/name-tools"
+export * from "./tools/name-tools.types"

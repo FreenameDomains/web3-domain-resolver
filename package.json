@@ -1,6 +1,6 @@
 {
   "name": "web3-domain-resolver",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Web3 Library that enable with just one function to resolve domains on multiple web3 providers such as ENS, UnstoppableDomains and Freename",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -45,12 +45,12 @@
     "ethers": "^5.6.9"
   },
   "dependencies": {
-    "@ensdomains/ensjs": "^3.0.0-alpha.16",
-    "@unstoppabledomains/resolution": "^8.3.1",
-    "axios": "^0.27.2",
-    "lodash.clonedeep": "^4.5.0",
-    "lodash.indexof": "^4.0.5",
-    "lodash.sortby": "^4.7.0",
+    "@ensdomains/ensjs": "3.0.0-alpha.16",
+    "@unstoppabledomains/resolution": "8.3.1",
+    "axios": "0.27.2",
+    "lodash.clonedeep": "4.5.0",
+    "lodash.indexof": "4.0.5",
+    "lodash.sortby": "4.7.0",
     "punycode": "^2.1.1"
   }
 }
