@@ -21,6 +21,8 @@ npm install web3-domain-resolver --save
 To resolve a domain or TLD using the web3-domain-resolver, you have to import it into your project then create a new istance of the default `Web3Resolver` class.
 
 ```ts
+import { Web3Resolver } from "web3-domain-resolver";
+
 const web3resolver = new Web3Resolver();
 ```
 
@@ -202,10 +204,10 @@ export class CustomResolverProvider implements IResolverProvider {
 }
 ```
 
-If your custom `ResolverProvider` needs to interfce with a standard [ERC721 Contract](https://docs.openzeppelin.com/contracts/4.x/erc721) you can use the abstract class `DefaultERC721ResolverProvider` that already handles most of the work.
+You can also use the abstract class `BaseResolverProvider` that already handles most of the work.
 
 ```ts
-export class CustomResolverProvider extends DefaultERC721ResolverProvider implements IResolverProvider {
+export class CustomResolverProvider extends BaseResolverProvider implements IResolverProvider {
     //Implement abstract methods
 }
 ```
