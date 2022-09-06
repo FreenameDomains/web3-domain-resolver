@@ -4,7 +4,9 @@ export enum NetworkName {
     ETHEREUM = "ethereum",
     BSC = "bsc",
     ZILLIQA = "zil",
-    HARDHAT = "hardhat"
+    HARDHAT = "hardhat",
+    AURORA = "aurora",
+    CRONOS = "cronos"
 }
 
 export type NetworkConnection = {
