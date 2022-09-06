@@ -140,8 +140,9 @@ export interface IResolverProvider {
     /**
      * Gets the record portion of the NFT metadata, usually the content of `metadata.properties`.
      * @param tokenId the NFT tokenId uint256 string rappresentation.
+     * @param network the network where the NFT is located. If not available every network is scanned to search the `tokenId` NFT.
      */
-    getRecords(tokenId: string): Promise<{ [key: string]: string } | undefined>;
+    getRecords(tokenId: string, network?: NetworkName | string | undefined): Promise<{ [key: string]: string } | undefined>;
 
     /**
      * Get the value of the record with the specified key from the blockchain.

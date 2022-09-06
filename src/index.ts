@@ -8,7 +8,7 @@ export * from "./resolver-providers/resolver-provider.interface";
 export * from "./resolver-providers/providers/ens/ens-resolver-provider";
 export * from "./resolver-providers/providers/freename/freename-resolver-provider";
 export * from "./resolver-providers/providers/ud/ud-resolver-provider";
-export * from "./resolver-providers/providers/default-erc721-resolver-provider";
+export * from "./resolver-providers/providers/base-resolver-provider";
 
 export * from "./resolvers/resolver";
 export * from "./resolvers/resolved-resource/resolved-resource.interface"

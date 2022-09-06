@@ -2,7 +2,7 @@ import { NetworkName } from "../../../networks/connections/network-connection.ty
 import { ProviderName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
-import { DefaultERC721ResolverProvider } from "../default-erc721-resolver-provider";
+import { BaseResolverProvider } from "../base-resolver-provider";
 import { ENS_ABI, ENS_CONTRACT_ADDRESS, ENS_MAINNET_METADATA_URL, ENS_SUPPORTED_TLDS } from "./ens-resolver-provider.consts";
 import { ContractConnection } from "../../../networks/connections/contract-connection";
 import { ethers } from "ethers";
@@ -12,7 +12,7 @@ import { DefaultTools } from "../../../defaults/default-connections";
 import { IResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource.interface";
 import { NameTools } from "../../../tools/name-tools";
 
-export class ENSResolverProvider extends DefaultERC721ResolverProvider implements IResolverProvider {
+export class ENSResolverProvider extends BaseResolverProvider implements IResolverProvider {
 
 	constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
 		const ethConnection = options.connectionLibrary?.getConnection(NetworkName.ETHEREUM) || DefaultTools.getDefaultConnection(NetworkName.ETHEREUM);

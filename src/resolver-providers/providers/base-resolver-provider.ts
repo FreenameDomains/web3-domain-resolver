@@ -11,7 +11,7 @@ import { NameTools } from "../../tools/name-tools";
 import { MappedName } from "../../tools/name-tools.types";
 import { IResolverProvider } from "../resolver-provider.interface";
 
-export abstract class DefaultERC721ResolverProvider implements IResolverProvider {
+export abstract class BaseResolverProvider implements IResolverProvider {
 	constructor(
 		name: ProviderName | string,
 		supportedTlds: string[],
@@ -372,7 +372,7 @@ export abstract class DefaultERC721ResolverProvider implements IResolverProvider
 		}
 
 		const resolverResourceType: ResolvedResourceType = NameTools.getResolvedResourceType(mappedName.type);
-		const records = await this.getRecords(tokenId);
+		const records = await this.getRecords(tokenId, readContractConnection.network);
 
 		const resolvedResource = new ResolvedResource({
 			fullname: mappedName.fullname,
@@ -424,7 +424,7 @@ export abstract class DefaultERC721ResolverProvider implements IResolverProvider
 
 	abstract getNetworkFromName(mappedName: MappedName): Promise<NetworkName | string | undefined>
 
-	abstract getRecords(tokenId: string): Promise<{ [key: string]: string } | undefined>
+	abstract getRecords(tokenId: string, network?: NetworkName | string | undefined): Promise<{ [key: string]: string } | undefined>
 
 	abstract getNameFromTokenId(tokenId: string, network?: NetworkName | string | undefined): Promise<string | undefined>
 }
