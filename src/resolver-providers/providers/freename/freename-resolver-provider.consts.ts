@@ -1533,5 +1533,61 @@ export const FREENAME_CONTRACT_CONFS: { networkName: NetworkName, address: strin
     test: true,
     type: "write",
     abi: FNS_ABI
-  }
+  },
+  {
+    address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+    networkName: NetworkName.POLYGON,
+    test: false,
+    type: "read",
+    abi: FNS_ABI
+  },
+  {
+    address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+    networkName: NetworkName.POLYGON,
+    test: false,
+    type: "write",
+    abi: FNS_ABI
+  },
+  {
+    address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+    networkName: NetworkName.CRONOS,
+    test: false,
+    type: "read",
+    abi: FNS_ABI
+  },
+  {
+    address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+    networkName: NetworkName.CRONOS,
+    test: false,
+    type: "write",
+    abi: FNS_ABI
+  },
+  {
+    address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+    networkName: NetworkName.BSC,
+    test: false,
+    type: "read",
+    abi: FNS_ABI
+  },
+  {
+    address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+    networkName: NetworkName.BSC,
+    test: false,
+    type: "write",
+    abi: FNS_ABI
+  },
+  {
+    address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+    networkName: NetworkName.AURORA,
+    test: false,
+    type: "read",
+    abi: FNS_ABI
+  },
+  {
+    address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+    networkName: NetworkName.AURORA,
+    test: false,
+    type: "write",
+    abi: FNS_ABI
+  },
 ]
