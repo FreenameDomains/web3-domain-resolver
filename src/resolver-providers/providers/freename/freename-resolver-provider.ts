@@ -21,7 +21,7 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 		const freenameContractConfs = cloneDeep(FREENAME_CONTRACT_CONFS);
 		for (const contractConf of freenameContractConfs) {
 			if (contractConf.test == options.testMode) {
-				const connection = options.connectionLibrary?.getConnection(contractConf.networkName) || DefaultTools.getDefaultConnection(contractConf.networkName);
+				const connection = options.connectionLibrary?.getConnection(contractConf.networkName) || DefaultTools.getDefaultConnection(contractConf.networkName, { infuraIfAvailable: true });
 				if (contractConf.type == "read") {
 					readContractConnections.push(new ContractConnection(connection, contractConf.address, contractConf.abi))
 				} else if (contractConf.type == "write") {
