@@ -129,7 +129,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 	}
 
 	public async reverseResolve(address: string, network?: NetworkName | string | undefined): Promise<string | undefined> {
-		let readContracts: ContractConnection[] = []
+		let readContracts: ContractConnection[] = [];
 		if (network) {
 			const readContract = this.getReadContractConnection(network);
 			if (readContract) {
@@ -143,7 +143,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 			try {
 				const reverseOfRes: ethers.BigNumber = await readContractConnection.contract.reverseOf(address);
 				if (reverseOfRes) {
-					const tokenId = reverseOfRes.toString()
+					const tokenId = reverseOfRes.toString();
 					if (tokenId !== "0") {
 						return tokenId;
 					}

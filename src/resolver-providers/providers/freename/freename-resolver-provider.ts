@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import cloneDeep from 'lodash.clonedeep';
+import cloneDeep from "lodash.clonedeep";
 import { DefaultTools } from "../../../defaults/default-connections";
 import { ConnectionLibrary } from "../../../networks/connections/connection-library";
 import { ContractConnection } from "../../../networks/connections/contract-connection";
@@ -23,9 +23,9 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 			if (contractConf.test == options.testMode) {
 				const connection = options.connectionLibrary?.getConnection(contractConf.networkName) || DefaultTools.getDefaultConnection(contractConf.networkName, { infuraIfAvailable: true });
 				if (contractConf.type == "read") {
-					readContractConnections.push(new ContractConnection(connection, contractConf.address, contractConf.abi))
+					readContractConnections.push(new ContractConnection(connection, contractConf.address, contractConf.abi));
 				} else if (contractConf.type == "write") {
-					writeContractConnections.push(new ContractConnection(connection, contractConf.address, contractConf.abi))
+					writeContractConnections.push(new ContractConnection(connection, contractConf.address, contractConf.abi));
 				}
 			}
 		}
@@ -74,7 +74,7 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 			}
 			return false;
 		} catch (e) {
-			console.log(e)
+			console.log(e);
 			return false;
 		}
 	}
@@ -129,7 +129,7 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 			return undefined;
 		}
 
-		const values = await this.getManyRecords(tokenId, keys, network)
+		const values = await this.getManyRecords(tokenId, keys, network);
 		if (!values) {
 			return undefined;
 		}
@@ -138,10 +138,10 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 			return undefined;
 		}
 
-		let records: { [key: string]: string } = {}
+		const records: { [key: string]: string } = {};
 		for (let i = 0; i < keys.length; i++) {
-			const key = keys[i]
-			records[key] = values[i]
+			const key = keys[i];
+			records[key] = values[i];
 		}
 
 		return records;

@@ -22,7 +22,7 @@ export class ENSResolverProvider extends BaseResolverProvider implements IResolv
 	}
 
 	public override async reverseResolve(address: string, network?: NetworkName | string | undefined): Promise<string | undefined> {
-		let readContracts: ContractConnection[] = []
+		let readContracts: ContractConnection[] = [];
 		if (network) {
 			const readContract = this.getReadContractConnection(network);
 			if (readContract) {
