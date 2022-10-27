@@ -397,7 +397,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 
 	protected async getTokenIdNetwork(tokenId: string): Promise<NetworkName | string | undefined> {
 		for (const readContractConnection of this.readContractConnections) {
-			const exists = readContractConnection.contract.exists(tokenId);
+			const exists = await readContractConnection.contract.exists(tokenId);
 			if (exists) {
 				return readContractConnection.network;
 			}
