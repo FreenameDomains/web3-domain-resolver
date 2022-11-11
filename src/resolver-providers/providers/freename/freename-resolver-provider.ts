@@ -14,14 +14,16 @@ import { FreenameMetadata } from "./freename-resolver-provider.types";
 import { FreenameResolverTools } from "./freename-resolver-tools";
 
 export class FreenameResolverProvider extends BaseResolverProvider implements IResolverProvider {
-	constructor(options: { connectionLibrary?: ConnectionLibrary, testMode?: boolean } = { testMode: false }) {
+	constructor(options: { connectionLibrary?: ConnectionLibrary, testMode?: boolean }) {
+
+		const { connectionLibrary, testMode = false } = options;
 
 		const readContractConnections: ContractConnection[] = [];
 		const writeContractConnections: ContractConnection[] = [];
 		const freenameContractConfs = cloneDeep(FREENAME_CONTRACT_CONFS);
 		for (const contractConf of freenameContractConfs) {
-			if (contractConf.test == options.testMode) {
-				const connection = options.connectionLibrary?.getConnection(contractConf.networkName) || DefaultTools.getDefaultConnection(contractConf.networkName, { infuraIfAvailable: true });
+			if (contractConf.test == testMode) {
+				const connection = connectionLibrary?.getConnection(contractConf.networkName) || DefaultTools.getDefaultConnection(contractConf.networkName, { infuraIfAvailable: true });
 				if (contractConf.type == "read") {
 					readContractConnections.push(new ContractConnection(connection, contractConf.address, contractConf.abi));
 				} else if (contractConf.type == "write") {
@@ -74,7 +76,6 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 			}
 			return false;
 		} catch (e) {
-			console.log(e);
 			return false;
 		}
 	}
