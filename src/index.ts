@@ -11,10 +11,10 @@ export * from "./resolver-providers/providers/ud/ud-resolver-provider";
 export * from "./resolver-providers/providers/base-resolver-provider";
 
 export * from "./resolvers/resolver";
-export * from "./resolvers/resolved-resource/resolved-resource.interface"
-export * from "./resolvers/resolved-resource/resolved-resource"
-export * from "./resolvers/types/resolved-resource-type"
-export * from "./resolvers/types/resolver-name"
+export * from "./resolvers/resolved-resource/resolved-resource.interface";
+export * from "./resolvers/resolved-resource/resolved-resource";
+export * from "./resolvers/types/resolved-resource-type";
+export * from "./resolvers/types/resolver-name";
 
-export * from "./tools/name-tools"
-export * from "./tools/name-tools.types"
+export * from "./tools/name-tools";
+export * from "./tools/name-tools.types";
