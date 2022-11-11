@@ -20,7 +20,7 @@ export class NameTools {
 
 		if (detailedName.type === NameType.TLD) {
 			tld = domainOrTld;
-			tldAsciiName = detailedName.asciiName
+			tldAsciiName = detailedName.asciiName;
 		}
 		else if (detailedName.type === NameType.SECOND_LEVEL_DOMAIN || detailedName.type === NameType.SUB_DOMAINED_DOMAIN) {
 			const nameSplitted = detailedName.name.split(".");

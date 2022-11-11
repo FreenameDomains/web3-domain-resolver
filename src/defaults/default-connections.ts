@@ -22,12 +22,12 @@ export const DEFAULT_INFURA_RPC_URL: Record<NetworkName, string> = {
 	bsc: "",
 	zil: "",
 	hardhat: "",
-	cronos: ""
-}
+	cronos: "",
+};
 
 export class DefaultTools {
 	static getDefaultConnection(networkName: NetworkName, options: { infuraIfAvailable?: boolean } = {}): NetworkConnection {
-		const { infuraIfAvailable = false } = options
+		const { infuraIfAvailable = false } = options;
 		let url: string | undefined;
 
 		if (infuraIfAvailable) {
