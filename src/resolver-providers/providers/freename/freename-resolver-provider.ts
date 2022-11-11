@@ -76,7 +76,6 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 			}
 			return false;
 		} catch (e) {
-			console.log(e);
 			return false;
 		}
 	}
