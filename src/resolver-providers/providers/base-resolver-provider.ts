@@ -343,7 +343,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		}
 	}
 
-	private async generateResolvedResource(mappedName: MappedName, tokenId: string, network?: NetworkName | string): Promise<IResolvedResource | undefined> {
+	protected async generateResolvedResource(mappedName: MappedName, tokenId: string, network?: NetworkName | string): Promise<IResolvedResource | undefined> {
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
 			return undefined;
@@ -366,13 +366,11 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 
 		const tokenUri = await this.getTokenUri(tokenId, readContractConnection.network);
 
-		let metadata: any | undefined;
-		if (tokenUri) {
-			metadata = await ApiCaller.getHttpsCall(tokenUri);
-		}
+		const metadata = await this.getMetadata(tokenId, readContractConnection.network);
 
-		const resolverResourceType: ResolvedResourceType = NameTools.getResolvedResourceType(mappedName.type);
 		const records = await this.getRecords(tokenId, readContractConnection.network);
+		
+		const resolverResourceType: ResolvedResourceType = NameTools.getResolvedResourceType(mappedName.type);
 
 		const resolvedResource = new ResolvedResource({
 			fullname: mappedName.fullname,
