@@ -14,7 +14,7 @@ import { FreenameMetadata } from "./freename-resolver-provider.types";
 import { FreenameResolverTools } from "./freename-resolver-tools";
 
 export class FreenameResolverProvider extends BaseResolverProvider implements IResolverProvider {
-	constructor(options: { connectionLibrary?: ConnectionLibrary, testMode?: boolean }) {
+	constructor(options: { connectionLibrary?: ConnectionLibrary, testMode?: boolean } = {}) {
 
 		const { connectionLibrary, testMode = false } = options;
 
