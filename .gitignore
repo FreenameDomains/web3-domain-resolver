@@ -105,3 +105,6 @@ dist
 
 #Compiled .js files
 lib
+
+#VSCode
+.vscode
