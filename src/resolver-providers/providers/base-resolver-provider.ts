@@ -10,6 +10,7 @@ import { ApiCaller } from "../../tools/api-caller";
 import { NameTools } from "../../tools/name-tools";
 import { MappedName } from "../../tools/name-tools.types";
 import { IResolverProvider } from "../resolver-provider.interface";
+import { ResolveOptions } from "../resolver-provider.types";
 
 export abstract class BaseResolverProvider implements IResolverProvider {
 	constructor(
@@ -89,20 +90,22 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		return contractConnected;
 	}
 
-	public async resolve(domainOrTld: string): Promise<IResolvedResource | undefined> {
+	public async resolve(domainOrTld: string, options: ResolveOptions = {}): Promise<IResolvedResource | undefined> {
 		try {
 			const mappedName = NameTools.mapName(domainOrTld);
 			if (!mappedName) {
 				return undefined;
 			}
 
+			const { network, metadataTimeout } = options
+
 			const tokenId = await this.generateTokenId(mappedName);
-			const network = await this.getNetworkFromName(mappedName);
+			const networkToUse = network || await this.getNetworkFromName(mappedName);
 			if (!tokenId) {
 				return undefined;
 			}
 
-			return this.generateResolvedResource(mappedName, tokenId, network);
+			return this.generateResolvedResource(mappedName, tokenId, { network: networkToUse, metadataTimeout: metadataTimeout });
 		}
 		catch {
 			return undefined;
@@ -121,7 +124,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 				return undefined;
 			}
 
-			return this.generateResolvedResource(mappedName, tokenId, network);
+			return this.generateResolvedResource(mappedName, tokenId, { network });
 		}
 		catch {
 			return undefined;
@@ -343,13 +346,16 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		}
 	}
 
-	protected async generateResolvedResource(mappedName: MappedName, tokenId: string, network?: NetworkName | string): Promise<IResolvedResource | undefined> {
+	protected async generateResolvedResource(mappedName: MappedName, tokenId: string, options: ResolveOptions = {}): Promise<IResolvedResource | undefined> {
+
+		const { network } = options;
+
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
 			return undefined;
 		}
 
-		const writeContractConnection = await this.getWriteContractConnection(readContractConnection.network);
+		const writeContractConnection = this.getWriteContractConnection(readContractConnection.network);
 		if (!writeContractConnection) {
 			return undefined;
 		}

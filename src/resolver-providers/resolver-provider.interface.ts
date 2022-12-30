@@ -3,6 +3,7 @@ import { IResolvedResource } from "../resolvers/resolved-resource/resolved-resou
 import { ConnectionLibrary } from "../networks/connections/connection-library";
 import { ethers } from "ethers";
 import { ProviderName } from "../resolvers/types/resolver-name";
+import { ResolveOptions } from "./resolver-provider.types";
 
 export interface IResolverProvider {
 
@@ -33,7 +34,7 @@ export interface IResolverProvider {
      * @param domainOrTld the domain to resolve. Eg. `"test.web3domain"`
      * @returns an `IResolvedResource` instance or undefined.
      */
-    resolve(domainOrTld: string): Promise<IResolvedResource | undefined>;
+    resolve(domainOrTld: string, options?: ResolveOptions): Promise<IResolvedResource | undefined>;
 
     /**
      * Resolves the given tokenId.
