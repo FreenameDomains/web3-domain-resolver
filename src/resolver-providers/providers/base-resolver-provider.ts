@@ -271,14 +271,14 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async setApproved(resource: IResolvedResource, addessToApprove: string, signer: ethers.Signer): Promise<boolean> {
+	public async setApproved(resource: IResolvedResource, addressToApprove: string, signer: ethers.Signer): Promise<boolean> {
 		const writeContract = this.getWriteContractWithSigner(resource.network, signer);
 		if (!writeContract) {
 			return false;
 		}
 
 		try {
-			const tx = await writeContract.approve(addessToApprove, resource.tokenId);
+			const tx = await writeContract.approve(addressToApprove, resource.tokenId);
 			const approveReceipt = await tx.wait();
 			if (approveReceipt) {
 				return true;

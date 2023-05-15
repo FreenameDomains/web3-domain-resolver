@@ -75,7 +75,7 @@ export class NameTools {
 		//Check if the search input name has a repeated dot (es. app..cryptotld)
 		const dotCount = asciiString.split(".").length - 1;
 		if (dotCount > 1) {
-			errors.push("REPETED_DOT");
+			errors.push("REPEATED_DOT");
 			foundError = true;
 		}
 

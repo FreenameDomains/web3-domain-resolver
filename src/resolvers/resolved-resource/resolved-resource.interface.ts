@@ -26,7 +26,7 @@ export interface IResolvedResource {
     type: ResolvedResourceType;
 
     /**
-    * The uint256 string rappresentation of the resolved resource NFT.
+    * The uint256 string of the resolved resource NFT.
     */
     tokenId: string;
 
@@ -106,11 +106,11 @@ export interface IResolvedResource {
     transfer(addressTo: string, signer: ethers.Signer): Promise<boolean>;
 
     /**
-     * Calls the blockchain registry to approve the `addessToApprove` to the resolved resource NFT eg. to give the address permission to transfer. Usually the `signer` must be the owner of the resolved resource NFT.
-     * @param addessToApprove the address to approve.
+     * Calls the blockchain registry to approve the `addressToApprove` to the resolved resource NFT eg. to give the address permission to transfer. Usually the `signer` must be the owner of the resolved resource NFT.
+     * @param addressToApprove the address to approve.
      * @param signer a `ether.Signer` wallet. If `signer.provider` is `undefined` the `provider` of the resolved resource's `resolverProvider` is used.
      */
-    setApproved(addessToApprove: string, signer: ethers.Signer): Promise<boolean>;
+    setApproved(addressToApprove: string, signer: ethers.Signer): Promise<boolean>;
 
     /**
      * Calls the blockchain registry to set the specified key-value pair as a record on the resolved resource NFT.

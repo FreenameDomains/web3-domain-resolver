@@ -175,8 +175,8 @@ export class ResolvedResource implements IResolvedResource {
 		return await this._resolverProvider.transfer(this, addressTo, signer);
 	}
 
-	public async setApproved(addessToApprove: string, signer: Signer): Promise<boolean> {
-		return await this._resolverProvider.setApproved(this, addessToApprove, signer);
+	public async setApproved(addressToApprove: string, signer: Signer): Promise<boolean> {
+		return await this._resolverProvider.setApproved(this, addressToApprove, signer);
 	}
 
 	public async setRecord(key: string, value: string, signer: Signer): Promise<boolean> {

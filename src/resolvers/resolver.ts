@@ -47,7 +47,7 @@ export class Resolver {
 	 * If the tokenId is valid, exists on the blockchain and can be resolved a `IResolvedResource` is given, otherwise the result is `undefined`.
 	 * To obtain the resolved resource a series of calls to the blockchain are made, depending on the chain traffic the `resolveFromTokenId` call can take a couple of seconds to be completed.
 	 * To speed up the resolution a `ResolverName` can be provided, in this case only the given provider is checked.
-	 * @param tokenId the NFT tokenId uint256 string rappresentation to resolve
+	 * @param tokenId the NFT tokenId uint256 string to resolve
 	 * @param resolverProviderName the provider of the tokenId to resolve
 	 * @returns an `IResolvedResource` instance or `undefined`.
 	 */

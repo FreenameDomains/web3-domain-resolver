@@ -13,7 +13,7 @@ export const DEFAULT_RPC_URL: Record<NetworkName, string> = {
 	zil: "",
 };
 
-//theese urls can only connect to Freename smart contract addresses
+//these urls can only connect to Freename smart contract addresses
 export const DEFAULT_INFURA_RPC_URL: Record<NetworkName, string> = {
 	polygon: "https://polygon-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
 	ethereum: "https://mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
