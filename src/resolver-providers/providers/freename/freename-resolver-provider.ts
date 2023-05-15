@@ -12,6 +12,7 @@ import { BaseResolverProvider } from "../base-resolver-provider";
 import { FREENAME_CONTRACT_CONFS } from "./freename-resolver-provider.consts";
 import { FreenameMetadata } from "./freename-resolver-provider.types";
 import { FreenameResolverTools } from "./freename-resolver-tools";
+import { NameTools } from "../../../tools/name-tools";
 
 export class FreenameResolverProvider extends BaseResolverProvider implements IResolverProvider {
 	constructor(options: { connectionLibrary?: ConnectionLibrary, testMode?: boolean } = {}) {
@@ -163,6 +164,24 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 
 	public async getNameFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
 		const metadata: FreenameMetadata = await this.getMetadata(tokenId);
-		return metadata?.name;
+		const name = metadata?.name;
+
+		//Check if the name generates the same tokenId
+		//Technically the metadata file can be modified to contain a different name
+		if (!name) {
+			return undefined;
+		}
+
+		const mappedName = NameTools.mapName(name);
+		if (!mappedName) {
+			return undefined;
+		}
+
+		const generatedTokenId = await this.generateTokenId(mappedName);
+		if (generatedTokenId !== tokenId) {
+			return undefined;
+		}
+
+		return name;
 	}
 }

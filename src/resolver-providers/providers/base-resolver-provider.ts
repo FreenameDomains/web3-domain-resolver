@@ -354,11 +354,6 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 			return undefined;
 		}
 
-		const exists = await this.exists(tokenId, readContractConnection.network);
-		if (!exists) {
-			return undefined;
-		}
-
 		const ownerAddress = await this.getOwnerAddress(tokenId, readContractConnection.network);
 		if (!ownerAddress) {
 			return undefined;

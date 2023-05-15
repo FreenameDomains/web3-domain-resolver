@@ -117,7 +117,25 @@ export class ENSResolverProvider extends BaseResolverProvider implements IResolv
 
 	public override async getNameFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
 		const metadata = await this.getMetadata(tokenId, network);
-		return metadata?.name;
+		const name = metadata?.name;
+
+		//Check if the name generates the same tokenId
+		//Technically the metadata file can be modified to contain a different name
+		if (!name) {
+			return undefined;
+		}
+
+		const mappedName = NameTools.mapName(name);
+		if (!mappedName) {
+			return undefined;
+		}
+
+		const generatedTokenId = await this.generateTokenId(mappedName);
+		if (generatedTokenId !== tokenId) {
+			return undefined;
+		}
+
+		return name;
 	}
 
 	public override async setRecord(resource: IResolvedResource, key: string, value: string, signer: ethers.Signer): Promise<boolean> {
