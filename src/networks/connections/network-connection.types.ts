@@ -6,7 +6,8 @@ export enum NetworkName {
     ZILLIQA = "zil",
     HARDHAT = "hardhat",
     AURORA = "aurora",
-    CRONOS = "cronos"
+    CRONOS = "cronos",
+    SOLANA = "solana"
 }
 
 export type NetworkConnection = {

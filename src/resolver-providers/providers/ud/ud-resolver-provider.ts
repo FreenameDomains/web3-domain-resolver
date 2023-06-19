@@ -16,10 +16,10 @@ export class UDResolverProvider extends BaseResolverProvider implements IResolve
 
 	constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
 		const ethereumConnection = options.connectionLibrary?.getConnection(NetworkName.ETHEREUM) || DefaultTools.getDefaultConnection(NetworkName.ETHEREUM);
-		const ethReadContractAddress = new ContractConnection(ethereumConnection, UNS_ETH_CONTRACT_ADDRESS, ERC721_UD_PROXY_ABI);
+		const ethReadContractAddress = new ContractConnection({ network: ethereumConnection, address: UNS_ETH_CONTRACT_ADDRESS, abi: ERC721_UD_PROXY_ABI });
 
 		const polygonConnection = options.connectionLibrary?.getConnection(NetworkName.POLYGON) || DefaultTools.getDefaultConnection(NetworkName.POLYGON);
-		const polygonReadContractAddress = new ContractConnection(polygonConnection, UNS_POLYGON_CONTRACT_ADDRESS, ERC721_UD_PROXY_ABI);
+		const polygonReadContractAddress = new ContractConnection({ network: polygonConnection, address: UNS_POLYGON_CONTRACT_ADDRESS, abi: ERC721_UD_PROXY_ABI });
 
 		super(ProviderName.UD, UD_SUPPORTED_TLDS, [polygonReadContractAddress, ethReadContractAddress], [polygonReadContractAddress, ethReadContractAddress]);
 		this._resolution = new Resolution();
@@ -69,13 +69,17 @@ export class UDResolverProvider extends BaseResolverProvider implements IResolve
 
 		try {
 			unhash = await this._resolution.unhash(hash, NamingServiceName.UNS);
-		} catch { }
+		} catch {
+			//
+		}
 
 		if (!unhash) {
 			try {
 				unhash = await this._resolution.unhash(hash, NamingServiceName.ZNS);
 			}
-			catch { }
+			catch {
+				//
+			}
 		}
 
 		return unhash;

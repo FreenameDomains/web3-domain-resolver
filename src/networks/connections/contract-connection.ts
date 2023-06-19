@@ -1,43 +1,66 @@
 import { ethers } from "ethers";
 import { NetworkConnection, NetworkName } from "./network-connection.types";
+import { ConnectionInfo } from "./contract-connection.types";
+import { Contract, ContractFactory } from "./contract";
+import { Connection } from "@solana/web3.js";
 
+/**
+ * This class represents a connection to a smart contract.
+ */
 export class ContractConnection {
 
-	constructor(
-		connection: NetworkConnection,
-		address: string,
-		abi: ethers.ContractInterface,
-	) {
-		this._connection = connection;
+	/**
+	 * Connection info
+	 */
+	protected _connection: NetworkConnection | Connection;
+	/**
+	 * Smart contract address
+	 */
+	protected _address: string;
+	/**
+	 * Smart contract provider
+	 */
+	protected _provider!: ethers.providers.Provider;
+	/**
+	 * Smart contract instance
+	 */
+	protected _contract!: Contract;
+	/**
+	 * Smart contract abi
+	 */
+	// protected _abi?: ethers.ContractInterface;
+
+	public constructor(arg: ConnectionInfo) {
+		const { network, address } = arg || {};
+		this._connection = network;
 		this._address = address;
-		this._provider = new ethers.providers.JsonRpcProvider(connection.rpcUrl);
-		this._abi = abi;
-		this._contract = new ethers.Contract(address, abi, this._provider);
+		if (!(network instanceof Connection)) {
+			this._provider = new ethers.providers.JsonRpcProvider(network.rpcUrl);
+		}
+		this._contract = ContractFactory.createContract(arg);
 	}
 
-	private _connection: NetworkConnection;
 	public get connection(): NetworkConnection {
+		if (this._connection instanceof Connection) return { networkName: "solana", rpcUrl: "" };
 		return this._connection;
 	}
 
-	private _address: string;
 	public get address(): string {
 		return this._address;
 	}
 
-	private _provider: ethers.providers.Provider;
 	public get provider(): ethers.providers.Provider {
 		return this._provider;
 	}
 
-	private _contract: ethers.Contract;
-	public get contract(): ethers.Contract {
+	public get contract(): Contract {
 		return this._contract;
 	}
 
 	public get network(): NetworkName | string {
+		if (this._connection instanceof Connection) return "solana";
 		return this._connection.networkName;
 	}
 
-	private _abi: ethers.ContractInterface;
+
 }

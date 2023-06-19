@@ -1,4 +1,4 @@
-import { Contract, ethers } from "ethers";
+import { ethers } from "ethers";
 import { ConnectionLibrary } from "../../networks/connections/connection-library";
 import { ContractConnection } from "../../networks/connections/contract-connection";
 import { NetworkName } from "../../networks/connections/network-connection.types";
@@ -75,15 +75,17 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		return this.writeContractConnections.find(x => x.network == networkName);
 	}
 
-	protected getWriteContractWithSigner(networkName: NetworkName | string, signer: ethers.Signer) {
+	protected getWriteContractWithSigner(networkName: NetworkName | string, signer: string | ethers.Signer) {
 		const writeContractConnection = this.getWriteContractConnection(networkName);
 		if (!writeContractConnection) {
 			return undefined;
 		}
 
 		let signerToUse = signer;
-		if (!signer.provider) {
-			signerToUse = signer.connect(writeContractConnection.provider);
+		if (typeof signer !== "string") {
+			if (!signer.provider) {
+				signerToUse = signer.connect(writeContractConnection.provider);
+			}
 		}
 		const contractConnected = writeContractConnection.contract.connect(signerToUse);
 		return contractConnected;
@@ -227,13 +229,13 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 	}
 
 	public async getRecord(tokenId: string, key: string, network?: NetworkName | string | undefined): Promise<string | undefined> {
-		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
+		const readContractConnection: ContractConnection | undefined = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
 			return undefined;
 		}
 
 		try {
-			return await readContractConnection.contract.get(key, tokenId);
+			return await readContractConnection.contract.get({ key, tokenId });
 		}
 		catch {
 			return undefined;
@@ -247,7 +249,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		}
 
 		try {
-			return await readContractConnection.contract.getMany(keys, tokenId);
+			return await readContractConnection.contract.getMany({ keys, tokenId });
 		} catch {
 			return undefined;
 		}
@@ -364,7 +366,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		const metadata = await this.getMetadata(tokenId, readContractConnection.network);
 
 		const records = await this.getRecords(tokenId, readContractConnection.network);
-		
+
 		const resolverResourceType: ResolvedResourceType = NameTools.getResolvedResourceType(mappedName.type);
 
 		const resolvedResource = new ResolvedResource({

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { NetworkName } from "../../../networks/connections/network-connection.types";
+
 enum FreenameItemType {
     TLD = "TLD",
     SECOND_LEVEL_DOMAIN = "SECOND_LEVEL_DOMAIN",
@@ -22,4 +25,11 @@ export type FreenameMetadata = {
     properties: {
         [key: string]: any
     }
+}
+
+export type FreenameContractConfig = {
+    networkName: NetworkName,
+    address: string, type: "read" | "write",
+    test: boolean,
+    abi?: Record<string, any>
 }

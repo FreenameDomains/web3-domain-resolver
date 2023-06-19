@@ -3,8 +3,7 @@ import cloneDeep from "lodash.clonedeep";
 import { DefaultTools } from "../../../defaults/default-connections";
 import { ConnectionLibrary } from "../../../networks/connections/connection-library";
 import { ContractConnection } from "../../../networks/connections/contract-connection";
-import { NetworkName } from "../../../networks/connections/network-connection.types";
-import { IResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource.interface";
+import { NetworkConnection, NetworkName } from "../../../networks/connections/network-connection.types";
 import { ProviderName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";
@@ -13,6 +12,7 @@ import { FREENAME_CONTRACT_CONFS } from "./freename-resolver-provider.consts";
 import { FreenameMetadata } from "./freename-resolver-provider.types";
 import { FreenameResolverTools } from "./freename-resolver-tools";
 import { NameTools } from "../../../tools/name-tools";
+import { ConnectionInfo } from "../../../networks/connections/contract-connection.types";
 
 export class FreenameResolverProvider extends BaseResolverProvider implements IResolverProvider {
 	constructor(options: { connectionLibrary?: ConnectionLibrary, testMode?: boolean } = {}) {
@@ -24,79 +24,17 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 		const freenameContractConfs = cloneDeep(FREENAME_CONTRACT_CONFS);
 		for (const contractConf of freenameContractConfs) {
 			if (contractConf.test == testMode) {
-				const connection = connectionLibrary?.getConnection(contractConf.networkName) || DefaultTools.getDefaultConnection(contractConf.networkName, { infuraIfAvailable: true });
+				const connection: NetworkConnection = connectionLibrary?.getConnection(contractConf.networkName) || DefaultTools.getDefaultConnection(contractConf.networkName, { infuraIfAvailable: true });
+				const connectionInfo: ConnectionInfo = { network: connection, address: contractConf.address, abi: contractConf.abi as ethers.ContractInterface };
 				if (contractConf.type == "read") {
-					readContractConnections.push(new ContractConnection(connection, contractConf.address, contractConf.abi));
+					readContractConnections.push(new ContractConnection(connectionInfo));
 				} else if (contractConf.type == "write") {
-					writeContractConnections.push(new ContractConnection(connection, contractConf.address, contractConf.abi));
+					writeContractConnections.push(new ContractConnection(connectionInfo));
 				}
 			}
 		}
 
 		super(ProviderName.FREENAME, ["*"], readContractConnections, writeContractConnections);
-	}
-
-	public override async getRecord(tokenId: string, key: string, network?: NetworkName | string | undefined): Promise<string | undefined> {
-		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
-		if (!readContractConnection) {
-			return undefined;
-		}
-
-		try {
-			return await readContractConnection.contract.getRecord(key, tokenId);
-		}
-		catch {
-			return undefined;
-		}
-	}
-
-	public override async getManyRecords(tokenId: string, keys: string[], network?: NetworkName | string | undefined): Promise<string[] | undefined> {
-		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
-		if (!readContractConnection) {
-			return undefined;
-		}
-
-		try {
-			return await readContractConnection.contract.getManyRecords(keys, tokenId);
-		} catch {
-			return undefined;
-		}
-	}
-
-	public override async setRecord(resource: IResolvedResource, key: string, value: string, signer: ethers.Signer): Promise<boolean> {
-		const writeContract = this.getWriteContractWithSigner(resource.network, signer);
-		if (!writeContract) {
-			return false;
-		}
-
-		try {
-			const tx = await writeContract.setRecord(key, value, resource.tokenId);
-			const approveReceipt = await tx.wait();
-			if (approveReceipt) {
-				return true;
-			}
-			return false;
-		} catch (e) {
-			return false;
-		}
-	}
-
-	public override async setRecords(resource: IResolvedResource, keys: string[], values: string[], signer: ethers.Signer): Promise<boolean> {
-		const writeContract = this.getWriteContractWithSigner(resource.network, signer);
-		if (!writeContract) {
-			return false;
-		}
-
-		try {
-			const tx = await writeContract.setManyRecords(keys, values, resource.tokenId);
-			const approveReceipt = await tx.wait();
-			if (approveReceipt) {
-				return true;
-			}
-			return false;
-		} catch (e) {
-			return false;
-		}
 	}
 
 	public async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
@@ -156,13 +94,14 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 		}
 
 		try {
-			return await readContractConnection.contract.getAllKeys(tokenId);
+			const contract = readContractConnection.contract;
+			return await contract.getAllKeys(tokenId);
 		} catch {
 			return undefined;
 		}
 	}
 
-	public async getNameFromTokenId(tokenId: string, network?: NetworkName | undefined): Promise<string | undefined> {
+	public async getNameFromTokenId(tokenId: string): Promise<string | undefined> {
 		const metadata: FreenameMetadata = await this.getMetadata(tokenId);
 		const name = metadata?.name;
 

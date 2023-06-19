@@ -1,4 +1,5 @@
 import { NetworkName } from "../../../networks/connections/network-connection.types";
+import { FreenameContractConfig } from "./freename-resolver-provider.types";
 
 export const FNS_ABI = [
 	{
@@ -1519,7 +1520,7 @@ export const FNS_ABI = [
 ];
 
 
-export const FREENAME_CONTRACT_CONFS: { networkName: NetworkName, address: string, type: "read" | "write", test: boolean, abi: any }[] = [
+export const FREENAME_CONTRACT_CONFS: FreenameContractConfig[] = [
 	{
 		address: "0x6034C0d80e6d023FFd62Ba48e6B5c13afe72D143",
 		networkName: NetworkName.POLYGON_MUMBAI,
@@ -1589,5 +1590,11 @@ export const FREENAME_CONTRACT_CONFS: { networkName: NetworkName, address: strin
 		test: false,
 		type: "write",
 		abi: FNS_ABI,
+	},
+	{
+		address: "FPvXvNtFUgnbJM6d8FTGKzKLeWQADYosLgcEuRDcRwX2",
+		networkName: NetworkName.SOLANA,
+		test: true,
+		type: "read",
 	},
 ];

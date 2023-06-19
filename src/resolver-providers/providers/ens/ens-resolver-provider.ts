@@ -151,7 +151,7 @@ export class ENSResolverProvider extends BaseResolverProvider implements IResolv
 			try {
 				const res = await readContractConnection.contract.available(tokenId);
 				if (!res) {
-					return readContractConnection.network;
+					return readContractConnection.connection;
 				}
 			} catch {
 				continue;
