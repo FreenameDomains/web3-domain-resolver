@@ -26,9 +26,10 @@ export class SolanaContractConnection extends ContractConnection {
 		const nftName: Buffer = Buffer.from(arg);
 		const [nftAddress] = await PublicKey.findProgramAddressSync([mintBuffer, collectionMintPDABuffer, nftName], _programId);
 		console.log(nftAddress.toString());
-		const _nft = this._contract.get({ key: arg });
-		// const _nft = await this._contract.nfts().findByMint({ mintAddress: nftAddress });
+		const _nft = await this._contract.get({ key: arg });
 		console.log(_nft);
+		const owner = await this._contract.ownerOf(nftAddress.toString());
+		console.log("OWNER ADDRESS: ", owner);
 	}
 
 }

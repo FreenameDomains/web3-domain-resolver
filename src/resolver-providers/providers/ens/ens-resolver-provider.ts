@@ -16,7 +16,7 @@ export class ENSResolverProvider extends BaseResolverProvider implements IResolv
 
 	constructor(options: { connectionLibrary?: ConnectionLibrary } = {}) {
 		const ethConnection = options.connectionLibrary?.getConnection(NetworkName.ETHEREUM) || DefaultTools.getDefaultConnection(NetworkName.ETHEREUM);
-		const ensContract = new ContractConnection(ethConnection, ENS_CONTRACT_ADDRESS, ENS_ABI);
+		const ensContract = new ContractConnection({ network: ethConnection, address: ENS_CONTRACT_ADDRESS, abi: ENS_ABI });
 
 		super(ProviderName.ENS, ENS_SUPPORTED_TLDS, [ensContract], [ensContract]);
 	}
@@ -151,7 +151,7 @@ export class ENSResolverProvider extends BaseResolverProvider implements IResolv
 			try {
 				const res = await readContractConnection.contract.available(tokenId);
 				if (!res) {
-					return readContractConnection.connection;
+					return readContractConnection.connection.networkName;
 				}
 			} catch {
 				continue;

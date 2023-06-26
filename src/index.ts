@@ -1,3 +1,5 @@
+// import { SolanaContractConnection } from "./networks/connections/sol-contract-connection";
+
 export * from "./defaults/web3-resolver";
 
 export * from "./networks/connections/connection-library";
@@ -18,3 +20,6 @@ export * from "./resolvers/types/resolver-name";
 
 export * from "./tools/name-tools";
 export * from "./tools/name-tools.types";
+
+// const sol = new SolanaContractConnection({ network: { networkName: "solana", rpcUrl: "null" }, address: "null" });
+// sol.findNft();

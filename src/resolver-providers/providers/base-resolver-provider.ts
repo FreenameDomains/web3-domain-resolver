@@ -143,7 +143,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 
 		for (const readContractConnection of readContracts) {
 			try {
-				const reverseOfRes: ethers.BigNumber = await readContractConnection.contract.reverseOf(address);
+				const reverseOfRes: ethers.BigNumber | string | undefined = await readContractConnection.contract.reverseOf(address);
 				if (reverseOfRes) {
 					const tokenId = reverseOfRes.toString();
 					if (tokenId !== "0") {
@@ -221,7 +221,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		}
 
 		try {
-			return await readContractConnection.contract.isApprovedOrOwner(tokenId, addressToCheck);
+			return await readContractConnection.contract.isApprovedOrOwner({ tokenId, address: addressToCheck });
 		}
 		catch {
 			return false;
