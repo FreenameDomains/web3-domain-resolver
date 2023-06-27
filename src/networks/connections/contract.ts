@@ -93,7 +93,7 @@ export class Contract {
 		if (this._metaplex && !result) {
 			const _nft = await this._findSolanaNft(key);
 			if (!_nft) return undefined;
-			const _nftName: string | undefined = _nft?.name;
+			// const _nftName: string | undefined = _nft?.name;
 			result = JSON.stringify(_nft);
 		}
 		return result;
@@ -136,28 +136,32 @@ export class Contract {
 	 * @returns 
 	 */
 	public async available(tokenId: string): Promise<boolean> {
+		let result = false;
 		if (this._ethers) {
-			return await this._ethers.available(tokenId);
+			result = await this._ethers.available(tokenId);
 		}
-		if (this._metaplex) {
+		if (this._metaplex && !result) {
 			const _nft = await this._findSolanaNft(tokenId);
 			if (!_nft) return true;
 		}
-		return false;
+		return result;
 	}
 	/**
 	 * 
 	 * @param tokenId 
 	 * @returns 
 	 */
-	public async reverseOf(tokenId: string): Promise<BigNumber | string | undefined> {
+	public async reverseOf(tokenId: string): Promise<string | undefined> {
+		let result = undefined;
 		if (this._ethers) {
-			return await this._ethers.reverseOf(tokenId);
+			result = await this._ethers.reverseOf(tokenId);
 		}
-		if (this._metaplex) {
-			const _nft = await this._findSolanaNft(tokenId);
+		if (this._metaplex && !result) {
+			const nftAddress: PublicKey = new PublicKey(tokenId);
+			const _nft = await this._metaplex.nfts().findByMint({ mintAddress: nftAddress });
+			if (_nft) result = JSON.stringify(_nft);
 		}
-		return undefined;
+		return result;
 	}
 	/**
 	 * 
@@ -165,14 +169,15 @@ export class Contract {
 	 * @returns 
 	 */
 	public async tokenURI(tokenId: string): Promise<string | undefined> {
+		let result = undefined;
 		if (this._ethers) {
-			return await this._ethers.tokenUri(tokenId);
+			result = await this._ethers.tokenUri(tokenId);
 		}
-		if (this._metaplex) {
+		if (this._metaplex && !result) {
 			const _nft = await this._findSolanaNft(tokenId);
-			if (!_nft) return undefined;
-			return _nft?.uri;
+			result = _nft?.uri;
 		}
+		return result;
 	}
 	/**
 	 * 
