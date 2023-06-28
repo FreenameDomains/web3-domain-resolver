@@ -4,7 +4,10 @@ export * from "./defaults/web3-resolver";
 
 export * from "./networks/connections/connection-library";
 export * from "./networks/connections/contract-connection";
+export * from "./networks/connections/contract-connection.types";
 export * from "./networks/connections/network-connection.types";
+export * from "./networks/connections/contract";
+// export * from "./networks/connections/sol-contract-connection";
 
 export * from "./resolver-providers/resolver-provider.interface";
 export * from "./resolver-providers/providers/ens/ens-resolver-provider";
