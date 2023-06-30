@@ -118,7 +118,7 @@ export interface IResolvedResource {
      * @param value the value of the record
      * @param signer a `ether.Signer` wallet. If `signer.provider` is `undefined` the `provider` of the resolved resource's `resolverProvider` is used.
      */
-    setRecord(key: string, value: string, signer: ethers.Signer): Promise<boolean>;
+    setRecord(key: string, value: string, signer: string | ethers.Signer): Promise<boolean>;
 
     /**
      * Calls the blockchain registry to set the specified key-value pairs as records on the resolved resource NFT. 
@@ -127,7 +127,7 @@ export interface IResolvedResource {
      * @param values the values of the records
      * @param signer a `ether.Signer` wallet. If `signer.provider` is `undefined` the `provider` of the resolved resource's `resolverProvider` is used. 
      */
-    setRecords(keys: string[], values: string[], signer: ethers.Signer): Promise<boolean>;
+    setRecords(keys: string[], values: string[], signer: string | ethers.Signer): Promise<boolean>;
 
     /**
      * Set the `signer` address as a reverse resolution record of the resolved resource NFT.

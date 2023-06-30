@@ -53,12 +53,8 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 	}
 
 	public async getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined> {
-		const tokenId = await this.generateTokenId(mappedName);
-		if (!tokenId) {
-			return undefined;
-		}
 
-		const metadata: FreenameMetadata = await this.getMetadata(tokenId);
+		const metadata: FreenameMetadata = await this.getMetadata(mappedName.fullname);
 		const network = FreenameResolverTools.networkNameFormFreenameNetwork(metadata?.network);
 		return network;
 	}

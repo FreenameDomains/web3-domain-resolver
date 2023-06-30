@@ -83,7 +83,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 
 		let signerToUse = signer;
 		if (typeof signer !== "string") {
-			if (!signer.provider) {
+			if (!signer?.provider) {
 				signerToUse = signer.connect(writeContractConnection.provider);
 			}
 		}
@@ -98,15 +98,15 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 				return undefined;
 			}
 
-			const tokenId = await this.generateTokenId(mappedName);
+			// const tokenId = domainOrTld; //await this.generateTokenId(mappedName);
 			const network = await this.getNetworkFromName(mappedName);
-			if (!tokenId) {
-				return undefined;
-			}
+			// if (!tokenId) {
+			// 	return undefined;
+			// }
 
-			return this.generateResolvedResource(mappedName, tokenId, network);
+			return this.generateResolvedResource(mappedName, domainOrTld, network);
 		}
-		catch {
+		catch (e) {
 			return undefined;
 		}
 	}
