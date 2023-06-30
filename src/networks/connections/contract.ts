@@ -26,6 +26,7 @@ export class Contract {
 	private _ethers!: ethers.Contract;
 	private _metaplex!: Metaplex;
 	private _connectionInfo!: ConnectionInfo;
+	private _signer!: string | ethers.Signer;
 
 	public constructor() {
 		//
@@ -62,7 +63,10 @@ export class Contract {
 	}
 
 	public connect(signer: string | ethers.Signer): Contract {
-		if (this._ethers) this._ethers.connect(signer);
+		if (this._ethers) {
+			this._signer = signer;
+			this._ethers.connect(signer);
+		}
 		if (this._metaplex) return this;
 		return this;
 	}
@@ -79,12 +83,14 @@ export class Contract {
 			const _tokenId = await this.generateEVMTokenId(tokenId);
 			try {
 				result = await this._ethers.exists(_tokenId);
+				console.log("TOKEN EXIST ON ETHEREUM", result);
 			} catch (error) {
 				result = false;
 			}
 		}
 		if (this._metaplex && !result) {
 			result = await !!this._findSolanaNft(tokenId);
+			console.log("TOKEN EXIST ON SOLANA", result);
 		}
 		return result;
 	}
@@ -183,10 +189,12 @@ export class Contract {
 		if (this._ethers) {
 			const _tokenId = await this.generateEVMTokenId(tokenId);
 			result = await this._ethers.tokenUri(_tokenId);
+			console.log("TOKEN URI ON ETHEREUM", result);
 		}
 		if (this._metaplex && !result) {
 			const _nft = await this._findSolanaNft(tokenId);
 			result = _nft?.uri;
+			console.log("TOKEN URI ON SOLANA", result);
 		}
 		return result;
 	}
@@ -201,6 +209,7 @@ export class Contract {
 			const _tokenId = await this.generateEVMTokenId(tokenId);
 			try {
 				result = await this._ethers.ownerOf(_tokenId);
+				console.log("TOKEN OWNER ON ETHEREUM", result);
 			} catch (error) {
 				result = undefined;
 			}
@@ -216,6 +225,7 @@ export class Contract {
 				);
 				if (largestAccountInfo?.value) {
 					result = (largestAccountInfo.value.data as any).parsed.info.owner;
+					console.log("TOKEN OWNER ON SOLANA", result);
 				}
 			}
 		}
@@ -287,11 +297,15 @@ export class Contract {
 	public async setMany(keys: string[], values: string[], tokenId: string): Promise<any> {
 		try {
 			if (this._ethers) {
-				const _tokenId = this.generateEVMTokenId(tokenId);
-				return await this._ethers.setManyRecords(keys, values, _tokenId);
+				// const _tokenId = this.generateEVMTokenId(tokenId);
+				this._ethers.connect(this._signer);
+				const result = await this._ethers.setManyRecords(keys, values, tokenId);
+				console.log("SET MANY RESULT", result);
+				return result;
 			}
 			return;
 		} catch (error) {
+			console.log("SET MANY ERROR", error);
 			return;
 		}
 	}

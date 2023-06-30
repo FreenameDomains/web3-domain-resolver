@@ -1591,18 +1591,18 @@ export const FREENAME_CONTRACT_CONFS: FreenameContractConfig[] = [
 		type: "write",
 		abi: FNS_ABI,
 	},
-	{
-		address: "",
-		networkName: NetworkName.SOLANA,
-		test: false,
-		type: "read",
-	},
-	{
-		address: "",
-		networkName: NetworkName.SOLANA,
-		test: false,
-		type: "write",
-	},
+	// {
+	// 	address: "",
+	// 	networkName: NetworkName.SOLANA,
+	// 	test: false,
+	// 	type: "read",
+	// },
+	// {
+	// 	address: "",
+	// 	networkName: NetworkName.SOLANA,
+	// 	test: false,
+	// 	type: "write",
+	// },
 	{
 		address: "FPvXvNtFUgnbJM6d8FTGKzKLeWQADYosLgcEuRDcRwX2",
 		networkName: NetworkName.SOLANA_DEVNET,

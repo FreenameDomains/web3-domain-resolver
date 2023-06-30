@@ -80,13 +80,15 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		if (!writeContractConnection) {
 			return undefined;
 		}
-
+		console.log("SIGNER SENDED", signer);
 		let signerToUse = signer;
 		if (typeof signer !== "string") {
 			if (!signer?.provider) {
+				console.log("SIGNER HAS NO PROVIDER");
 				signerToUse = signer.connect(writeContractConnection.provider);
 			}
 		}
+		console.log("SIGNER TO USE", signerToUse);
 		const contractConnected = writeContractConnection.contract.connect(signerToUse);
 		return contractConnected;
 	}
@@ -303,8 +305,10 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 			if (approveReceipt) {
 				return true;
 			}
+			console.log("SET_RECORD", approveReceipt);
 			return false;
 		} catch (e) {
+			console.log("SET_RECORD", e);
 			return false;
 		}
 	}
