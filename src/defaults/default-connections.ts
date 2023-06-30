@@ -12,6 +12,7 @@ export const DEFAULT_RPC_URL: Record<NetworkName, string> = {
 	hardhat: "http://127.0.0.1:8545/",
 	zil: "",
 	solana: "",
+	"solana-devnet": "",
 };
 
 //these urls can only connect to Freename smart contract addresses
@@ -19,12 +20,13 @@ export const DEFAULT_INFURA_RPC_URL: Record<NetworkName, string> = {
 	polygon: "https://polygon-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
 	ethereum: "https://mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
 	aurora: "https://aurora-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
-	"polygon-mumbai": "",
+	"polygon-mumbai": "https://polygon-mumbai.infura.io/v3/80f2c70ca3f04b289ad19f385d51651b",
 	bsc: "",
 	zil: "",
 	hardhat: "",
 	cronos: "",
 	solana: "",
+	"solana-devnet": "",
 };
 
 export class DefaultTools {

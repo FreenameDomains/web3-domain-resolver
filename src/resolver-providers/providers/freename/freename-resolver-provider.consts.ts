@@ -1592,9 +1592,27 @@ export const FREENAME_CONTRACT_CONFS: FreenameContractConfig[] = [
 		abi: FNS_ABI,
 	},
 	{
-		address: "FPvXvNtFUgnbJM6d8FTGKzKLeWQADYosLgcEuRDcRwX2",
+		address: "",
 		networkName: NetworkName.SOLANA,
+		test: false,
+		type: "read",
+	},
+	{
+		address: "",
+		networkName: NetworkName.SOLANA,
+		test: false,
+		type: "write",
+	},
+	{
+		address: "FPvXvNtFUgnbJM6d8FTGKzKLeWQADYosLgcEuRDcRwX2",
+		networkName: NetworkName.SOLANA_DEVNET,
 		test: true,
 		type: "read",
+	},
+	{
+		address: "FPvXvNtFUgnbJM6d8FTGKzKLeWQADYosLgcEuRDcRwX2",
+		networkName: NetworkName.SOLANA_DEVNET,
+		test: true,
+		type: "write",
 	},
 ];

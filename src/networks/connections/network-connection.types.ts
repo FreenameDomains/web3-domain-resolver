@@ -7,6 +7,7 @@ export enum NetworkName {
     HARDHAT = "hardhat",
     AURORA = "aurora",
     CRONOS = "cronos",
+    SOLANA_DEVNET = "solana-devnet",
     SOLANA = "solana"
 }
 
