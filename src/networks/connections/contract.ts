@@ -1,11 +1,8 @@
-import { Metaplex, Nft, NftWithToken, Sft, SftWithToken, bundlrStorage, keypairIdentity } from "@metaplex-foundation/js";
-import { Connection, Keypair, PublicKey, clusterApiUrl } from "@solana/web3.js";
+import { Metaplex, Nft, NftWithToken, Sft, SftWithToken } from "@metaplex-foundation/js";
+import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { ethers } from "ethers";
 import { ConnectionInfo } from "./contract-connection.types";
 import { NetworkName } from "./network-connection.types";
-import { FreenameContractConfig } from "../../resolver-providers/providers/freename/freename-resolver-provider.types";
-import { FREENAME_CONTRACT_CONFS } from "../../resolver-providers/providers/freename/freename-resolver-provider.consts";
-import { MappedName } from "../../tools/name-tools.types";
 import { NameTools } from "../../tools/name-tools";
 
 export abstract class ContractFactory {
@@ -62,19 +59,11 @@ export class Contract {
 		const connection = new Connection(clusterApiUrl(env));
 		this._metaplex = new Metaplex(connection);
 		this._connectionInfo = arg;
-		// if (typeof arg !== "undefined" && typeof arg !== "string") {
-		// 	// const wallet: Keypair = Keypair.fromSecretKey(Buffer.from(arg));
-		// 	this._metaplex = new Metaplex(connection).use(keypairIdentity(arg)).use(bundlrStorage());
-		// 	return;
-		// }
 	}
 
 	public connect(signer: string | ethers.Signer): Contract {
-		if (typeof signer !== "string") {
-			this._ethers.connect(signer);
-			// } else {
-			// this._metaplex = new Metaplex(connection).use(keypairIdentity(arg)).use(bundlrStorage());
-		}
+		if (this._ethers) this._ethers.connect(signer);
+		if (this._metaplex) return this;
 		return this;
 	}
 
@@ -87,11 +76,7 @@ export class Contract {
 	public async exists(tokenId: string): Promise<boolean> {
 		let result = false;
 		if (this._ethers) {
-			const mappedName = NameTools.mapName(tokenId);
-			if (!mappedName) {
-				return false;
-			}
-			const _tokenId = await this.generateTokenId(mappedName);
+			const _tokenId = await this.generateEVMTokenId(tokenId);
 			try {
 				result = await this._ethers.exists(_tokenId);
 			} catch (error) {
@@ -112,17 +97,12 @@ export class Contract {
 		const { key, tokenId } = arg || {};
 		let result: string | undefined = undefined;
 		if (this._ethers && tokenId) {
-			const mappedName = NameTools.mapName(tokenId);
-			if (!mappedName) {
-				return undefined;
-			}
-			const _tokenId = await this.generateTokenId(mappedName);
+			const _tokenId = await this.generateEVMTokenId(tokenId);
 			result = await this._ethers.getRecord(key, _tokenId);
 		}
 		if (this._metaplex && !result) {
 			const _nft = await this._findSolanaNft(key);
 			if (!_nft) return undefined;
-			// const _nftName: string | undefined = _nft?.name;
 			result = JSON.stringify(_nft);
 		}
 		return result;
@@ -167,11 +147,7 @@ export class Contract {
 	public async available(tokenId: string): Promise<boolean> {
 		let result = false;
 		if (this._ethers) {
-			const mappedName = NameTools.mapName(tokenId);
-			if (!mappedName) {
-				return false;
-			}
-			const _tokenId = await this.generateTokenId(mappedName);
+			const _tokenId = await this.generateEVMTokenId(tokenId);
 			result = await this._ethers.available(_tokenId);
 		}
 		if (this._metaplex && !result) {
@@ -205,11 +181,7 @@ export class Contract {
 	public async tokenURI(tokenId: string): Promise<string | undefined> {
 		let result: string | undefined = undefined;
 		if (this._ethers) {
-			const mappedName = NameTools.mapName(tokenId);
-			if (!mappedName) {
-				return undefined;
-			}
-			const _tokenId = await this.generateTokenId(mappedName);
+			const _tokenId = await this.generateEVMTokenId(tokenId);
 			result = await this._ethers.tokenUri(_tokenId);
 		}
 		if (this._metaplex && !result) {
@@ -226,11 +198,7 @@ export class Contract {
 	public async ownerOf(tokenId: string): Promise<string | undefined> {
 		let result: string | undefined = undefined;
 		if (this._ethers) {
-			const mappedName = NameTools.mapName(tokenId);
-			if (!mappedName) {
-				return undefined;
-			}
-			const _tokenId = await this.generateTokenId(mappedName);
+			const _tokenId = await this.generateEVMTokenId(tokenId);
 			try {
 				result = await this._ethers.ownerOf(_tokenId);
 			} catch (error) {
@@ -261,11 +229,7 @@ export class Contract {
 		const { tokenId, address } = arg || {};
 		let result = false;
 		if (this._ethers) {
-			const mappedName = NameTools.mapName(tokenId);
-			if (!mappedName) {
-				return false;
-			}
-			const _tokenId = await this.generateTokenId(mappedName);
+			const _tokenId = await this.generateEVMTokenId(tokenId);
 			result = await this._ethers.isApprovedOrOwner(_tokenId, address);
 		}
 		if (this._metaplex && !result) {
@@ -298,21 +262,24 @@ export class Contract {
 
 	public async transferFrom(address: string, addressTo: string, tokenId: string): Promise<any> {
 		if (this._ethers) {
-			return await this._ethers.transferFrom(address, addressTo, tokenId);
+			const _tokenId = this.generateEVMTokenId(tokenId);
+			return await this._ethers.transferFrom(address, addressTo, _tokenId);
 		}
 		return;
 	}
 
 	public async approve(address: string, tokenId: string): Promise<any> {
 		if (this._ethers) {
-			return await this._ethers.approve(address, tokenId);
+			const _tokenId = this.generateEVMTokenId(tokenId);
+			return await this._ethers.approve(address, _tokenId);
 		}
 		return;
 	}
 
 	public async set(key: string, value: string, tokenId: string): Promise<any> {
 		if (this._ethers) {
-			return await this._ethers.setRecord(key, value, tokenId);
+			const _tokenId = this.generateEVMTokenId(tokenId);
+			return await this._ethers.setRecord(key, value, _tokenId);
 		}
 		return;
 	}
@@ -320,7 +287,8 @@ export class Contract {
 	public async setMany(keys: string[], values: string[], tokenId: string): Promise<any> {
 		try {
 			if (this._ethers) {
-				return await this._ethers.setManyRecords(keys, values, tokenId);
+				const _tokenId = this.generateEVMTokenId(tokenId);
+				return await this._ethers.setManyRecords(keys, values, _tokenId);
 			}
 			return;
 		} catch (error) {
@@ -330,12 +298,22 @@ export class Contract {
 
 	public async setReverse(tokenId: string): Promise<any> {
 		if (this._ethers) {
-			return await this._ethers.setReverse(tokenId);
+			const _tokenId = this.generateEVMTokenId(tokenId);
+			return await this._ethers.setReverse(_tokenId);
 		}
 		return;
 	}
 
 	/*************************** TOOLS ***************************/
+
+	public getTokeId(arg: string): string | undefined {
+		switch (this._connectionInfo.network.networkName) {
+			case NetworkName.SOLANA:
+				return this._nftAddress({ nftName: arg, programId: this._programId() })?.toBase58();
+			default:
+				return this.generateEVMTokenId(arg);
+		}
+	}
 	/**
 	 * 
 	 * @param arg 
@@ -354,6 +332,25 @@ export class Contract {
 		} catch (error) {
 			return null;
 		}
+	}
+
+	private generateEVMTokenId(tokenId: string): string | undefined {
+		const mappedName = NameTools.mapName(tokenId);
+		if (!mappedName) {
+			return undefined;
+		}
+		let fullnameKeccak: string;
+		if (mappedName.domain) {
+			const domainKeccak = ethers.utils.solidityKeccak256(["string"], [mappedName.domain]);
+			fullnameKeccak = ethers.utils.solidityKeccak256(["string", "uint256"], [mappedName.tld, domainKeccak]);
+		} else {
+			fullnameKeccak = ethers.utils.solidityKeccak256(["string"], [mappedName.tld]);
+		}
+		if (fullnameKeccak) {
+			const tokenId = ethers.BigNumber.from(fullnameKeccak).toString();
+			return tokenId;
+		}
+		return undefined;
 	}
 	/**
 	 * 
@@ -383,22 +380,5 @@ export class Contract {
 	 * @returns 
 	 */
 	private _nftNameBuffer(arg: string): Buffer { return Buffer.from(arg); }
-
-
-
-	public async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
-		let fullnameKeccak: string;
-		if (mappedName.domain) {
-			const domainKeccak = ethers.utils.solidityKeccak256(["string"], [mappedName.domain]);
-			fullnameKeccak = ethers.utils.solidityKeccak256(["string", "uint256"], [mappedName.tld, domainKeccak]);
-		} else {
-			fullnameKeccak = ethers.utils.solidityKeccak256(["string"], [mappedName.tld]);
-		}
-		if (fullnameKeccak) {
-			const tokenId = ethers.BigNumber.from(fullnameKeccak).toString();
-			return tokenId;
-		}
-		return undefined;
-	}
 
 }

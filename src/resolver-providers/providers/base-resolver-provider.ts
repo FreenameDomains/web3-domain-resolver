@@ -291,7 +291,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async setRecord(resource: IResolvedResource, key: string, value: string, signer: ethers.Signer): Promise<boolean> {
+	public async setRecord(resource: IResolvedResource, key: string, value: string, signer: string | ethers.Signer): Promise<boolean> {
 		const writeContract = this.getWriteContractWithSigner(resource.network, signer);
 		if (!writeContract) {
 			return false;
@@ -369,11 +369,12 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 
 		const resolverResourceType: ResolvedResourceType = NameTools.getResolvedResourceType(mappedName.type);
 
+		const _tokenId = readContractConnection.getTokenId(mappedName.fullname);
 		const resolvedResource = new ResolvedResource({
 			fullname: mappedName.fullname,
 			tld: mappedName.tld,
 			type: resolverResourceType,
-			tokenId: tokenId,
+			tokenId: _tokenId as string,
 			resolverName: this._name,
 			resolverProvider: this,
 			imageUrl: metadata?.image_url,

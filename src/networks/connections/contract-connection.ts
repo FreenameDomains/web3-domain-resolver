@@ -62,5 +62,9 @@ export class ContractConnection {
 		return this._connection.networkName;
 	}
 
+	public getTokenId(arg: string): string | undefined {
+		return this.contract.getTokeId(arg);
+	}
+
 
 }
