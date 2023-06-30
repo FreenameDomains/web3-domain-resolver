@@ -1,11 +1,11 @@
 {
   "name": "web3-domain-resolver",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.19",
   "description": "Web3 Library that enable with just one function to resolve domains on multiple web3 providers such as ENS, UnstoppableDomains and Freename",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --project tsconfig.lib.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node --trace-warnings ./lib/index.js",
     "lint:js:fix": "eslint --ignore-path .gitignore . --fix"
@@ -42,16 +42,25 @@
     "eslint": "^8.22.0"
   },
   "peerDependencies": {
-    "ethers": "^5.6.9"
+    "ethers": "^5.7.2"
   },
   "dependencies": {
-    "@metaplex-foundation/js": "^0.19.3",
-    "@solana/web3.js": "^1.76.0",
+    "@metaplex-foundation/js": "^0.19.4",
+    "@solana/web3.js": "^1.77.3",
     "@unstoppabledomains/resolution": "8.3.1",
+    "assert": "^2.0.0",
     "axios": "0.27.2",
+    "browserify-zlib": "^0.2.0",
+    "crypto-browserify": "^3.12.0",
     "lodash.clonedeep": "4.5.0",
     "lodash.indexof": "4.0.5",
     "lodash.sortby": "4.7.0",
-    "punycode": "^2.3.0"
+    "node-jose-browserify": "^1.1.14",
+    "path": "^0.12.7",
+    "punycode": "^2.3.0",
+    "stream": "^0.0.2",
+    "stream-browserify": "^3.0.0",
+    "util": "^0.12.5",
+    "zlib": "^1.0.5"
   }
 }
