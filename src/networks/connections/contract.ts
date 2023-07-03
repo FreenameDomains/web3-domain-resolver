@@ -1,9 +1,19 @@
 import { Metaplex, Nft, NftWithToken, Sft, SftWithToken } from "@metaplex-foundation/js";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
-import { ethers } from "ethers";
+import { ContractInterface, ethers } from "ethers";
 import { ConnectionInfo } from "./contract-connection.types";
 import { NetworkName } from "./network-connection.types";
 import { NameTools } from "../../tools/name-tools";
+
+type Transaction = ethers.providers.TransactionResponse;
+
+type Receipt = ethers.providers.TransactionReceipt;
+
+type _publicKey = PublicKey | null;
+
+type _nft = Sft | SftWithToken | Nft | NftWithToken | undefined;
+
+type _string = string | undefined;
 
 export abstract class ContractFactory {
 
@@ -26,7 +36,6 @@ export class Contract {
 	private _ethers!: ethers.Contract;
 	private _metaplex!: Metaplex;
 	private _connectionInfo!: ConnectionInfo;
-	private _signer!: string | ethers.Signer;
 
 	public constructor() {
 		//
@@ -34,7 +43,11 @@ export class Contract {
 
 	/************************** SETTINGS **************************/
 
-	public setEthers(arg: ConnectionInfo) {
+	/**
+	 * Set the ethers contract
+	 * @param arg 
+	 */
+	public setEthers(arg: ConnectionInfo): void {
 		const { network, address, abi } = arg || {};
 		if (abi && !(network instanceof Connection)) {
 			const provider = new ethers.providers.JsonRpcProvider(network.rpcUrl);
@@ -42,8 +55,12 @@ export class Contract {
 			this._connectionInfo = arg;
 		}
 	}
-
-	public setMetaplex(arg: ConnectionInfo) {
+	/**
+	 * Set the metaplex instance
+	 * @param arg 
+	 * @returns 
+	 */
+	public setMetaplex(arg: ConnectionInfo): void {
 		let env: "devnet" | "mainnet-beta" | null = null;
 		switch (arg?.network.networkName) {
 			case NetworkName.SOLANA_DEVNET:
@@ -61,11 +78,25 @@ export class Contract {
 		this._metaplex = new Metaplex(connection);
 		this._connectionInfo = arg;
 	}
-
-	public connect(signer: string | ethers.Signer): Contract {
+	/**
+	 * Connect the contract to a signer
+	 * @param signer 
+	 * @returns 
+	 */
+	public connect(signer: ethers.Signer): Contract {
 		if (this._ethers) {
-			this._signer = signer;
-			this._ethers.connect(signer);
+			this._ethers = new ethers.Contract(this._connectionInfo.address, this._connectionInfo.abi as ContractInterface, signer as ethers.Signer); // this.ethers.connect(signer);
+		}
+		if (this._metaplex) return this;
+		return this;
+	}
+	/**
+	 * Disconnect the contract from signer 
+	 * @returns 
+	 */
+	public disconnect(): Contract {
+		if (this._ethers) {
+			this.setEthers(this._connectionInfo);
 		}
 		if (this._metaplex) return this;
 		return this;
@@ -73,7 +104,7 @@ export class Contract {
 
 	/************************** READING **************************/
 	/**
-	 * 
+	 * Retrun true if the given tokenId exists
 	 * @param tokenId 
 	 * @returns 
 	 */
@@ -83,14 +114,12 @@ export class Contract {
 			const _tokenId = await this.generateEVMTokenId(tokenId);
 			try {
 				result = await this._ethers.exists(_tokenId);
-				console.log("TOKEN EXIST ON ETHEREUM", result);
 			} catch (error) {
 				result = false;
 			}
 		}
 		if (this._metaplex && !result) {
 			result = await !!this._findSolanaNft(tokenId);
-			console.log("TOKEN EXIST ON SOLANA", result);
 		}
 		return result;
 	}
@@ -99,9 +128,9 @@ export class Contract {
 	 * @param arg 
 	 * @returns 
 	 */
-	public async get(arg: { key: string, tokenId?: string }): Promise<string | undefined> {
+	public async get(arg: { key: string, tokenId?: string }): Promise<_string> {
 		const { key, tokenId } = arg || {};
-		let result: string | undefined = undefined;
+		let result: _string;
 		if (this._ethers && tokenId) {
 			const _tokenId = await this.generateEVMTokenId(tokenId);
 			result = await this._ethers.getRecord(key, _tokenId);
@@ -127,7 +156,7 @@ export class Contract {
 		if (this._metaplex && (!result || Array.isArray(result) && result.length == 0)) {
 			const _nftAddresses: PublicKey[] = keys.map(el => this._nftAddress({ nftName: el, programId: this._programId() })).filter(el => el !== null) as PublicKey[];
 			const _nfts = await this._metaplex.nfts().findAllByMintList({ mints: _nftAddresses });
-			const _nftsNames: (string | undefined)[] = _nfts?.map(el => el?.name);
+			const _nftsNames: (_string)[] = _nfts?.map(el => el?.name);
 			result = _nftsNames as string[];
 		}
 		return result;
@@ -157,7 +186,7 @@ export class Contract {
 			result = await this._ethers.available(_tokenId);
 		}
 		if (this._metaplex && !result) {
-			const _nft = await this._findSolanaNft(tokenId);
+			const _nft: _nft = await this._findSolanaNft(tokenId);
 			if (!_nft) return true;
 		}
 		return result;
@@ -167,8 +196,8 @@ export class Contract {
 	 * @param tokenId 
 	 * @returns 
 	 */
-	public async reverseOf(tokenId: string): Promise<string | undefined> {
-		let result: string | undefined = undefined;
+	public async reverseOf(tokenId: string): Promise<_string> {
+		let result: _string = undefined;
 		if (this._ethers) {
 			result = await this._ethers.reverseOf(tokenId);
 		}
@@ -184,17 +213,15 @@ export class Contract {
 	 * @param tokenId 
 	 * @returns 
 	 */
-	public async tokenURI(tokenId: string): Promise<string | undefined> {
-		let result: string | undefined = undefined;
+	public async tokenURI(tokenId: string): Promise<_string> {
+		let result: _string = undefined;
 		if (this._ethers) {
 			const _tokenId = await this.generateEVMTokenId(tokenId);
 			result = await this._ethers.tokenUri(_tokenId);
-			console.log("TOKEN URI ON ETHEREUM", result);
 		}
 		if (this._metaplex && !result) {
 			const _nft = await this._findSolanaNft(tokenId);
 			result = _nft?.uri;
-			console.log("TOKEN URI ON SOLANA", result);
 		}
 		return result;
 	}
@@ -203,13 +230,12 @@ export class Contract {
 	 * @param tokenId 
 	 * @returns 
 	 */
-	public async ownerOf(tokenId: string): Promise<string | undefined> {
-		let result: string | undefined = undefined;
+	public async ownerOf(tokenId: string): Promise<_string> {
+		let result: _string = undefined;
 		if (this._ethers) {
 			const _tokenId = await this.generateEVMTokenId(tokenId);
 			try {
 				result = await this._ethers.ownerOf(_tokenId);
-				console.log("TOKEN OWNER ON ETHEREUM", result);
 			} catch (error) {
 				result = undefined;
 			}
@@ -225,7 +251,6 @@ export class Contract {
 				);
 				if (largestAccountInfo?.value) {
 					result = (largestAccountInfo.value.data as any).parsed.info.owner;
-					console.log("TOKEN OWNER ON SOLANA", result);
 				}
 			}
 		}
@@ -255,72 +280,97 @@ export class Contract {
 	 * @param arg 
 	 * @returns 
 	 */
-	private async _findSolanaNft(arg: string): Promise<Sft | SftWithToken | Nft | NftWithToken | undefined> {
-		const _programId: PublicKey | undefined = this._programId();
-
-		if (!_programId) return undefined;
-
-		const nftAddress = this._nftAddress({ nftName: arg, programId: _programId });
+	private async _findSolanaNft(arg: string): Promise<_nft> {
+		const _programId: PublicKey = this._programId();
+		const nftAddress: _publicKey = this._nftAddress({ nftName: arg, programId: _programId });
 
 		if (!nftAddress) return undefined;
 
-		const _nft = await this._metaplex.nfts().findByMint({ mintAddress: nftAddress });
+		const _nft: _nft = await this._metaplex.nfts().findByMint({ mintAddress: nftAddress });
+
 		return _nft;
 	}
 
 	/************************** WRITING **************************/
 
-	public async transferFrom(address: string, addressTo: string, tokenId: string): Promise<any> {
+	public async transferFrom(address: string, addressTo: string, tokenId: string): Promise<boolean> {
+		let result = false;
 		if (this._ethers) {
-			const _tokenId = this.generateEVMTokenId(tokenId);
-			return await this._ethers.transferFrom(address, addressTo, _tokenId);
-		}
-		return;
-	}
-
-	public async approve(address: string, tokenId: string): Promise<any> {
-		if (this._ethers) {
-			const _tokenId = this.generateEVMTokenId(tokenId);
-			return await this._ethers.approve(address, _tokenId);
-		}
-		return;
-	}
-
-	public async set(key: string, value: string, tokenId: string): Promise<any> {
-		if (this._ethers) {
-			const _tokenId = this.generateEVMTokenId(tokenId);
-			return await this._ethers.setRecord(key, value, _tokenId);
-		}
-		return;
-	}
-
-	public async setMany(keys: string[], values: string[], tokenId: string): Promise<any> {
-		try {
-			if (this._ethers) {
-				// const _tokenId = this.generateEVMTokenId(tokenId);
-				this._ethers.connect(this._signer);
-				const result = await this._ethers.setManyRecords(keys, values, tokenId);
-				console.log("SET MANY RESULT", result);
-				return result;
+			try {
+				const tx: Transaction = await this._ethers.transferFrom(address, addressTo, tokenId);
+				const approved: Receipt = await tx.wait();
+				if (approved) result = true;
+			} catch (error) {
+				result = false;
 			}
-			return;
-		} catch (error) {
-			console.log("SET MANY ERROR", error);
-			return;
 		}
+		this.disconnect();
+		return result;
 	}
 
-	public async setReverse(tokenId: string): Promise<any> {
+	public async approve(address: string, tokenId: string): Promise<boolean> {
+		let result = false;
 		if (this._ethers) {
-			const _tokenId = this.generateEVMTokenId(tokenId);
-			return await this._ethers.setReverse(_tokenId);
+			try {
+				const tx: Transaction = await this._ethers.approve(address, tokenId);
+				const approved: Receipt = await tx.wait();
+				if (approved) result = true;
+			} catch (error) {
+				result = false;
+			}
 		}
-		return;
+		this.disconnect();
+		return result;
+	}
+
+	public async set(key: string, value: string, tokenId: string): Promise<boolean> {
+		let result = false;
+		if (this._ethers) {
+			try {
+				const tx: Transaction = await this._ethers.setRecord(key, value, tokenId);
+				const approved: Receipt = await tx.wait();
+				if (approved) result = true;
+			} catch (error) {
+				result = false;
+			}
+		}
+		this.disconnect();
+		return result;
+	}
+
+	public async setMany(keys: string[], values: string[], tokenId: string): Promise<boolean> {
+		let result = false;
+		if (this._ethers) {
+			try {
+				const tx: Transaction = await this._ethers.setManyRecords(keys, values, tokenId);
+				const approved: Receipt = await tx.wait();
+				if (approved) result = true;
+			} catch (error) {
+				result = false;
+			}
+		}
+		this.disconnect();
+		return result;
+	}
+
+	public async setReverse(tokenId: string): Promise<boolean> {
+		let result = false;
+		if (this._ethers) {
+			try {
+				const tx: Transaction = await this._ethers.setReverse(tokenId);
+				const approved: Receipt = await tx.wait();
+				if (approved) result = true;
+			} catch (error) {
+				result = false;
+			}
+		}
+		this.disconnect();
+		return result;
 	}
 
 	/*************************** TOOLS ***************************/
 
-	public getTokeId(arg: string): string | undefined {
+	public getTokeId(arg: string): _string {
 		switch (this._connectionInfo.network.networkName) {
 			case NetworkName.SOLANA:
 				return this._nftAddress({ nftName: arg, programId: this._programId() })?.toBase58();
@@ -348,7 +398,7 @@ export class Contract {
 		}
 	}
 
-	private generateEVMTokenId(tokenId: string): string | undefined {
+	private generateEVMTokenId(tokenId: string): _string {
 		const mappedName = NameTools.mapName(tokenId);
 		if (!mappedName) {
 			return undefined;

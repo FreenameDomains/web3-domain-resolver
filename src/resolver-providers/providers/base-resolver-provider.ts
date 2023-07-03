@@ -80,15 +80,12 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		if (!writeContractConnection) {
 			return undefined;
 		}
-		console.log("SIGNER SENDED", signer);
 		let signerToUse = signer;
 		if (typeof signer !== "string") {
 			if (!signer?.provider) {
-				console.log("SIGNER HAS NO PROVIDER");
 				signerToUse = signer.connect(writeContractConnection.provider);
 			}
 		}
-		console.log("SIGNER TO USE", signerToUse);
 		const contractConnected = writeContractConnection.contract.connect(signerToUse);
 		return contractConnected;
 	}
@@ -100,11 +97,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 				return undefined;
 			}
 
-			// const tokenId = domainOrTld; //await this.generateTokenId(mappedName);
 			const network = await this.getNetworkFromName(mappedName);
-			// if (!tokenId) {
-			// 	return undefined;
-			// }
 
 			return this.generateResolvedResource(mappedName, domainOrTld, network);
 		}
@@ -262,14 +255,8 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		if (!writeContract) {
 			return false;
 		}
-
 		try {
-			const tx = await writeContract.transferFrom(resource.ownerAddress, addressTo, resource.tokenId);
-			const approveReceipt = await tx.wait();
-			if (approveReceipt) {
-				return true;
-			}
-			return false;
+			return await writeContract.transferFrom(resource.ownerAddress, addressTo, resource.tokenId);
 		} catch (e) {
 			return false;
 		}
@@ -280,14 +267,8 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		if (!writeContract) {
 			return false;
 		}
-
 		try {
-			const tx = await writeContract.approve(addressToApprove, resource.tokenId);
-			const approveReceipt = await tx.wait();
-			if (approveReceipt) {
-				return true;
-			}
-			return false;
+			return await writeContract.approve(addressToApprove, resource.tokenId);
 		} catch (e) {
 			return false;
 		}
@@ -298,17 +279,9 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		if (!writeContract) {
 			return false;
 		}
-
 		try {
-			const tx = await writeContract.set(key, value, resource.tokenId);
-			const approveReceipt = await tx.wait();
-			if (approveReceipt) {
-				return true;
-			}
-			console.log("SET_RECORD", approveReceipt);
-			return false;
+			return await writeContract.set(key, value, resource.tokenId);
 		} catch (e) {
-			console.log("SET_RECORD", e);
 			return false;
 		}
 	}
@@ -318,14 +291,8 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		if (!writeContract) {
 			return false;
 		}
-
 		try {
-			const tx = await writeContract.setMany(keys, values, resource.tokenId);
-			const approveReceipt = await tx.wait();
-			if (approveReceipt) {
-				return true;
-			}
-			return false;
+			return await writeContract.setMany(keys, values, resource.tokenId);
 		} catch (e) {
 			return false;
 		}
@@ -336,14 +303,8 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		if (!writeContract) {
 			return false;
 		}
-
 		try {
-			const tx = await writeContract.setReverse(resource.tokenId);
-			const approveReceipt = await tx.wait();
-			if (approveReceipt) {
-				return true;
-			}
-			return false;
+			return await writeContract.setReverse(resource.tokenId);
 		} catch (e) {
 			return false;
 		}
