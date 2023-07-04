@@ -1604,13 +1604,13 @@ export const FREENAME_CONTRACT_CONFS: FreenameContractConfig[] = [
 	// 	type: "write",
 	// },
 	{
-		address: "FPvXvNtFUgnbJM6d8FTGKzKLeWQADYosLgcEuRDcRwX2",
+		address: "6cMUj75fcW7kaCJbFcSuAGjES22RMfnxg8QX8FJEprPL",
 		networkName: NetworkName.SOLANA_DEVNET,
 		test: true,
 		type: "read",
 	},
 	{
-		address: "FPvXvNtFUgnbJM6d8FTGKzKLeWQADYosLgcEuRDcRwX2",
+		address: "6cMUj75fcW7kaCJbFcSuAGjES22RMfnxg8QX8FJEprPL",
 		networkName: NetworkName.SOLANA_DEVNET,
 		test: true,
 		type: "write",

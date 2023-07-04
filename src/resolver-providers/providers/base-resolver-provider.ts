@@ -10,7 +10,7 @@ import { ApiCaller } from "../../tools/api-caller";
 import { NameTools } from "../../tools/name-tools";
 import { MappedName } from "../../tools/name-tools.types";
 import { IResolverProvider } from "../resolver-provider.interface";
-
+import { Wallet } from "@project-serum/anchor";
 export abstract class BaseResolverProvider implements IResolverProvider {
 	constructor(
 		name: ProviderName | string,
@@ -75,15 +75,15 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		return this.writeContractConnections.find(x => x.network == networkName);
 	}
 
-	protected getWriteContractWithSigner(networkName: NetworkName | string, signer: string | ethers.Signer) {
+	protected getWriteContractWithSigner(networkName: NetworkName | string, signer: Wallet | ethers.Signer) {
 		const writeContractConnection = this.getWriteContractConnection(networkName);
 		if (!writeContractConnection) {
 			return undefined;
 		}
 		let signerToUse = signer;
-		if (typeof signer !== "string") {
-			if (!signer?.provider) {
-				signerToUse = signer.connect(writeContractConnection.provider);
+		if (networkName != NetworkName.SOLANA && networkName != NetworkName.SOLANA_DEVNET) {
+			if (!(signer as ethers.Signer)?.provider) {
+				signerToUse = (signer as ethers.Signer).connect(writeContractConnection.provider);
 			}
 		}
 		const contractConnected = writeContractConnection.contract.connect(signerToUse);
@@ -274,7 +274,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async setRecord(resource: IResolvedResource, key: string, value: string, signer: string | ethers.Signer): Promise<boolean> {
+	public async setRecord(resource: IResolvedResource, key: string, value: string, signer: Wallet | ethers.Signer): Promise<boolean> {
 		const writeContract = this.getWriteContractWithSigner(resource.network, signer);
 		if (!writeContract) {
 			return false;
@@ -286,13 +286,13 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		}
 	}
 
-	public async setRecords(resource: IResolvedResource, keys: string[], values: string[], signer: ethers.Signer): Promise<boolean> {
+	public async setRecords(resource: IResolvedResource, keys: string[], values: string[], signer: Wallet | ethers.Signer): Promise<boolean> {
 		const writeContract = this.getWriteContractWithSigner(resource.network, signer);
 		if (!writeContract) {
 			return false;
 		}
 		try {
-			return await writeContract.setMany(keys, values, resource.tokenId);
+			return await writeContract.setMany(keys, values, resource);
 		} catch (e) {
 			return false;
 		}

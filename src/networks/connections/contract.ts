@@ -4,6 +4,9 @@ import { ContractInterface, ethers } from "ethers";
 import { ConnectionInfo } from "./contract-connection.types";
 import { NetworkName } from "./network-connection.types";
 import { NameTools } from "../../tools/name-tools";
+import { Wallet } from "@project-serum/anchor";
+import { IResolvedResource } from "../../resolvers/resolved-resource/resolved-resource.interface";
+import { SolanaContractConnection } from "./sol-contract-connection";
 
 type Transaction = ethers.providers.TransactionResponse;
 
@@ -35,6 +38,7 @@ export class Contract {
 
 	private _ethers!: ethers.Contract;
 	private _metaplex!: Metaplex;
+	private _solanaContract!: SolanaContractConnection | null;
 	private _connectionInfo!: ConnectionInfo;
 
 	public constructor() {
@@ -83,11 +87,13 @@ export class Contract {
 	 * @param signer 
 	 * @returns 
 	 */
-	public connect(signer: ethers.Signer): Contract {
+	public connect(signer: Wallet | ethers.Signer): Contract {
 		if (this._ethers) {
 			this._ethers = new ethers.Contract(this._connectionInfo.address, this._connectionInfo.abi as ContractInterface, signer as ethers.Signer); // this.ethers.connect(signer);
 		}
-		if (this._metaplex) return this;
+		if (this._metaplex) {
+			this._solanaContract = new SolanaContractConnection(signer as Wallet);
+		}
 		return this;
 	}
 	/**
@@ -98,7 +104,7 @@ export class Contract {
 		if (this._ethers) {
 			this.setEthers(this._connectionInfo);
 		}
-		if (this._metaplex) return this;
+		if (this._metaplex) this._solanaContract = null;
 		return this;
 	}
 
@@ -338,16 +344,19 @@ export class Contract {
 		return result;
 	}
 
-	public async setMany(keys: string[], values: string[], tokenId: string): Promise<boolean> {
+	public async setMany(keys: string[], values: string[], resource: IResolvedResource): Promise<boolean> {
 		let result = false;
-		if (this._ethers) {
-			try {
-				const tx: Transaction = await this._ethers.setManyRecords(keys, values, tokenId);
+		try {
+			if (this._ethers) {
+				const tx: Transaction = await this._ethers.setManyRecords(keys, values, resource.tokenId);
 				const approved: Receipt = await tx.wait();
 				if (approved) result = true;
-			} catch (error) {
-				result = false;
 			}
+			if (this._solanaContract) {
+				result = await this._solanaContract.setRecords(keys, values, resource.fullname);
+			}
+		} catch (error) {
+			result = false;
 		}
 		this.disconnect();
 		return result;
