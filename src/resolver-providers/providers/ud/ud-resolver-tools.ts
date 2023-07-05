@@ -1,5 +1,5 @@
 import { BlockchainType } from "@unstoppabledomains/resolution";
-import { NetworkName } from "../../../networks/connections/network-connection.types";
+import { NetworkName } from "../../../networks/connections/network-name";
 
 export class UDResolverTools {
 	public static networkNameFormUdNetwork(udNetwork: BlockchainType): NetworkName {

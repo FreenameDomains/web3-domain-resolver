@@ -1,4 +1,4 @@
-import { NetworkName } from "../networks/connections/network-connection.types";
+import { NetworkName } from "../networks/connections/network-name";
 import { IResolvedResource } from "../resolvers/resolved-resource/resolved-resource.interface";
 import { ConnectionLibrary } from "../networks/connections/connection-library";
 import { ethers } from "ethers";

@@ -1,8 +1,9 @@
 import { ethers } from "ethers";
-import { NetworkName } from "../../networks/connections/network-connection.types";
+import { NetworkName } from "../../networks/connections/network-name";
 import { IResolverProvider } from "../../resolver-providers/resolver-provider.interface";
 import { ResolvedResourceType } from "../types/resolved-resource-type";
 import { ProviderName } from "../types/resolver-name";
+import { Wallet } from "@project-serum/anchor";
 
 export interface IResolvedResource {
     /**
@@ -127,7 +128,7 @@ export interface IResolvedResource {
      * @param values the values of the records
      * @param signer a `ether.Signer` wallet. If `signer.provider` is `undefined` the `provider` of the resolved resource's `resolverProvider` is used. 
      */
-    setRecords(keys: string[], values: string[], signer: string | ethers.Signer): Promise<boolean>;
+    setRecords(keys: string[], values: string[], signer: Wallet | ethers.Signer): Promise<boolean>;
 
     /**
      * Set the `signer` address as a reverse resolution record of the resolved resource NFT.

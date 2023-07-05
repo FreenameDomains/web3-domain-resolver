@@ -1,8 +1,9 @@
 import { ethers } from "ethers";
-import { NetworkConnection, NetworkName } from "./network-connection.types";
+import { NetworkConnection } from "./network-connection.types";
 import { ConnectionInfo } from "./contract-connection.types";
 import { Contract, ContractFactory } from "./contract";
 import { Connection } from "@solana/web3.js";
+import { NetworkName } from "./network-name";
 
 /**
  * This class represents a connection to a smart contract.
@@ -20,11 +21,11 @@ export class ContractConnection {
 	/**
 	 * Smart contract provider
 	 */
-	protected _provider!: ethers.providers.Provider;
+	protected _provider: ethers.providers.Provider | null = null;
 	/**
 	 * Smart contract instance
 	 */
-	protected _contract!: Contract;
+	protected _contract: Contract;
 	/**
 	 * Smart contract abi
 	 */
@@ -50,7 +51,7 @@ export class ContractConnection {
 	}
 
 	public get provider(): ethers.providers.Provider {
-		return this._provider;
+		return this._provider as ethers.providers.Provider;
 	}
 
 	public get contract(): Contract {

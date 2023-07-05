@@ -1,4 +1,4 @@
-import { NetworkName } from "../../../networks/connections/network-connection.types";
+import { NetworkName } from "../../../networks/connections/network-name";
 import { FreenameNetwork } from "./freename-resolver-provider.types";
 
 export class FreenameResolverTools {
@@ -9,6 +9,8 @@ export class FreenameResolverTools {
 			case FreenameNetwork.ETHEREUM: return NetworkName.ETHEREUM;
 			case FreenameNetwork.POLYGON: return NetworkName.POLYGON;
 			case FreenameNetwork.POLYGON_MUMBAI: return NetworkName.POLYGON_MUMBAI;
+			case FreenameNetwork.SOLANA: return NetworkName.SOLANA;
+			case FreenameNetwork.SOLANA_DEVNET: return NetworkName.SOLANA_DEVNET;
 		}
 	}
 

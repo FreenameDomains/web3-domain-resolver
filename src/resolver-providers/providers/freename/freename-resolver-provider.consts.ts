@@ -1,4 +1,4 @@
-import { NetworkName } from "../../../networks/connections/network-connection.types";
+import { NetworkName } from "../../../networks/connections/network-name";
 import { FreenameContractConfig } from "./freename-resolver-provider.types";
 
 export const FNS_ABI = [
@@ -1591,18 +1591,18 @@ export const FREENAME_CONTRACT_CONFS: FreenameContractConfig[] = [
 		type: "write",
 		abi: FNS_ABI,
 	},
-	// {
-	// 	address: "",
-	// 	networkName: NetworkName.SOLANA,
-	// 	test: false,
-	// 	type: "read",
-	// },
-	// {
-	// 	address: "",
-	// 	networkName: NetworkName.SOLANA,
-	// 	test: false,
-	// 	type: "write",
-	// },
+	{
+		address: "6cMUj75fcW7kaCJbFcSuAGjES22RMfnxg8QX8FJEprPL",
+		networkName: NetworkName.SOLANA,
+		test: false,
+		type: "read",
+	},
+	{
+		address: "6cMUj75fcW7kaCJbFcSuAGjES22RMfnxg8QX8FJEprPL",
+		networkName: NetworkName.SOLANA,
+		test: false,
+		type: "write",
+	},
 	{
 		address: "6cMUj75fcW7kaCJbFcSuAGjES22RMfnxg8QX8FJEprPL",
 		networkName: NetworkName.SOLANA_DEVNET,

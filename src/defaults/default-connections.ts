@@ -1,4 +1,5 @@
-import { NetworkConnection, NetworkName } from "../networks/connections/network-connection.types";
+import { NetworkConnection } from "../networks/connections/network-connection.types";
+import { NetworkName } from "../networks/connections/network-name";
 
 export const DEFAULT_RPC_URL: Record<NetworkName, string> = {
 	bsc: "https://bsc-dataseed1.ninicoin.io",

@@ -12,22 +12,20 @@ const providerConfig: web3.ConfirmOptions = {
 };
 export class SolanaContractConnection {
 
-	private _provider!: AnchorProvider;
-	private _wallet!: Wallet;
-	private _program!: Program;
+	private _provider: AnchorProvider | null = null;
+	private _wallet: Wallet | null = null;
+	private _program: Program | null = null;
 
 	public constructor(arg: Wallet) {
 		if (arg) {
 			try {
 				this._wallet = arg;
-				console.log("WALLET SETTED");
 				this._setAncorProvider(arg);
 				const idlJson: string = JSON.stringify(IDL);
 				const address: PublicKey = new PublicKey("FPvXvNtFUgnbJM6d8FTGKzKLeWQADYosLgcEuRDcRwX2");
-				this._program = new Program(JSON.parse(idlJson), address, this._provider);
-				console.log("PROGRAM SETTED");
+				this._program = new Program(JSON.parse(idlJson), address, this._provider as AnchorProvider);
 			} catch (error) {
-				console.log("CONSTRUCTOR ERROR", error);
+				return;
 			}
 		}
 	}
@@ -39,51 +37,35 @@ export class SolanaContractConnection {
 			providerConfig,
 		);
 		setProvider(this._provider);
-		console.log("ANCHOR PROVIDER CREATED");
 	}
 
 	public async setRecords(keys: string[], values: string[], nftName: string): Promise<boolean> {
 		try {
-			const nsStatePDA: PublicKey = this._getNsStatePDA(this._program);
-			const nftNsRecordMetadata: PublicKey = this._getNftNsRecordMetadata({ nftName, program: this._program });
-			const nsRecordMetadata = await this._program.account.nsRecordMetadata.fetch(nftNsRecordMetadata);
-			const tx = await this._program.methods
-				.updateRecords(nftName, keys, values, new BN("1024"))
-				.accounts({
-					nsRecordMetadata: nftNsRecordMetadata,
-					nsRecordData: (nsRecordMetadata as any).account,
-					rent: web3.SYSVAR_RENT_PUBKEY,
-					payer: this._wallet.publicKey,
-					systemProgram: web3.SystemProgram.programId,
-					nsState: nsStatePDA,
-				})
-				.signers([this._wallet.payer])
-				.rpc();
-			if (tx) {
-				return true;
+			if (this._program && this._wallet) {
+				const nsStatePDA: PublicKey = this._getNsStatePDA(this._program);
+				const nftNsRecordMetadata: PublicKey = this._getNftNsRecordMetadata({ nftName, program: this._program });
+				const nsRecordMetadata = await this._program.account.nsRecordMetadata.fetch(nftNsRecordMetadata);
+				const tx = await this._program.methods
+					.updateRecords(nftName, keys, values, new BN("1024"))
+					.accounts({
+						nsRecordMetadata: nftNsRecordMetadata,
+						nsRecordData: (nsRecordMetadata as any).account,
+						rent: web3.SYSVAR_RENT_PUBKEY,
+						payer: this._wallet.publicKey,
+						systemProgram: web3.SystemProgram.programId,
+						nsState: nsStatePDA,
+					})
+					.signers([this._wallet.payer])
+					.rpc();
+				if (tx) {
+					return true;
+				}
 			}
 		} catch (e) {
-			console.log("SET RECORD", e);
 			return false;
 		}
 		return false;
 	}
-
-	// public async findNft(arg = "freename"): Promise<void> {
-	// 	const programId = "FPvXvNtFUgnbJM6d8FTGKzKLeWQADYosLgcEuRDcRwX2";
-	// 	const _programId: PublicKey = new PublicKey(programId);
-	// 	const [collectionMintPDA] = await PublicKey.findProgramAddressSync([Buffer.from("collection_mint")], _programId);
-	// 	console.log(collectionMintPDA.toString());
-	// 	const collectionMintPDABuffer = collectionMintPDA.toBuffer();
-	// 	const mintBuffer: Uint8Array | Buffer = Buffer.from("mint");
-	// 	const nftName: Buffer = Buffer.from(arg);
-	// 	const [nftAddress] = await PublicKey.findProgramAddressSync([mintBuffer, collectionMintPDABuffer, nftName], _programId);
-	// 	console.log(nftAddress.toString());
-	// 	const _nft = await this._contract.get({ key: arg });
-	// 	console.log(_nft);
-	// 	const owner = await this._contract.ownerOf(nftAddress.toString());
-	// 	console.log("OWNER ADDRESS: ", owner);
-	// }
 
 	/**
 			* 

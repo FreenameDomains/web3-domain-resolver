@@ -4,7 +4,7 @@ import { DefaultTools } from "../../../defaults/default-connections";
 import { ERC721_UD_PROXY_ABI } from "../../../defaults/erc721.ud.proxy.abi";
 import { ConnectionLibrary } from "../../../networks/connections/connection-library";
 import { ContractConnection } from "../../../networks/connections/contract-connection";
-import { NetworkName } from "../../../networks/connections/network-connection.types";
+import { NetworkName } from "../../../networks/connections/network-name";
 import { ProviderName } from "../../../resolvers/types/resolver-name";
 import { MappedName } from "../../../tools/name-tools.types";
 import { IResolverProvider } from "../../resolver-provider.interface";

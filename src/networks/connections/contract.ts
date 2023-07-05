@@ -1,29 +1,19 @@
-import { Metaplex, Nft, NftWithToken, Sft, SftWithToken } from "@metaplex-foundation/js";
+import { Metaplex } from "@metaplex-foundation/js";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { ContractInterface, ethers } from "ethers";
-import { ConnectionInfo } from "./contract-connection.types";
-import { NetworkName } from "./network-connection.types";
+import { ConnectionInfo, Receipt, _publicKey, _string, _nft, Transaction } from "./contract-connection.types";
+import { NetworkName } from "./network-name";
 import { NameTools } from "../../tools/name-tools";
 import { Wallet } from "@project-serum/anchor";
 import { IResolvedResource } from "../../resolvers/resolved-resource/resolved-resource.interface";
 import { SolanaContractConnection } from "./sol-contract-connection";
-
-type Transaction = ethers.providers.TransactionResponse;
-
-type Receipt = ethers.providers.TransactionReceipt;
-
-type _publicKey = PublicKey | null;
-
-type _nft = Sft | SftWithToken | Nft | NftWithToken | undefined;
-
-type _string = string | undefined;
 
 export abstract class ContractFactory {
 
 	public static createContract(arg?: ConnectionInfo): Contract {
 		const contract = new Contract();
 		if (arg) {
-			if (arg?.network.networkName == NetworkName.SOLANA || arg?.network.networkName == NetworkName.SOLANA_DEVNET) {
+			if (arg?.network?.networkName == "solana" || arg?.network?.networkName == NetworkName?.SOLANA_DEVNET) {
 				contract.setMetaplex(arg);
 			} else {
 				contract.setEthers(arg);
@@ -36,10 +26,10 @@ export abstract class ContractFactory {
 
 export class Contract {
 
-	private _ethers!: ethers.Contract;
-	private _metaplex!: Metaplex;
-	private _solanaContract!: SolanaContractConnection | null;
-	private _connectionInfo!: ConnectionInfo;
+	private _ethers: ethers.Contract | null = null;
+	private _metaplex: Metaplex | null = null;
+	private _solanaContract: SolanaContractConnection | null = null;
+	private _connectionInfo: ConnectionInfo | null = null;
 
 	public constructor() {
 		//
@@ -88,7 +78,7 @@ export class Contract {
 	 * @returns 
 	 */
 	public connect(signer: Wallet | ethers.Signer): Contract {
-		if (this._ethers) {
+		if (this._ethers && this._connectionInfo) {
 			this._ethers = new ethers.Contract(this._connectionInfo.address, this._connectionInfo.abi as ContractInterface, signer as ethers.Signer); // this.ethers.connect(signer);
 		}
 		if (this._metaplex) {
@@ -101,7 +91,7 @@ export class Contract {
 	 * @returns 
 	 */
 	public disconnect(): Contract {
-		if (this._ethers) {
+		if (this._ethers && this._connectionInfo) {
 			this.setEthers(this._connectionInfo);
 		}
 		if (this._metaplex) this._solanaContract = null;
@@ -160,7 +150,7 @@ export class Contract {
 			result = await this._ethers.getManyRecords(keys, tokenId);
 		}
 		if (this._metaplex && (!result || Array.isArray(result) && result.length == 0)) {
-			const _nftAddresses: PublicKey[] = keys.map(el => this._nftAddress({ nftName: el, programId: this._programId() })).filter(el => el !== null) as PublicKey[];
+			const _nftAddresses: PublicKey[] = keys.map(el => this._nftAddress({ nftName: el, programId: this._programId() as PublicKey })).filter(el => el !== null) as PublicKey[];
 			const _nfts = await this._metaplex.nfts().findAllByMintList({ mints: _nftAddresses });
 			const _nftsNames: (_string)[] = _nfts?.map(el => el?.name);
 			result = _nftsNames as string[];
@@ -249,7 +239,7 @@ export class Contract {
 		if (this._metaplex && !result) {
 			const connection = new Connection(clusterApiUrl("devnet")); // Replace with the desired Solana network endpoint
 			const isBase58 = (value: string) => /^[A-HJ-NP-Za-km-z1-9]*$/.test(value);
-			const tokenPublicKey = isBase58(tokenId) ? new PublicKey(tokenId) : await this._nftAddress({ nftName: tokenId, programId: this._programId() });
+			const tokenPublicKey = isBase58(tokenId) ? new PublicKey(tokenId) : await this._nftAddress({ nftName: tokenId, programId: this._programId() as PublicKey });
 			if (tokenPublicKey) {
 				const largestAccounts = await connection.getTokenLargestAccounts(tokenPublicKey);
 				const largestAccountInfo = await connection.getParsedAccountInfo(
@@ -287,14 +277,14 @@ export class Contract {
 	 * @returns 
 	 */
 	private async _findSolanaNft(arg: string): Promise<_nft> {
-		const _programId: PublicKey = this._programId();
+		const _programId: PublicKey = this._programId() as PublicKey;
 		const nftAddress: _publicKey = this._nftAddress({ nftName: arg, programId: _programId });
 
 		if (!nftAddress) return undefined;
-
-		const _nft: _nft = await this._metaplex.nfts().findByMint({ mintAddress: nftAddress });
-
-		return _nft;
+		if (this._metaplex) {
+			const _nft: _nft = await this._metaplex.nfts().findByMint({ mintAddress: nftAddress });
+			return _nft;
+		}
 	}
 
 	/************************** WRITING **************************/
@@ -380,11 +370,16 @@ export class Contract {
 	/*************************** TOOLS ***************************/
 
 	public getTokeId(arg: string): _string {
-		switch (this._connectionInfo.network.networkName) {
-			case NetworkName.SOLANA:
-				return this._nftAddress({ nftName: arg, programId: this._programId() })?.toBase58();
-			default:
-				return this.generateEVMTokenId(arg);
+		if (this._connectionInfo) {
+			switch (this._connectionInfo.network.networkName) {
+				case NetworkName.SOLANA:
+					if (this._programId()) {
+						return this._nftAddress({ nftName: arg, programId: this._programId() as PublicKey })?.toBase58();
+					}
+					return undefined;
+				default:
+					return this.generateEVMTokenId(arg);
+			}
 		}
 	}
 	/**
@@ -439,8 +434,9 @@ export class Contract {
 	 * @param arg 
 	 * @returns 
 	 */
-	private _programId(): PublicKey {
-		return new PublicKey(this._connectionInfo.address);
+	private _programId(): PublicKey | null {
+		if (this._connectionInfo) return new PublicKey(this._connectionInfo.address);
+		return null;
 	}
 	/**
 	 * 

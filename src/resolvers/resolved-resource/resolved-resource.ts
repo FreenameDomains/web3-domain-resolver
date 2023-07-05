@@ -1,6 +1,6 @@
 import { Signer } from "ethers";
 import cloneDeep from "lodash.clonedeep";
-import { NetworkName } from "../../networks/connections/network-connection.types";
+import { NetworkName } from "../../networks/connections/network-name";
 import { IResolverProvider } from "../../resolver-providers/resolver-provider.interface";
 import { ResolvedResourceType } from "../types/resolved-resource-type";
 import { ProviderName } from "../types/resolver-name";

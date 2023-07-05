@@ -1,4 +1,5 @@
-import { NetworkConnection, NetworkName } from "./network-connection.types";
+import { NetworkConnection } from "./network-connection.types";
+import { NetworkName } from "./network-name";
 
 export class ConnectionLibrary {
 
@@ -16,7 +17,7 @@ export class ConnectionLibrary {
 
 	public getConnection(network: NetworkName | string) {
 		if (this._connections && network) {
-			const connection = this._connections.find(x => x.networkName == network);
+			const connection = this._connections.find(x => x?.networkName == network);
 			return connection;
 		}
 		return undefined;
@@ -24,7 +25,7 @@ export class ConnectionLibrary {
 
 	public setConnection(connection: NetworkConnection) {
 		if (this._connections && connection.networkName && connection.rpcUrl) {
-			const indexFound = this._connections.findIndex(x => x.networkName == connection.networkName);
+			const indexFound = this._connections.findIndex(x => x?.networkName == connection.networkName);
 			const newConnection: NetworkConnection = {
 				networkName: connection.networkName,
 				rpcUrl: connection.rpcUrl,

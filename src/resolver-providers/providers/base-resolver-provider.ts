@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { ConnectionLibrary } from "../../networks/connections/connection-library";
 import { ContractConnection } from "../../networks/connections/contract-connection";
-import { NetworkName } from "../../networks/connections/network-connection.types";
+import { NetworkName } from "../../networks/connections/network-name";
 import { ResolvedResource } from "../../resolvers/resolved-resource/resolved-resource";
 import { IResolvedResource } from "../../resolvers/resolved-resource/resolved-resource.interface";
 import { ResolvedResourceType } from "../../resolvers/types/resolved-resource-type";
