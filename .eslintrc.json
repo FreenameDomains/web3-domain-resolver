@@ -45,10 +45,6 @@
                 "properties": "always"
             }
         ],
-        "comma-dangle": [
-            "error",
-            "always-multiline"
-        ],
         "comma-spacing": [
             "error",
             {

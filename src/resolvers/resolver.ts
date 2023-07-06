@@ -1,7 +1,7 @@
 import { ResolverProviderRouter } from "../resolver-providers/resolver-provider-router";
-import { IResolverProvider } from "../resolver-providers/resolver-provider.interface";
-import { IResolvedResource } from "./resolved-resource/resolved-resource.interface";
-import { ProviderName } from "./types/resolver-name";
+import { IResolverProvider } from "../shared/interfaces/resolver-provider.interface";
+import { ProviderName } from "../shared/enumerations/enumerations";
+import { IResolvedResource } from "../shared/interfaces/resolved-resource.interface";
 
 export class Resolver {
 
@@ -15,7 +15,7 @@ export class Resolver {
 	 * Set the order in which the resolver providers are interrogated to resolve a name or tokenId.
 	 * @param priority the new priority of the providers.
 	 */
-	public setResolversPriority(priority: Array<ProviderName | string>) {
+	public setResolversPriority(priority: Array<ProviderName>) {
 		this._resolverProviderRouter.setResolverProvidersPriority(priority);
 	}
 
@@ -51,7 +51,7 @@ export class Resolver {
 	 * @param resolverProviderName the provider of the tokenId to resolve
 	 * @returns an `IResolvedResource` instance or `undefined`.
 	 */
-	public async resolveFromTokenId(tokenId: string, resolverProviderName?: ProviderName | string): Promise<IResolvedResource | undefined> {
+	public async resolveFromTokenId(tokenId: string, resolverProviderName?: ProviderName): Promise<IResolvedResource | undefined> {
 		let resolverProvider;
 		if (resolverProviderName) {
 			resolverProvider = this._resolverProviderRouter.getResolverProvider(resolverProviderName);
@@ -71,7 +71,7 @@ export class Resolver {
 	 * @param resolverProviderName 
 	 * @returns 
 	 */
-	public async reverseResolve(address: string, resolverProviderName?: ProviderName | string): Promise<IResolvedResource | undefined> {
+	public async reverseResolve(address: string, resolverProviderName?: ProviderName): Promise<IResolvedResource | undefined> {
 		if (resolverProviderName) {
 			const resolverProvider = this._resolverProviderRouter.getResolverProvider(resolverProviderName);
 			if (!resolverProvider) {

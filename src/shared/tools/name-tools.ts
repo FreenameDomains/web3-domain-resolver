@@ -1,6 +1,7 @@
-import { ResolvedResourceType } from "../resolvers/types/resolved-resource-type";
-import { MappedName, NameType } from "./name-tools.types";
-const punycode = require("punycode");
+import { MappedName } from "../types/name-tools.types";
+import punycode from "punycode";
+import { _string } from "../types/shared.types";
+import { NameType, ResolvedResourceType } from "../enumerations/enumerations";
 
 export class NameTools {
 	static mapName(domainOrTld: string): MappedName | undefined {
@@ -13,21 +14,21 @@ export class NameTools {
 		}
 
 		//portions
-		let tld = null;
-		let tldAsciiName = null;
-		let secondLevelDomain = null;
-		let secondLevelDomainAsciiName = null;
+		// let tld: _string = undefined;
+		let tldAsciiName: _string = undefined;
+		// let secondLevelDomain: _string = undefined;
+		let secondLevelDomainAsciiName: _string = undefined;
 
 		if (detailedName.type === NameType.TLD) {
-			tld = domainOrTld;
+			// tld = domainOrTld;
 			tldAsciiName = detailedName.asciiName;
 		}
 		else if (detailedName.type === NameType.SECOND_LEVEL_DOMAIN || detailedName.type === NameType.SUB_DOMAINED_DOMAIN) {
 			const nameSplitted = detailedName.name.split(".");
 			const asciiNameSplitted = detailedName.asciiName.split(".");
 			if (nameSplitted.length === 2 && asciiNameSplitted.length === 2) {
-				tld = nameSplitted[nameSplitted.length - 1];
-				secondLevelDomain = nameSplitted[nameSplitted.length - 2];
+				// tld = nameSplitted[nameSplitted.length - 1];
+				// secondLevelDomain = nameSplitted[nameSplitted.length - 2];
 
 				tldAsciiName = asciiNameSplitted[asciiNameSplitted.length - 1];
 				secondLevelDomainAsciiName = asciiNameSplitted[asciiNameSplitted.length - 2];
@@ -37,7 +38,7 @@ export class NameTools {
 		return {
 			domain: secondLevelDomainAsciiName,
 			fullname: domainOrTld,
-			tld: tldAsciiName,
+			tld: tldAsciiName as string,
 			type: detailedName.type,
 		};
 	}

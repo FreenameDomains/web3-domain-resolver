@@ -1,10 +1,8 @@
 import { Signer } from "ethers";
 import cloneDeep from "lodash.clonedeep";
-import { NetworkName } from "../../networks/connections/network-name";
-import { IResolverProvider } from "../../resolver-providers/resolver-provider.interface";
-import { ResolvedResourceType } from "../types/resolved-resource-type";
-import { ProviderName } from "../types/resolver-name";
-import { IResolvedResource } from "./resolved-resource.interface";
+import { IResolverProvider } from "../../shared/interfaces/resolver-provider.interface";
+import { IResolvedResource } from "../../shared/interfaces/resolved-resource.interface";
+import { ResolvedResourceType, ProviderName, NetworkName } from "../../shared/enumerations/enumerations";
 
 export class ResolvedResource implements IResolvedResource {
 
@@ -15,7 +13,7 @@ export class ResolvedResource implements IResolvedResource {
 		tokenId: string,
 		resolverName: ProviderName | string,
 		resolverProvider: IResolverProvider,
-		network: NetworkName | string,
+		network: NetworkName,
 		proxyReaderAddress: string,
 		proxyWriterAddress: string,
 		ownerAddress: string,

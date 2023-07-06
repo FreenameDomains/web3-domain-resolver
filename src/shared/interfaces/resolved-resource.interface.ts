@@ -1,9 +1,7 @@
 import { ethers } from "ethers";
-import { NetworkName } from "../../networks/connections/network-name";
-import { IResolverProvider } from "../../resolver-providers/resolver-provider.interface";
-import { ResolvedResourceType } from "../types/resolved-resource-type";
-import { ProviderName } from "../types/resolver-name";
+import { IResolverProvider } from "./resolver-provider.interface";
 import { Wallet } from "@project-serum/anchor";
+import { NetworkName, ProviderName, ResolvedResourceType } from "../enumerations/enumerations";
 
 export interface IResolvedResource {
     /**

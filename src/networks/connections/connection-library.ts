@@ -1,5 +1,5 @@
-import { NetworkConnection } from "./network-connection.types";
-import { NetworkName } from "./network-name";
+import { NetworkName } from "../../shared/enumerations/enumerations";
+import { NetworkConnection } from "../../shared/types/connection.types";
 
 export class ConnectionLibrary {
 

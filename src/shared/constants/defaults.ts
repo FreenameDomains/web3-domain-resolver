@@ -1,7 +1,4 @@
-import { NetworkConnection } from "../networks/connections/network-connection.types";
-import { NetworkName } from "../networks/connections/network-name";
-
-export const DEFAULT_RPC_URL: Record<NetworkName, string> = {
+export const DEFAULT_RPC_URL: Record<string, string> = {
 	bsc: "https://bsc-dataseed1.ninicoin.io",
 	ethereum: "https://eth-mainnet.public.blastapi.io",
 	polygon: "https://rpc-mainnet.matic.quiknode.pro",
@@ -17,7 +14,7 @@ export const DEFAULT_RPC_URL: Record<NetworkName, string> = {
 };
 
 //these urls can only connect to Freename smart contract addresses
-export const DEFAULT_INFURA_RPC_URL: Record<NetworkName, string> = {
+export const DEFAULT_INFURA_RPC_URL: Record<string, string> = {
 	polygon: "https://polygon-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
 	ethereum: "https://mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
 	aurora: "https://aurora-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
@@ -29,23 +26,3 @@ export const DEFAULT_INFURA_RPC_URL: Record<NetworkName, string> = {
 	solana: "",
 	"solana-devnet": "",
 };
-
-export class DefaultTools {
-	static getDefaultConnection(networkName: NetworkName, options: { infuraIfAvailable?: boolean } = {}): NetworkConnection {
-		const { infuraIfAvailable = false } = options;
-		let url: string | undefined;
-
-		if (infuraIfAvailable) {
-			url = DEFAULT_INFURA_RPC_URL[networkName];
-		}
-
-		if (!url) {
-			url = DEFAULT_RPC_URL[networkName];
-		}
-
-		return {
-			networkName: networkName,
-			rpcUrl: url,
-		};
-	}
-}

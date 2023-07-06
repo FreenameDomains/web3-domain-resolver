@@ -1,16 +1,15 @@
-import { NetworkName } from "../../../networks/connections/network-name";
-import { ProviderName } from "../../../resolvers/types/resolver-name";
-import { MappedName } from "../../../tools/name-tools.types";
-import { IResolverProvider } from "../../resolver-provider.interface";
+import { MappedName } from "../../../shared/types/name-tools.types";
+import { IResolverProvider } from "../../../shared/interfaces/resolver-provider.interface";
 import { BaseResolverProvider } from "../base-resolver-provider";
-import { ENS_ABI, ENS_CONTRACT_ADDRESS, ENS_MAINNET_METADATA_URL, ENS_SUPPORTED_TLDS } from "./ens-resolver-provider.consts";
+import { ENS_ABI, ENS_CONTRACT_ADDRESS, ENS_MAINNET_METADATA_URL, ENS_SUPPORTED_TLDS } from "../../../shared/constants/ens-resolver-provider.consts";
 import { ContractConnection } from "../../../networks/connections/contract-connection";
 import { ethers } from "ethers";
-import { ApiCaller } from "../../../tools/api-caller";
+import { ApiCaller } from "../../../shared/tools/api-caller";
 import { ConnectionLibrary } from "../../../networks/connections/connection-library";
-import { DefaultTools } from "../../../defaults/default-connections";
-import { IResolvedResource } from "../../../resolvers/resolved-resource/resolved-resource.interface";
-import { NameTools } from "../../../tools/name-tools";
+import { DefaultTools } from "../../../shared/tools/default-connections";
+import { IResolvedResource } from "../../../shared/interfaces/resolved-resource.interface";
+import { NameTools } from "../../../shared/tools/name-tools";
+import { NetworkName, ProviderName } from "../../../shared/enumerations/enumerations";
 
 export class ENSResolverProvider extends BaseResolverProvider implements IResolverProvider {
 
@@ -107,11 +106,11 @@ export class ENSResolverProvider extends BaseResolverProvider implements IResolv
 		return ApiCaller.getHttpsCall(metadataUrl);
 	}
 
-	public override async getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined> {
+	public override async getNetworkFromName(): Promise<NetworkName | undefined> {
 		return NetworkName.ETHEREUM;
 	}
 
-	public override async getRecords(tokenId: string): Promise<{ [key: string]: string; } | undefined> {
+	public override async getRecords(): Promise<{ [key: string]: string; } | undefined> {
 		return undefined;
 	}
 

@@ -1,6 +1,6 @@
 import { Wallet, AnchorProvider, Program, web3, setProvider, BN } from "@project-serum/anchor";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
-import { IDL } from "../../defaults/idl-json";
+import { IDL } from "../../shared/constants/idl-json";
 
 const network = clusterApiUrl("devnet");
 const connection = new Connection(network);

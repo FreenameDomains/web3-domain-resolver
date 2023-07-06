@@ -1,9 +1,10 @@
 import { ethers } from "ethers";
-import { NetworkConnection } from "./network-connection.types";
-import { ConnectionInfo } from "./contract-connection.types";
-import { Contract, ContractFactory } from "./contract";
+import { Contract } from "./contract";
 import { Connection } from "@solana/web3.js";
-import { NetworkName } from "./network-name";
+import { NetworkName } from "../../shared/enumerations/enumerations";
+import { ConnectionInfo } from "../../shared/interfaces/connection-info.interface";
+import { NetworkConnection } from "../../shared/types/connection.types";
+import { ContractFactory } from "./contract-factory";
 
 /**
  * This class represents a connection to a smart contract.
@@ -13,7 +14,7 @@ export class ContractConnection {
 	/**
 	 * Connection info
 	 */
-	protected _connection: NetworkConnection | Connection;
+	protected _connection: NetworkConnection;
 	/**
 	 * Smart contract address
 	 */
@@ -42,7 +43,6 @@ export class ContractConnection {
 	}
 
 	public get connection(): NetworkConnection {
-		if (this._connection instanceof Connection) return { networkName: "solana", rpcUrl: "" };
 		return this._connection;
 	}
 
@@ -58,8 +58,7 @@ export class ContractConnection {
 		return this._contract;
 	}
 
-	public get network(): NetworkName | string {
-		if (this._connection instanceof Connection) return "solana";
+	public get network(): NetworkName {
 		return this._connection.networkName;
 	}
 

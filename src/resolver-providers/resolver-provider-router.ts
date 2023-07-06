@@ -1,8 +1,8 @@
 import sortBy from "lodash.sortby";
 import indexOf from "lodash.indexof";
-import { ProviderName } from "../resolvers/types/resolver-name";
-import { NameTools } from "../tools/name-tools";
-import { IResolverProvider } from "./resolver-provider.interface";
+import { NameTools } from "../shared/tools/name-tools";
+import { IResolverProvider } from "../shared/interfaces/resolver-provider.interface";
+import { ProviderName } from "../shared/enumerations/enumerations";
 
 export class ResolverProviderRouter {
 	constructor(resolverProviders: IResolverProvider[]) {
@@ -59,14 +59,14 @@ export class ResolverProviderRouter {
 		return undefined;
 	}
 
-	public getResolverProvider(name: ProviderName | string): IResolverProvider | undefined {
+	public getResolverProvider(name: ProviderName): IResolverProvider | undefined {
 		const resolverProvider = this._resolverProviders.find(x => x.name == name);
 		return resolverProvider;
 	}
 
-	public setResolverProvidersPriority(priority: (ProviderName | string)[]) {
+	public setResolverProvidersPriority(priority: (ProviderName)[]) {
 
-		const missing: (ProviderName | string)[] = [];
+		const missing: (ProviderName)[] = [];
 		for (const resolverProvider of this._resolverProviders) {
 			if (!priority.includes(resolverProvider.name)) {
 				missing.push(resolverProvider.name);

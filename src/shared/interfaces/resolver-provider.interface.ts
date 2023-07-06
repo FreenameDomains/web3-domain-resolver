@@ -1,15 +1,14 @@
-import { NetworkName } from "../networks/connections/network-name";
-import { IResolvedResource } from "../resolvers/resolved-resource/resolved-resource.interface";
-import { ConnectionLibrary } from "../networks/connections/connection-library";
+import { IResolvedResource } from "./resolved-resource.interface";
+import { ConnectionLibrary } from "../../networks/connections/connection-library";
 import { ethers } from "ethers";
-import { ProviderName } from "../resolvers/types/resolver-name";
+import { NetworkName, ProviderName } from "../enumerations/enumerations";
 
 export interface IResolverProvider {
 
     /**
      * The name of the provider. Eg. 'Freename'
      */
-    name: ProviderName | string;
+    name: ProviderName;
 
     /**
      * The list of the provider's supported tlds, is `"*"` in case all the tlds are supported.

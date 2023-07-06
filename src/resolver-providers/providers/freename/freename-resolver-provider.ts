@@ -1,19 +1,17 @@
 import { ethers } from "ethers";
 import cloneDeep from "lodash.clonedeep";
-import { DefaultTools } from "../../../defaults/default-connections";
+import { DefaultTools } from "../../../shared/tools/default-connections";
 import { ConnectionLibrary } from "../../../networks/connections/connection-library";
 import { ContractConnection } from "../../../networks/connections/contract-connection";
-import { NetworkConnection } from "../../../networks/connections/network-connection.types";
-import { ProviderName } from "../../../resolvers/types/resolver-name";
-import { MappedName } from "../../../tools/name-tools.types";
-import { IResolverProvider } from "../../resolver-provider.interface";
+import { MappedName } from "../../../shared/types/name-tools.types";
+import { IResolverProvider } from "../../../shared/interfaces/resolver-provider.interface";
 import { BaseResolverProvider } from "../base-resolver-provider";
-import { FREENAME_CONTRACT_CONFS } from "./freename-resolver-provider.consts";
-import { FreenameMetadata } from "./freename-resolver-provider.types";
-import { FreenameResolverTools } from "./freename-resolver-tools";
-import { NameTools } from "../../../tools/name-tools";
-import { ConnectionInfo } from "../../../networks/connections/contract-connection.types";
-import { NetworkName } from "../../../networks/connections/network-name";
+import { FreenameMetadata } from "../../../shared/types/freename-resolver-provider.types";
+import { NameTools } from "../../../shared/tools/name-tools";
+import { FreenameNetwork, NetworkName, ProviderName } from "../../../shared/enumerations/enumerations";
+import { FREENAME_CONTRACT_CONFS } from "../../../shared/constants/freename-config.constants";
+import { ConnectionInfo } from "../../../shared/interfaces/connection-info.interface";
+import { NetworkConnection } from "../../../shared/types/connection.types";
 
 export class FreenameResolverProvider extends BaseResolverProvider implements IResolverProvider {
 	constructor(options: { connectionLibrary?: ConnectionLibrary, testMode?: boolean } = {}) {
@@ -25,7 +23,7 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 		const freenameContractConfs = cloneDeep(FREENAME_CONTRACT_CONFS);
 		for (const contractConf of freenameContractConfs) {
 			if (contractConf.test == testMode) {
-				const connection: NetworkConnection = connectionLibrary?.getConnection(contractConf.networkName) || DefaultTools.getDefaultConnection(contractConf.networkName, { infuraIfAvailable: true });
+				const connection: NetworkConnection = connectionLibrary?.getConnection(contractConf.networkName) || DefaultTools.getDefaultConnection(contractConf.networkName as unknown as NetworkName, { infuraIfAvailable: true });
 				const connectionInfo: ConnectionInfo = { network: connection, address: contractConf.address, abi: contractConf.abi as ethers.ContractInterface };
 				if (contractConf.type == "read") {
 					readContractConnections.push(new ContractConnection(connectionInfo));
@@ -53,14 +51,13 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 		return undefined;
 	}
 
-	public async getNetworkFromName(mappedName: MappedName): Promise<NetworkName | undefined> {
+	public async getNetworkFromName(mappedName: MappedName): Promise<FreenameNetwork> {
 
 		const metadata: FreenameMetadata = await this.getMetadata(mappedName.fullname);
-		const network = FreenameResolverTools.networkNameFormFreenameNetwork(metadata?.network);
-		return network;
+		return metadata.network;
 	}
 
-	public async getRecords(tokenId: string, network?: NetworkName | string | undefined): Promise<{ [key: string]: string; } | undefined> {
+	public async getRecords(tokenId: string, network?: FreenameNetwork): Promise<{ [key: string]: string; } | undefined> {
 		const keys = await this.getAllRecordKeys(tokenId, network);
 		if (!keys) {
 			return undefined;
@@ -84,7 +81,7 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 		return records;
 	}
 
-	public async getAllRecordKeys(tokenId: string, network?: NetworkName | string | undefined): Promise<string[] | undefined> {
+	public async getAllRecordKeys(tokenId: string, network?: FreenameNetwork | string | undefined): Promise<string[] | undefined> {
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
 			return undefined;

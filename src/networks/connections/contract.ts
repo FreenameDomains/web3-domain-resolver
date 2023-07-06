@@ -1,28 +1,13 @@
 import { Metaplex } from "@metaplex-foundation/js";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { ContractInterface, ethers } from "ethers";
-import { ConnectionInfo, Receipt, _publicKey, _string, _nft, Transaction } from "./contract-connection.types";
-import { NetworkName } from "./network-name";
-import { NameTools } from "../../tools/name-tools";
+import { NameTools } from "../../shared/tools/name-tools";
 import { Wallet } from "@project-serum/anchor";
-import { IResolvedResource } from "../../resolvers/resolved-resource/resolved-resource.interface";
+import { IResolvedResource } from "../../shared/interfaces/resolved-resource.interface";
 import { SolanaContractConnection } from "./sol-contract-connection";
-
-export abstract class ContractFactory {
-
-	public static createContract(arg?: ConnectionInfo): Contract {
-		const contract = new Contract();
-		if (arg) {
-			if (arg?.network?.networkName == "solana" || arg?.network?.networkName == NetworkName?.SOLANA_DEVNET) {
-				contract.setMetaplex(arg);
-			} else {
-				contract.setEthers(arg);
-			}
-		}
-		return contract;
-	}
-
-}
+import { NetworkName } from "../../shared/enumerations/enumerations";
+import { _string, _nft, _publicKey, _receipt, _transaction } from "../../shared/types/shared.types";
+import { ConnectionInfo } from "../../shared/interfaces/connection-info.interface";
 
 export class Contract {
 
@@ -293,8 +278,8 @@ export class Contract {
 		let result = false;
 		if (this._ethers) {
 			try {
-				const tx: Transaction = await this._ethers.transferFrom(address, addressTo, tokenId);
-				const approved: Receipt = await tx.wait();
+				const tx: _transaction = await this._ethers.transferFrom(address, addressTo, tokenId);
+				const approved: _receipt = await tx.wait();
 				if (approved) result = true;
 			} catch (error) {
 				result = false;
@@ -308,8 +293,8 @@ export class Contract {
 		let result = false;
 		if (this._ethers) {
 			try {
-				const tx: Transaction = await this._ethers.approve(address, tokenId);
-				const approved: Receipt = await tx.wait();
+				const tx: _transaction = await this._ethers.approve(address, tokenId);
+				const approved: _receipt = await tx.wait();
 				if (approved) result = true;
 			} catch (error) {
 				result = false;
@@ -323,8 +308,8 @@ export class Contract {
 		let result = false;
 		if (this._ethers) {
 			try {
-				const tx: Transaction = await this._ethers.setRecord(key, value, tokenId);
-				const approved: Receipt = await tx.wait();
+				const tx: _transaction = await this._ethers.setRecord(key, value, tokenId);
+				const approved: _receipt = await tx.wait();
 				if (approved) result = true;
 			} catch (error) {
 				result = false;
@@ -338,8 +323,8 @@ export class Contract {
 		let result = false;
 		try {
 			if (this._ethers) {
-				const tx: Transaction = await this._ethers.setManyRecords(keys, values, resource.tokenId);
-				const approved: Receipt = await tx.wait();
+				const tx: _transaction = await this._ethers.setManyRecords(keys, values, resource.tokenId);
+				const approved: _receipt = await tx.wait();
 				if (approved) result = true;
 			}
 			if (this._solanaContract) {
@@ -356,8 +341,8 @@ export class Contract {
 		let result = false;
 		if (this._ethers) {
 			try {
-				const tx: Transaction = await this._ethers.setReverse(tokenId);
-				const approved: Receipt = await tx.wait();
+				const tx: _transaction = await this._ethers.setReverse(tokenId);
+				const approved: _receipt = await tx.wait();
 				if (approved) result = true;
 			} catch (error) {
 				result = false;

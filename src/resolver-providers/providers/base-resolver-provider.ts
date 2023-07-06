@@ -1,19 +1,17 @@
 import { ethers } from "ethers";
 import { ConnectionLibrary } from "../../networks/connections/connection-library";
 import { ContractConnection } from "../../networks/connections/contract-connection";
-import { NetworkName } from "../../networks/connections/network-name";
 import { ResolvedResource } from "../../resolvers/resolved-resource/resolved-resource";
-import { IResolvedResource } from "../../resolvers/resolved-resource/resolved-resource.interface";
-import { ResolvedResourceType } from "../../resolvers/types/resolved-resource-type";
-import { ProviderName } from "../../resolvers/types/resolver-name";
-import { ApiCaller } from "../../tools/api-caller";
-import { NameTools } from "../../tools/name-tools";
-import { MappedName } from "../../tools/name-tools.types";
-import { IResolverProvider } from "../resolver-provider.interface";
+import { IResolvedResource } from "../../shared/interfaces/resolved-resource.interface";
+import { ApiCaller } from "../../shared/tools/api-caller";
+import { NameTools } from "../../shared/tools/name-tools";
+import { MappedName } from "../../shared/types/name-tools.types";
+import { IResolverProvider } from "../../shared/interfaces/resolver-provider.interface";
 import { Wallet } from "@project-serum/anchor";
+import { NetworkName, ProviderName, ResolvedResourceType } from "../../shared/enumerations/enumerations";
 export abstract class BaseResolverProvider implements IResolverProvider {
 	constructor(
-		name: ProviderName | string,
+		name: ProviderName,
 		supportedTlds: string[],
 		readContractConnections: ContractConnection[],
 		writeContractConnections: ContractConnection[]) {
@@ -23,7 +21,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		this._writeContractConnections = writeContractConnections;
 	}
 
-	public get supportedNetworks(): (NetworkName | string)[] {
+	public get supportedNetworks(): (NetworkName)[] {
 		return this._readContractConnections.map(x => x.network);
 	}
 
@@ -51,11 +49,11 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		this._connectionLibrary = value;
 	}
 
-	protected _name: ProviderName | string;
-	public get name(): ProviderName | string {
+	protected _name: ProviderName;
+	public get name(): ProviderName {
 		return this._name;
 	}
-	public set name(value: ProviderName | string) {
+	public set name(value: ProviderName) {
 		this._name = value;
 	}
 

@@ -1,12 +1,12 @@
 import { BlockchainType } from "@unstoppabledomains/resolution";
-import { NetworkName } from "../../../networks/connections/network-name";
+import { UdNetwork } from "../../../shared/enumerations/enumerations";
 
 export class UDResolverTools {
-	public static networkNameFormUdNetwork(udNetwork: BlockchainType): NetworkName {
+	public static networkNameFormUdNetwork(udNetwork: BlockchainType): UdNetwork {
 		switch (udNetwork) {
-			case BlockchainType.ETH: return NetworkName.ETHEREUM;
-			case BlockchainType.MATIC: return NetworkName.POLYGON;
-			case BlockchainType.ZIL: return NetworkName.ZILLIQA;
+			case BlockchainType.ETH: return UdNetwork.ETHEREUM;
+			case BlockchainType.MATIC: return UdNetwork.POLYGON;
+			case BlockchainType.ZIL: return UdNetwork.ZILLIQA;
 		}
 	}
 }
