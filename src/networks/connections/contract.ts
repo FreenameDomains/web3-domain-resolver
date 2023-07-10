@@ -109,15 +109,15 @@ export class Contract {
 	 * @param arg 
 	 * @returns 
 	 */
-	public async get(arg: { key: string, tokenId?: string }): Promise<_string> {
+	public async get(arg: { key: string, tokenId: string }): Promise<_string> {
 		const { key, tokenId } = arg || {};
 		let result: _string;
-		if (this._ethers && tokenId) {
+		if (this._ethers) {
 			const _tokenId = await this.generateEVMTokenId(tokenId);
 			result = await this._ethers.getRecord(key, _tokenId);
 		}
-		if (this._metaplex && !result) {
-			const _nft = await this._findSolanaNft(key);
+		if (this._metaplex) {
+			const _nft = await this._findSolanaNft(tokenId);
 			if (!_nft) return undefined;
 			result = JSON.stringify(_nft);
 		}
@@ -198,7 +198,7 @@ export class Contract {
 		let result: _string = undefined;
 		if (this._ethers) {
 			const _tokenId = await this.generateEVMTokenId(tokenId);
-			result = await this._ethers.tokenUri(_tokenId);
+			result = await this._ethers.tokenURI(_tokenId);
 		}
 		if (this._metaplex && !result) {
 			const _nft = await this._findSolanaNft(tokenId);
@@ -262,13 +262,17 @@ export class Contract {
 	 * @returns 
 	 */
 	private async _findSolanaNft(arg: string): Promise<_nft> {
-		const _programId: PublicKey = this._programId() as PublicKey;
-		const nftAddress: _publicKey = this._nftAddress({ nftName: arg, programId: _programId });
+		try {
+			const _programId: PublicKey = this._programId() as PublicKey;
+			const nftAddress: _publicKey = this._nftAddress({ nftName: arg, programId: _programId });
 
-		if (!nftAddress) return undefined;
-		if (this._metaplex) {
-			const _nft: _nft = await this._metaplex.nfts().findByMint({ mintAddress: nftAddress });
-			return _nft;
+			if (!nftAddress) return undefined;
+			if (this._metaplex) {
+				const _nft: _nft = await this._metaplex.nfts().findByMint({ mintAddress: nftAddress });
+				return _nft;
+			}
+		} catch (error) {
+			return undefined;
 		}
 	}
 
@@ -276,14 +280,17 @@ export class Contract {
 
 	public async transferFrom(address: string, addressTo: string, tokenId: string): Promise<boolean> {
 		let result = false;
-		if (this._ethers) {
-			try {
+		try {
+			if (this._ethers) {
 				const tx: _transaction = await this._ethers.transferFrom(address, addressTo, tokenId);
 				const approved: _receipt = await tx.wait();
 				if (approved) result = true;
-			} catch (error) {
-				result = false;
 			}
+			if (this._solanaContract) {
+				result = await this._solanaContract.transfer(addressTo, tokenId);
+			}
+		} catch (error) {
+			result = false;
 		}
 		this.disconnect();
 		return result;
@@ -354,7 +361,7 @@ export class Contract {
 
 	/*************************** TOOLS ***************************/
 
-	public getTokeId(arg: string): _string {
+	public getTokenId(arg: string): _string {
 		if (this._connectionInfo) {
 			switch (this._connectionInfo.network.networkName) {
 				case NetworkName.SOLANA:

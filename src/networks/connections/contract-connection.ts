@@ -63,7 +63,7 @@ export class ContractConnection {
 	}
 
 	public getTokenId(arg: string): string | undefined {
-		return this.contract.getTokeId(arg);
+		return this.contract.getTokenId(arg);
 	}
 
 

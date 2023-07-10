@@ -81,7 +81,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		let signerToUse = signer;
 		if (networkName != NetworkName.SOLANA && networkName != NetworkName.SOLANA_DEVNET) {
 			if (!(signer as ethers.Signer)?.provider) {
-				signerToUse = (signer as ethers.Signer).connect(writeContractConnection.provider);
+				signerToUse = (signer as ethers.Signer)?.connect(writeContractConnection.provider);
 			}
 		}
 		const contractConnected = writeContractConnection.contract.connect(signerToUse);
@@ -379,7 +379,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		return readContractConnection;
 	}
 
-	abstract generateTokenId(mappedName: MappedName): Promise<string | undefined>
+	abstract generateTokenId(mappedName: MappedName, network?: NetworkName): Promise<string | undefined>
 
 	abstract getNetworkFromName(mappedName: MappedName): Promise<NetworkName | string | undefined>
 

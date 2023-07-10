@@ -12,6 +12,7 @@ import { FreenameNetwork, NetworkName, ProviderName } from "../../../shared/enum
 import { FREENAME_CONTRACT_CONFS } from "../../../shared/constants/freename-config.constants";
 import { ConnectionInfo } from "../../../shared/interfaces/connection-info.interface";
 import { NetworkConnection } from "../../../shared/types/connection.types";
+import { _string } from "../../../shared/types/shared.types";
 
 export class FreenameResolverProvider extends BaseResolverProvider implements IResolverProvider {
 	constructor(options: { connectionLibrary?: ConnectionLibrary, testMode?: boolean } = {}) {
@@ -36,23 +37,23 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 		super(ProviderName.FREENAME, ["*"], readContractConnections, writeContractConnections);
 	}
 
-	public async generateTokenId(mappedName: MappedName): Promise<string | undefined> {
-		let fullnameKeccak: string;
-		if (mappedName.domain) {
-			const domainKeccak = ethers.utils.solidityKeccak256(["string"], [mappedName.domain]);
-			fullnameKeccak = ethers.utils.solidityKeccak256(["string", "uint256"], [mappedName.tld, domainKeccak]);
-		} else {
-			fullnameKeccak = ethers.utils.solidityKeccak256(["string"], [mappedName.tld]);
+	public async generateTokenId(mappedName: MappedName, network: NetworkName): Promise<_string> {
+		const readContractConnection = await this.getReadContractConnectionFromToken(mappedName.fullname, network);
+		if (!readContractConnection) {
+			return undefined;
 		}
-		if (fullnameKeccak) {
-			const tokenId = ethers.BigNumber.from(fullnameKeccak).toString();
-			return tokenId;
+
+		try {
+			const contract = readContractConnection.contract;
+			return contract.getTokenId(mappedName.fullname);
 		}
-		return undefined;
+		catch {
+			return undefined;
+		}
+
 	}
 
 	public async getNetworkFromName(mappedName: MappedName): Promise<FreenameNetwork> {
-
 		const metadata: FreenameMetadata = await this.getMetadata(mappedName.fullname);
 		return metadata?.network;
 	}
@@ -110,7 +111,7 @@ export class FreenameResolverProvider extends BaseResolverProvider implements IR
 			return undefined;
 		}
 
-		const generatedTokenId = await this.generateTokenId(mappedName);
+		const generatedTokenId = await this.generateTokenId(mappedName, metadata.network as any);
 		if (generatedTokenId !== tokenId) {
 			return undefined;
 		}
