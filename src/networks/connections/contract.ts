@@ -365,6 +365,7 @@ export class Contract {
 		if (this._connectionInfo) {
 			switch (this._connectionInfo.network.networkName) {
 				case NetworkName.SOLANA:
+				case NetworkName.SOLANA_DEVNET:
 					if (this._programId()) {
 						return this._nftAddress({ nftName: arg, programId: this._programId() as PublicKey })?.toBase58();
 					}

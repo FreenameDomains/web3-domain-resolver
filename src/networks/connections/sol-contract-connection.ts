@@ -1,6 +1,8 @@
 import { Wallet, AnchorProvider, Program, web3, setProvider, BN } from "@project-serum/anchor";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { IDL } from "../../shared/constants/idl-json";
+import { getAssociatedTokenAddressSync, getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
+import { bs58 } from "@project-serum/anchor/dist/cjs/utils/bytes";
 
 const network = clusterApiUrl("devnet");
 const connection = new Connection(network);
@@ -15,6 +17,7 @@ export class SolanaContractConnection {
 	private _provider: AnchorProvider | null = null;
 	private _wallet: Wallet | null = null;
 	private _program: Program | null = null;
+	private _programId: PublicKey = new PublicKey("6cMUj75fcW7kaCJbFcSuAGjES22RMfnxg8QX8FJEprPL");
 
 	public constructor(arg: Wallet) {
 		if (arg) {
@@ -22,10 +25,10 @@ export class SolanaContractConnection {
 				this._wallet = arg;
 				this._setAncorProvider(arg);
 				const idlJson: string = JSON.stringify(IDL);
-				const address: PublicKey = new PublicKey("FPvXvNtFUgnbJM6d8FTGKzKLeWQADYosLgcEuRDcRwX2");
-				this._program = new Program(JSON.parse(idlJson), address, this._provider as AnchorProvider);
+				this._program = new Program(JSON.parse(idlJson), this._programId, this._provider as any);
+
 			} catch (error) {
-				return;
+				throw new Error(error as any);
 			}
 		}
 	}
@@ -42,20 +45,19 @@ export class SolanaContractConnection {
 	public async setRecords(keys: string[], values: string[], nftName: string): Promise<boolean> {
 		try {
 			if (this._program && this._wallet) {
-				const nsStatePDA: PublicKey = this._getNsStatePDA(this._program);
+				const nsState: PublicKey = this._getNsStatePDA(this._program);
 				const nftNsRecordMetadata: PublicKey = this._getNftNsRecordMetadata({ nftName, program: this._program });
 				const nsRecordMetadata = await this._program.account.nsRecordMetadata.fetch(nftNsRecordMetadata);
+				const account = {
+					nsRecordMetadata: nftNsRecordMetadata,
+					nsRecordData: (nsRecordMetadata as any).account,
+					rent: web3.SYSVAR_RENT_PUBKEY,
+					systemProgram: web3.SystemProgram.programId,
+					nsState: nsState,
+				};
 				const tx = await this._program.methods
-					.updateRecords(nftName, keys, values, new BN("1024"))
-					.accounts({
-						nsRecordMetadata: nftNsRecordMetadata,
-						nsRecordData: (nsRecordMetadata as any).account,
-						rent: web3.SYSVAR_RENT_PUBKEY,
-						payer: this._wallet.publicKey,
-						systemProgram: web3.SystemProgram.programId,
-						nsState: nsStatePDA,
-					})
-					.signers([this._wallet.payer])
+					.updateRecords(nftName, keys, values, [], new BN("1024"))
+					.accounts(account)
 					.rpc();
 				if (tx) {
 					return true;
@@ -66,6 +68,68 @@ export class SolanaContractConnection {
 		}
 		return false;
 	}
+
+	public async transfer(addressTo: string, nftName: string): Promise<boolean> {
+		try {
+			if (this._program && this._wallet && this._provider) {
+				const nftMintPDA = this._getNftMintPDA({ program: this._program, nft: { name: nftName } });
+				console.log("NFT MINT", nftMintPDA.toBase58());
+				const nftTokenAccount = getAssociatedTokenAddressSync(
+					nftMintPDA,
+					this._provider.wallet.publicKey
+				);
+				console.log("ADDRESS SENDER", nftTokenAccount.toBase58());
+
+				const recipientTokenAccount = getAssociatedTokenAddressSync(
+					nftMintPDA,
+					new PublicKey(addressTo)
+				);
+				// const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
+				// 	this._provider.connection,
+				// 	this._wallet.payer,
+				// 	nftMintPDA,
+				// 	keypair.publicKey
+				// );
+				const receiverAccount = await this._provider.connection.getAccountInfo(recipientTokenAccount);
+				console.log("RECIPIENT ACCOUNT", receiverAccount);
+				console.log("RECIPIENT TOKEN ACCOUNT", recipientTokenAccount.toBase58());
+				const nftNsRecordMetadata = this._getNftNsRecordMetadata({ nftName, program: this._program });
+				console.log("NFT NS RECORD METADATA", nftNsRecordMetadata.toBase58());
+				const nsStatePDA = this._getNsStatePDA(this._program);
+				console.log("NS STATE", nsStatePDA.toBase58());
+				const nsRecordData = await this._program.account.nsRecordMetadata.fetch(
+					nftNsRecordMetadata
+				);
+				console.log("NS RECORD DATA", nsRecordData);
+				console.log("Payer", this._wallet.payer.publicKey.toBase58());
+				console.log("TRY TRANSFER");
+
+				const tx = await this._program.methods
+					.transferNft(nftName)
+					.accounts({
+						mint: nftMintPDA,
+						recipient: recipientTokenAccount,
+						sender: nftTokenAccount,
+						payer: this._wallet.publicKey,
+						nsRecordMetadata: nftNsRecordMetadata,
+						nsRecordData: (nsRecordData as any).account,
+						nsState: nsStatePDA,
+					}).signers([this._wallet.payer]).rpc();
+				if (tx) {
+					console.log("TRANSFER DONE");
+					return true;
+				}
+				console.log("TRANSFER FAILED");
+				return false;
+			}
+		} catch (e) {
+			console.log("ERROR DURING TRANSFER", e);
+			return false;
+		}
+		return false;
+	}
+
+
 
 	/**
 			* 
@@ -83,7 +147,7 @@ export class SolanaContractConnection {
 		* @returns 
 		*/
 	private _getNsStatePDA(program: Program): PublicKey {
-		const [nsStatePDA] = PublicKey.findProgramAddressSync([Buffer.from("ns_state")], program.programId);
+		const [nsStatePDA] = web3.PublicKey.findProgramAddressSync([Buffer.from("ns_state")], program.programId);
 		return nsStatePDA;
 	}
 	/**
