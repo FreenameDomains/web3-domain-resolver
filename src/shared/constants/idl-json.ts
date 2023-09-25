@@ -5,160 +5,165 @@ export const IDL = {
 		{
 			"name": "STATE_SEED",
 			"type": "string",
-			"value": "\"ns_state\"",
+			"value": "\"ns_state\""
 		},
 		{
 			"name": "AUTHORITY_SEED",
 			"type": "string",
-			"value": "\"ns_authority\"",
+			"value": "\"ns_authority\""
+		},
+		{
+			"name": "OWNER_SEED",
+			"type": "string",
+			"value": "\"ns_owner\""
 		},
 		{
 			"name": "RECORD_SEED",
 			"type": "string",
-			"value": "\"ns_record\"",
+			"value": "\"ns_record\""
 		},
 		{
 			"name": "METADATA_SEED",
 			"type": "string",
-			"value": "\"ns_metadata\"",
+			"value": "\"ns_metadata\""
 		},
 		{
 			"name": "PROPERTY_SEED",
 			"type": "string",
-			"value": "\"ns_property\"",
+			"value": "\"ns_property\""
 		},
 		{
 			"name": "MINT_SEED",
 			"type": "string",
-			"value": "\"mint\"",
+			"value": "\"mint\""
 		},
 		{
 			"name": "COLLECTION_SEED",
 			"type": "string",
-			"value": "\"collection_mint\"",
+			"value": "\"collection_mint\""
 		},
 		{
 			"name": "DISCRIMINATOR_LENGTH",
 			"type": {
-				"defined": "usize",
+				"defined": "usize"
 			},
-			"value": "8",
+			"value": "8"
 		},
 		{
 			"name": "U8_LENGTH",
 			"type": {
-				"defined": "usize",
+				"defined": "usize"
 			},
-			"value": "1",
+			"value": "1"
 		},
 		{
 			"name": "PUBLIC_KEY_LENGTH",
 			"type": {
-				"defined": "usize",
+				"defined": "usize"
 			},
-			"value": "32",
+			"value": "32"
 		},
 		{
 			"name": "VECTOR_LENGTH",
 			"type": {
-				"defined": "usize",
+				"defined": "usize"
 			},
-			"value": "4",
+			"value": "4"
 		},
 		{
 			"name": "MAX_NS_PROPERTY_LENGTH",
 			"type": {
-				"defined": "usize",
+				"defined": "usize"
 			},
-			"value": "30 * 4",
+			"value": "30 * 4"
 		},
 		{
 			"name": "MAX_NS_RECORD_LENGTH",
 			"type": {
-				"defined": "usize",
+				"defined": "usize"
 			},
-			"value": "30 * 4",
-		},
+			"value": "30 * 4"
+		}
 	],
 	"instructions": [
 		{
 			"name": "init",
 			"docs": [
-				"Creates NFT Collection",
+				"Creates NFT Collection"
 			],
 			"accounts": [
 				{
 					"name": "state",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsAuthority",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "mint",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "metadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "tokenAccount",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "masterEditionAccount",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "collectionAuthorityRecord",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "payer",
 					"isMut": true,
-					"isSigner": true,
+					"isSigner": true
 				},
 				{
 					"name": "tokenProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "tokenMetadataProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "associatedTokenProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "rent",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "systemProgram",
 					"isMut": false,
-					"isSigner": false,
-				},
+					"isSigner": false
+				}
 			],
 			"args": [
 				{
 					"name": "owner",
-					"type": "publicKey",
-				},
-			],
+					"type": "publicKey"
+				}
+			]
 		},
 		{
 			"name": "pause",
@@ -166,20 +171,20 @@ export const IDL = {
 				{
 					"name": "signer",
 					"isMut": true,
-					"isSigner": true,
+					"isSigner": true
 				},
 				{
 					"name": "nsState",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "systemProgram",
 					"isMut": false,
-					"isSigner": false,
-				},
+					"isSigner": false
+				}
 			],
-			"args": [],
+			"args": []
 		},
 		{
 			"name": "unpause",
@@ -187,511 +192,511 @@ export const IDL = {
 				{
 					"name": "signer",
 					"isMut": true,
-					"isSigner": true,
+					"isSigner": true
 				},
 				{
 					"name": "nsState",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "systemProgram",
 					"isMut": false,
-					"isSigner": false,
-				},
+					"isSigner": false
+				}
 			],
-			"args": [],
+			"args": []
 		},
 		{
 			"name": "mintNft",
 			"docs": [
-				"Mints new NFT for collection with default properties",
+				"Mints new NFT for collection with default properties"
 			],
 			"accounts": [
 				{
 					"name": "nsState",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsAuthority",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
+				},
+				{
+					"name": "nsOwner",
+					"isMut": true,
+					"isSigner": false
 				},
 				{
 					"name": "nsRecordMetadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsRecordData",
 					"isMut": true,
-					"isSigner": true,
+					"isSigner": true
 				},
 				{
 					"name": "mint",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "tldMint",
 					"isMut": true,
 					"isSigner": false,
-					"isOptional": true,
+					"isOptional": true
 				},
 				{
 					"name": "metadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "masterEditionAccount",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "collectionMint",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "collectionMetadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "collectionMasterEditionAccount",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "tokenAccount",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsPropertyMetadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsPropertyData",
 					"isMut": true,
-					"isSigner": true,
+					"isSigner": true
 				},
 				{
 					"name": "payer",
 					"isMut": true,
-					"isSigner": true,
+					"isSigner": true
 				},
 				{
 					"name": "tokenProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "tokenMetadataProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "recipient",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "associatedTokenProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "rent",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "systemProgram",
 					"isMut": false,
-					"isSigner": false,
-				},
+					"isSigner": false
+				}
 			],
 			"args": [
 				{
 					"name": "name",
-					"type": "string",
-				},
-			],
+					"type": "string"
+				}
+			]
 		},
 		{
 			"name": "mintNftWithRecords",
 			"docs": [
-				"Mints new NFT for collection with default properties and records",
+				"Mints new NFT for collection with default properties and records"
 			],
 			"accounts": [
 				{
 					"name": "nsState",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsAuthority",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
+				},
+				{
+					"name": "nsOwner",
+					"isMut": true,
+					"isSigner": false
 				},
 				{
 					"name": "nsRecordMetadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsRecordData",
 					"isMut": true,
-					"isSigner": true,
+					"isSigner": true
 				},
 				{
 					"name": "mint",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "tldMint",
 					"isMut": true,
 					"isSigner": false,
-					"isOptional": true,
+					"isOptional": true
 				},
 				{
 					"name": "metadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "masterEditionAccount",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "collectionMint",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "collectionMetadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "collectionMasterEditionAccount",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "tokenAccount",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsPropertyMetadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsPropertyData",
 					"isMut": true,
-					"isSigner": true,
+					"isSigner": true
 				},
 				{
 					"name": "payer",
 					"isMut": true,
-					"isSigner": true,
+					"isSigner": true
 				},
 				{
 					"name": "tokenProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "tokenMetadataProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "recipient",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "associatedTokenProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "rent",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "systemProgram",
 					"isMut": false,
-					"isSigner": false,
-				},
+					"isSigner": false
+				}
 			],
 			"args": [
 				{
 					"name": "name",
-					"type": "string",
+					"type": "string"
 				},
 				{
 					"name": "recordSize",
-					"type": "u64",
+					"type": "u64"
 				},
 				{
 					"name": "recordKeys",
 					"type": {
-						"vec": "string",
-					},
+						"vec": "string"
+					}
 				},
 				{
 					"name": "recordValues",
 					"type": {
-						"vec": "string",
-					},
-				},
-			],
+						"vec": "string"
+					}
+				}
+			]
 		},
 		{
 			"name": "burnNft",
 			"docs": [
-				"Burn",
+				"Burn"
 			],
 			"accounts": [
 				{
 					"name": "benefitiary",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsState",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsAuthority",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
+				},
+				{
+					"name": "nsOwner",
+					"isMut": true,
+					"isSigner": false
 				},
 				{
 					"name": "nsRecordMetadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsRecordData",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsPropertyMetadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsPropertyData",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "mint",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "collectionMint",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "metadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "masterEditionAccount",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "tokenAccount",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "collectionMetadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "payer",
 					"isMut": false,
-					"isSigner": true,
+					"isSigner": true
 				},
 				{
 					"name": "tokenProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "tokenMetadataProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "associatedTokenProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "rent",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "systemProgram",
 					"isMut": false,
-					"isSigner": false,
-				},
+					"isSigner": false
+				}
 			],
 			"args": [
 				{
 					"name": "name",
-					"type": "string",
-				},
-			],
+					"type": "string"
+				}
+			]
 		},
 		{
 			"name": "updateRecords",
 			"docs": [
-				"Updates Records",
+				"Updates Records"
 			],
 			"accounts": [
 				{
 					"name": "nsState",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsRecordMetadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsRecordData",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "payer",
 					"isMut": true,
-					"isSigner": true,
+					"isSigner": true
 				},
 				{
 					"name": "systemProgram",
 					"isMut": false,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "rent",
 					"isMut": false,
-					"isSigner": false,
-				},
+					"isSigner": false
+				}
 			],
 			"args": [
 				{
 					"name": "name",
-					"type": "string",
+					"type": "string"
 				},
 				{
 					"name": "upsertKeys",
 					"type": {
-						"vec": "string",
-					},
+						"vec": "string"
+					}
 				},
 				{
 					"name": "upsertValues",
 					"type": {
-						"vec": "string",
-					},
+						"vec": "string"
+					}
 				},
 				{
 					"name": "deleteKeys",
 					"type": {
-						"vec": "string",
-					},
+						"vec": "string"
+					}
 				},
 				{
 					"name": "recordSize",
-					"type": "u64",
-				},
-			],
+					"type": "u64"
+				}
+			]
 		},
 		{
 			"name": "transferNft",
 			"docs": [
-				"Transfers NFT and resets records",
+				"Transfers NFT and resets records"
 			],
 			"accounts": [
 				{
 					"name": "nsState",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
+				},
+				{
+					"name": "nsAuthority",
+					"isMut": true,
+					"isSigner": false
 				},
 				{
 					"name": "payer",
 					"isMut": true,
-					"isSigner": true,
-				},
-				{
-					"name": "sender",
-					"isMut": true,
-					"isSigner": false,
+					"isSigner": true
 				},
 				{
 					"name": "recipient",
-					"isMut": true,
-					"isSigner": false,
-				},
-				{
-					"name": "mint",
-					"isMut": true,
-					"isSigner": false,
+					"isMut": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsRecordMetadata",
 					"isMut": true,
-					"isSigner": false,
+					"isSigner": false
 				},
 				{
 					"name": "nsRecordData",
 					"isMut": true,
-					"isSigner": false,
-				},
-				{
-					"name": "systemProgram",
-					"isMut": false,
-					"isSigner": false,
-				},
-				{
-					"name": "tokenProgram",
-					"isMut": false,
-					"isSigner": false,
-				},
+					"isSigner": false
+				}
 			],
 			"args": [
 				{
 					"name": "name",
-					"type": "string",
-				},
-			],
-		},
+					"type": "string"
+				}
+			]
+		}
 	],
 	"accounts": [
 		{
@@ -701,10 +706,10 @@ export const IDL = {
 				"fields": [
 					{
 						"name": "account",
-						"type": "publicKey",
-					},
-				],
-			},
+						"type": "publicKey"
+					}
+				]
+			}
 		},
 		{
 			"name": "NsProperties",
@@ -715,12 +720,12 @@ export const IDL = {
 						"name": "properties",
 						"type": {
 							"vec": {
-								"defined": "NsProperty",
-							},
-						},
-					},
-				],
-			},
+								"defined": "NsProperty"
+							}
+						}
+					}
+				]
+			}
 		},
 		{
 			"name": "NsRecordMetadata",
@@ -729,14 +734,14 @@ export const IDL = {
 				"fields": [
 					{
 						"name": "account",
-						"type": "publicKey",
+						"type": "publicKey"
 					},
 					{
 						"name": "owner",
-						"type": "publicKey",
-					},
-				],
-			},
+						"type": "publicKey"
+					}
+				]
+			}
 		},
 		{
 			"name": "NsRecords",
@@ -747,12 +752,12 @@ export const IDL = {
 						"name": "records",
 						"type": {
 							"vec": {
-								"defined": "NsRecord",
-							},
-						},
-					},
-				],
-			},
+								"defined": "NsRecord"
+							}
+						}
+					}
+				]
+			}
 		},
 		{
 			"name": "NsState",
@@ -761,19 +766,19 @@ export const IDL = {
 				"fields": [
 					{
 						"name": "init",
-						"type": "u8",
+						"type": "u8"
 					},
 					{
 						"name": "paused",
-						"type": "u8",
+						"type": "u8"
 					},
 					{
 						"name": "owner",
-						"type": "publicKey",
-					},
-				],
-			},
-		},
+						"type": "publicKey"
+					}
+				]
+			}
+		}
 	],
 	"types": [
 		{
@@ -783,14 +788,14 @@ export const IDL = {
 				"fields": [
 					{
 						"name": "key",
-						"type": "string",
+						"type": "string"
 					},
 					{
 						"name": "value",
-						"type": "string",
-					},
-				],
-			},
+						"type": "string"
+					}
+				]
+			}
 		},
 		{
 			"name": "NsRecord",
@@ -799,66 +804,66 @@ export const IDL = {
 				"fields": [
 					{
 						"name": "key",
-						"type": "string",
+						"type": "string"
 					},
 					{
 						"name": "value",
-						"type": "string",
-					},
-				],
-			},
-		},
+						"type": "string"
+					}
+				]
+			}
+		}
 	],
 	"errors": [
 		{
 			"code": 6000,
 			"name": "AlreadyInitialized",
-			"msg": "Program already initialized",
+			"msg": "Program already initialized"
 		},
 		{
 			"code": 6001,
 			"name": "AlreadyPaused",
-			"msg": "Program already paused",
+			"msg": "Program already paused"
 		},
 		{
 			"code": 6002,
 			"name": "AlreadyUnpaused",
-			"msg": "Program already unpaused",
+			"msg": "Program already unpaused"
 		},
 		{
 			"code": 6003,
 			"name": "Paused",
-			"msg": "Program paused",
+			"msg": "Program paused"
 		},
 		{
 			"code": 6004,
 			"name": "Unauthorized",
-			"msg": "Only owner can invoke this function",
+			"msg": "Only owner can invoke this function"
 		},
 		{
 			"code": 6005,
 			"name": "IncorrectOwner",
-			"msg": "Account does not have correct owner",
+			"msg": "Account does not have correct owner"
 		},
 		{
 			"code": 6006,
 			"name": "Uninitialized",
-			"msg": "Account is not initialized",
+			"msg": "Account is not initialized"
 		},
 		{
 			"code": 6007,
 			"name": "ValidationError",
-			"msg": "Validation error",
+			"msg": "Validation error"
 		},
 		{
 			"code": 6008,
 			"name": "GeneralError",
-			"msg": "General error",
-		},
+			"msg": "General error"
+		}
 	],
 	"metadata": {
-		"address": "6cMUj75fcW7kaCJbFcSuAGjES22RMfnxg8QX8FJEprPL",
-	},
+		"address": "Fcj5r2qmDXHpiAnhSi3ytzpGzi7sNiLYDSmFXdjs35P5"
+	}
 };
 
 

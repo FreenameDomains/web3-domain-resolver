@@ -1,8 +1,7 @@
 import { Wallet, AnchorProvider, Program, web3, setProvider, BN } from "@project-serum/anchor";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { IDL } from "../../shared/constants/idl-json";
-import { getAssociatedTokenAddressSync, getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
-import { bs58 } from "@project-serum/anchor/dist/cjs/utils/bytes";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 const network = clusterApiUrl("devnet");
 const connection = new Connection(network);
@@ -17,7 +16,7 @@ export class SolanaContractConnection {
 	private _provider: AnchorProvider | null = null;
 	private _wallet: Wallet | null = null;
 	private _program: Program | null = null;
-	private _programId: PublicKey = new PublicKey("6cMUj75fcW7kaCJbFcSuAGjES22RMfnxg8QX8FJEprPL");
+	private _programId: PublicKey = new PublicKey("Fcj5r2qmDXHpiAnhSi3ytzpGzi7sNiLYDSmFXdjs35P5");
 
 	public constructor(arg: Wallet) {
 		if (arg) {
@@ -84,12 +83,7 @@ export class SolanaContractConnection {
 					nftMintPDA,
 					new PublicKey(addressTo)
 				);
-				// const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
-				// 	this._provider.connection,
-				// 	this._wallet.payer,
-				// 	nftMintPDA,
-				// 	keypair.publicKey
-				// );
+				const nsAuthority = await this._getNsAuthorityPDA(this._program);
 				const receiverAccount = await this._provider.connection.getAccountInfo(recipientTokenAccount);
 				console.log("RECIPIENT ACCOUNT", receiverAccount);
 				console.log("RECIPIENT TOKEN ACCOUNT", recipientTokenAccount.toBase58());
@@ -107,9 +101,8 @@ export class SolanaContractConnection {
 				const tx = await this._program.methods
 					.transferNft(nftName)
 					.accounts({
-						mint: nftMintPDA,
+						nsAuthority: nsAuthority,
 						recipient: recipientTokenAccount,
-						sender: nftTokenAccount,
 						payer: this._wallet.publicKey,
 						nsRecordMetadata: nftNsRecordMetadata,
 						nsRecordData: (nsRecordData as any).account,
