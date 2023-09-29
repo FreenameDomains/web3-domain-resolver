@@ -369,7 +369,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 		const metadata = await this.getMetadata(tokenId, readContractConnection.network);
 
 		const records = await this.getRecords(tokenId, readContractConnection.network);
-		
+
 		const resolverResourceType: ResolvedResourceType = NameTools.getResolvedResourceType(mappedName.type);
 
 		const resolvedResource = new ResolvedResource({
@@ -395,11 +395,16 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 
 	protected async getTokenIdNetwork(tokenId: string): Promise<NetworkName | string | undefined> {
 		for (const readContractConnection of this.readContractConnections) {
-			const exists = await readContractConnection.contract.exists(tokenId);
-			if (exists) {
-				return readContractConnection.network;
+			try {
+				const exists = await readContractConnection.contract.exists(tokenId);
+				if (exists) {
+					return readContractConnection.network;
+				}
+			} catch (error) {
+				continue;
 			}
 		}
+		return undefined;
 	}
 
 	protected async getReadContractConnectionFromToken(tokenId: string, network?: NetworkName | string | undefined): Promise<ContractConnection | undefined> {
