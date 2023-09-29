@@ -5,8 +5,8 @@ export const DEFAULT_RPC_URL: Record<NetworkName, string> = {
 	ethereum: "https://eth-mainnet.public.blastapi.io",
 	polygon: "https://rpc-mainnet.matic.quiknode.pro",
 	aurora: "https://mainnet.aurora.dev",
-	cronos: "https://node.croswap.com/rpc",
-	
+	cronos: "https://evm.cronos.org/",
+
 	//TEST
 	"polygon-mumbai": "https://rpc-mumbai.matic.today",
 	hardhat: "http://127.0.0.1:8545/",
