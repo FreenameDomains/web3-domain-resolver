@@ -118,6 +118,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 
 			const mappedName = NameTools.mapName(name);
 			if (!mappedName) {
+
 				return undefined;
 			}
 
@@ -346,21 +347,25 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 	protected async generateResolvedResource(mappedName: MappedName, tokenId: string, network?: NetworkName | string): Promise<IResolvedResource | undefined> {
 		const readContractConnection = await this.getReadContractConnectionFromToken(tokenId, network);
 		if (!readContractConnection) {
+
 			return undefined;
 		}
 
 		const writeContractConnection = await this.getWriteContractConnection(readContractConnection.network);
 		if (!writeContractConnection) {
+
 			return undefined;
 		}
 
 		const exists = await this.exists(tokenId, readContractConnection.network);
 		if (!exists) {
+
 			return undefined;
 		}
 
 		const ownerAddress = await this.getOwnerAddress(tokenId, readContractConnection.network);
 		if (!ownerAddress) {
+
 			return undefined;
 		}
 

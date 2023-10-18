@@ -22,7 +22,30 @@ export class UDResolverProvider extends BaseResolverProvider implements IResolve
 		const polygonReadContractAddress = new ContractConnection(polygonConnection, UNS_POLYGON_CONTRACT_ADDRESS, ERC721_UD_PROXY_ABI);
 
 		super(ProviderName.UD, UD_SUPPORTED_TLDS, [polygonReadContractAddress, ethReadContractAddress], [polygonReadContractAddress, ethReadContractAddress]);
-		this._resolution = new Resolution();
+		this._resolution = new Resolution({
+			sourceConfig: {
+			  uns: {
+				locations: {
+				  Layer1: {
+					url: ethereumConnection.rpcUrl,
+					network: 'mainnet',
+				  },
+				  Layer2: {
+					url: polygonConnection.rpcUrl,
+					network: 'polygon-mainnet',
+				  },
+				},
+			  },
+			  zns: {
+				url: 'https://api.zilliqa.com',
+				network: 'mainnet',
+			  },
+			  ens: {
+				url: ethereumConnection.rpcUrl,
+				network: 'mainnet',
+			  },
+			},
+		  });
 	}
 
 	private _resolution;
@@ -69,13 +92,17 @@ export class UDResolverProvider extends BaseResolverProvider implements IResolve
 
 		try {
 			unhash = await this._resolution.unhash(hash, NamingServiceName.UNS);
-		} catch { }
+		} catch(e) {
+			console.error(e);
+		 }
 
 		if (!unhash) {
 			try {
 				unhash = await this._resolution.unhash(hash, NamingServiceName.ZNS);
 			}
-			catch { }
+			catch(e){
+				console.error(e);
+			 }
 		}
 
 		return unhash;
