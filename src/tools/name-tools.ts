@@ -25,13 +25,11 @@ export class NameTools {
 		else if (detailedName.type === NameType.SECOND_LEVEL_DOMAIN || detailedName.type === NameType.SUB_DOMAINED_DOMAIN) {
 			const nameSplitted = detailedName.name.split(".");
 			const asciiNameSplitted = detailedName.asciiName.split(".");
-			if (nameSplitted.length === 2 && asciiNameSplitted.length === 2) {
-				tld = nameSplitted[nameSplitted.length - 1];
-				secondLevelDomain = nameSplitted[nameSplitted.length - 2];
+			tld = nameSplitted[nameSplitted.length - 1];
+			secondLevelDomain = nameSplitted[nameSplitted.length - 2];
 
-				tldAsciiName = asciiNameSplitted[asciiNameSplitted.length - 1];
-				secondLevelDomainAsciiName = asciiNameSplitted[asciiNameSplitted.length - 2];
-			}
+			tldAsciiName = asciiNameSplitted[asciiNameSplitted.length - 1];
+			secondLevelDomainAsciiName = asciiNameSplitted[asciiNameSplitted.length - 2];
 		}
 
 		return {
@@ -73,8 +71,7 @@ export class NameTools {
 		}
 
 		//Check if the search input name has a repeated dot (es. app..cryptotld)
-		const dotCount = asciiString.split(".").length - 1;
-		if (dotCount > 1) {
+		if (name.includes("..")) {
 			errors.push("REPETED_DOT");
 			foundError = true;
 		}
@@ -83,23 +80,18 @@ export class NameTools {
 			let asciiName = asciiString;
 			const itemType = this.getItemTypeFromString(asciiString);
 
-			if (itemType == NameType.SUB_DOMAINED_DOMAIN) {
-				//The search input name is a sub domained domain (es. freename.app.cryptotld)
-				errors.push("SUB_DOMAINS_NOT_ALLOWED");
-			} else {
-				if (itemType == NameType.TLD) {
-					//remove the "." from the start of the tld (es .freename becomes freename)
-					if (name.includes(".")) {
-						name = name.replace(/\./g, "");
-						asciiName = asciiName.replace(/\./g, "");
-					}
+			if (itemType == NameType.TLD) {
+				//remove the "." from the start of the tld (es .freename becomes freename)
+				if (name.includes(".")) {
+					name = name.replace(/\./g, "");
+					asciiName = asciiName.replace(/\./g, "");
 				}
-				return {
-					asciiName,
-					name,
-					type: itemType,
-				};
 			}
+			return {
+				asciiName,
+				name,
+				type: itemType,
+			};
 		}
 	}
 
