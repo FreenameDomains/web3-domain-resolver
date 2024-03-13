@@ -1,7 +1,8 @@
-import { Wallet, AnchorProvider, Program, web3, setProvider, BN } from "@project-serum/anchor";
+import { Wallet, AnchorProvider, Program, web3, setProvider, BN } from "@coral-xyz/anchor";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { IDL } from "../../shared/constants/idl-json";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import * as anchor from "@coral-xyz/anchor";
 
 const network = clusterApiUrl("devnet");
 const connection = new Connection(network);
@@ -16,7 +17,7 @@ export class SolanaContractConnection {
 	private _provider: AnchorProvider | null = null;
 	private _wallet: Wallet | null = null;
 	private _program: Program | null = null;
-	private _programId: PublicKey = new PublicKey("Fcj5r2qmDXHpiAnhSi3ytzpGzi7sNiLYDSmFXdjs35P5");
+	private _programId: PublicKey = new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
 
 	public constructor(arg: Wallet) {
 		if (arg) {
@@ -38,7 +39,7 @@ export class SolanaContractConnection {
 			arg,
 			providerConfig,
 		);
-		setProvider(this._provider);
+		anchor.setProvider(this._provider);
 	}
 
 	public async setRecords(keys: string[], values: string[], nftName: string): Promise<boolean> {
@@ -125,56 +126,56 @@ export class SolanaContractConnection {
 
 
 	/**
-			* 
-			* @param program 
-			* @returns 
-			*/
+	 *
+	 * @param program
+	 * @returns
+	 */
 	private _getCollectionMintPDA(program: Program): PublicKey {
 		const arg = [Buffer.from("collection_mint")];
 		const [collectionMintPDA] = PublicKey.findProgramAddressSync(arg, program.programId);
 		return collectionMintPDA;
 	}
 	/**
-		* 
-		* @param program 
-		* @returns 
-		*/
+	 *
+	 * @param program
+	 * @returns
+	 */
 	private _getNsStatePDA(program: Program): PublicKey {
-		const [nsStatePDA] = web3.PublicKey.findProgramAddressSync([Buffer.from("ns_state")], program.programId);
+		const [nsStatePDA] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("ns_state")], program.programId);
 		return nsStatePDA;
 	}
 	/**
-		* 
-		* @param program 
-		* @returns 
-		*/
+	 *
+	 * @param program
+	 * @returns
+	 */
 	private _getNsAuthorityPDA(program: Program): PublicKey {
-		const [nsAuthorityPDA] = PublicKey.findProgramAddressSync([Buffer.from("ns_authority")], program.programId);
+		const [nsAuthorityPDA] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("ns_authority")], program.programId);
 		return nsAuthorityPDA;
 	}
 	/**
-		* 
-		* @param arg
-		*/
+	 *
+	 * @param arg
+	 */
 	private _getNftNsRecordMetadata(arg: { nftName: string, program: Program }): PublicKey {
 		const { nftName, program } = arg;
-		const [nftNsRecordMetadata] = PublicKey.findProgramAddressSync([Buffer.from("ns_record"), Buffer.from("ns_metadata"), Buffer.from(nftName)], program.programId);
+		const [nftNsRecordMetadata] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("ns_record"), Buffer.from("ns_metadata"), Buffer.from(nftName),], program.programId);
 		return nftNsRecordMetadata;
 	}
 	/**
-		* 
-		* @param arg
-		*/
+	 *
+	 * @param arg
+	 */
 	private _getNftNsPropertyMetadata(arg: { nftName: string, program: Program }): PublicKey {
 		const { nftName, program } = arg;
-		const [nftNsRecordMetadata] = PublicKey.findProgramAddressSync([Buffer.from("ns_property"), Buffer.from("ns_metadata"), Buffer.from(nftName)], program.programId);
+		const [nftNsRecordMetadata] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from("ns_property"), Buffer.from("ns_metadata"), Buffer.from(nftName),], program.programId);
 		return nftNsRecordMetadata;
 	}
 	/**
-		* 
-		* @param arg 
-		* @returns 
-		*/
+	 *
+	 * @param arg
+	 * @returns
+	 */
 	private _getNftMintPDA(arg: { program: Program, nft: { name: string } }): PublicKey {
 		const { program, nft } = arg;
 		const collectionMintPDA: PublicKey = this._getCollectionMintPDA(program);
@@ -183,15 +184,14 @@ export class SolanaContractConnection {
 		return nftMintPDA;
 	}
 	/**
-		* 
-		* @param arg 
-		* @returns 
-		*/
+	 *
+	 * @param arg
+	 * @returns
+	 */
 	private _getTldNftMintPDA(arg: { program: Program, nft: string }): PublicKey {
 		const { program, nft } = arg;
 		const collectionMintPDA: PublicKey = this._getCollectionMintPDA(program);
 		const [nftMintPDA] = PublicKey.findProgramAddressSync([Buffer.from("mint"), collectionMintPDA.toBuffer(), Buffer.from(nft)], program.programId);
 		return nftMintPDA;
 	}
-
 }

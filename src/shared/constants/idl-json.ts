@@ -13,11 +13,6 @@ export const IDL = {
 			"value": "\"ns_authority\""
 		},
 		{
-			"name": "OWNER_SEED",
-			"type": "string",
-			"value": "\"ns_owner\""
-		},
-		{
 			"name": "RECORD_SEED",
 			"type": "string",
 			"value": "\"ns_record\""
@@ -224,11 +219,6 @@ export const IDL = {
 					"isSigner": false
 				},
 				{
-					"name": "nsOwner",
-					"isMut": true,
-					"isSigner": false
-				},
-				{
 					"name": "nsRecordMetadata",
 					"isMut": true,
 					"isSigner": false
@@ -301,11 +291,6 @@ export const IDL = {
 				},
 				{
 					"name": "tokenMetadataProgram",
-					"isMut": false,
-					"isSigner": false
-				},
-				{
-					"name": "recipient",
 					"isMut": false,
 					"isSigner": false
 				},
@@ -349,11 +334,6 @@ export const IDL = {
 					"isSigner": false
 				},
 				{
-					"name": "nsOwner",
-					"isMut": true,
-					"isSigner": false
-				},
-				{
 					"name": "nsRecordMetadata",
 					"isMut": true,
 					"isSigner": false
@@ -426,11 +406,6 @@ export const IDL = {
 				},
 				{
 					"name": "tokenMetadataProgram",
-					"isMut": false,
-					"isSigner": false
-				},
-				{
-					"name": "recipient",
 					"isMut": false,
 					"isSigner": false
 				},
@@ -491,11 +466,6 @@ export const IDL = {
 				},
 				{
 					"name": "nsAuthority",
-					"isMut": true,
-					"isSigner": false
-				},
-				{
-					"name": "nsOwner",
 					"isMut": true,
 					"isSigner": false
 				},
@@ -665,18 +635,23 @@ export const IDL = {
 					"isSigner": false
 				},
 				{
-					"name": "nsAuthority",
-					"isMut": true,
-					"isSigner": false
-				},
-				{
 					"name": "payer",
 					"isMut": true,
 					"isSigner": true
 				},
 				{
+					"name": "sender",
+					"isMut": true,
+					"isSigner": false
+				},
+				{
 					"name": "recipient",
-					"isMut": false,
+					"isMut": true,
+					"isSigner": false
+				},
+				{
+					"name": "mint",
+					"isMut": true,
 					"isSigner": false
 				},
 				{
@@ -687,6 +662,16 @@ export const IDL = {
 				{
 					"name": "nsRecordData",
 					"isMut": true,
+					"isSigner": false
+				},
+				{
+					"name": "systemProgram",
+					"isMut": false,
+					"isSigner": false
+				},
+				{
+					"name": "tokenProgram",
+					"isMut": false,
 					"isSigner": false
 				}
 			],
@@ -734,10 +719,6 @@ export const IDL = {
 				"fields": [
 					{
 						"name": "account",
-						"type": "publicKey"
-					},
-					{
-						"name": "owner",
 						"type": "publicKey"
 					}
 				]
@@ -862,7 +843,7 @@ export const IDL = {
 		}
 	],
 	"metadata": {
-		"address": "Fcj5r2qmDXHpiAnhSi3ytzpGzi7sNiLYDSmFXdjs35P5"
+		"address": "FPvXvNtFUgnbJM6d8FTGKzKLeWQADYosLgcEuRDcRwX2"
 	}
 };
 

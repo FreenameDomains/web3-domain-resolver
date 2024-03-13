@@ -2,7 +2,7 @@ import { Metaplex } from "@metaplex-foundation/js";
 import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { ContractInterface, ethers } from "ethers";
 import { NameTools } from "../../shared/tools/name-tools";
-import { Wallet } from "@project-serum/anchor";
+import { Wallet } from "@coral-xyz/anchor";
 import { IResolvedResource } from "../../shared/interfaces/resolved-resource.interface";
 import { SolanaContractConnection } from "./sol-contract-connection";
 import { NetworkName } from "../../shared/enumerations/enumerations";

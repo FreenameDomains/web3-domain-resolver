@@ -108,3 +108,6 @@ lib
 
 #VSCode
 .vscode
+
+#idea
+.idea
