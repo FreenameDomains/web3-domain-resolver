@@ -13,6 +13,10 @@ export const DEFAULT_RPC_URL: Record<string, string> = {
   zil: "",
   solana: "",
   "solana-devnet": "",
+  base: "https://base.llamarpc.com",
+  "base-sepolia": "https://base-sepolia-rpc.publicnode.com",
+  avalanche: "https://avalanche-c-chain-rpc.publicnode.com",
+  "avalanche-fuji": "https://avalanche-fuji-c-chain-rpc.publicnode.com",
 };
 
 //these urls can only connect to Freename smart contract addresses
@@ -33,4 +37,8 @@ export const DEFAULT_INFURA_RPC_URL: Record<string, string> = {
   cronos: "",
   solana: "",
   "solana-devnet": "",
+  base: "https://base-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
+  "base-sepolia": "https://base-sepolia.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
+  avalanche: "https://avalanche-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
+  "avalanche-fuji": "https://avalanche-fuji.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
 };

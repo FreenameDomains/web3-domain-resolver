@@ -103,6 +103,7 @@ export abstract class BaseResolverProvider implements IResolverProvider {
       }
     }
     const contractConnected =
+      // @ts-ignore
       writeContractConnection.contract.connect(signerToUse);
     return contractConnected;
   }

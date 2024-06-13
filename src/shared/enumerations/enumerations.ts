@@ -25,6 +25,10 @@ export declare const enum NetworkName {
   HARDHAT = "hardhat",
   AURORA = "aurora",
   CRONOS = "cronos",
+  BASE = "base",
+  BASE_SEPOLIA = "base-sepolia",
+  AVALANCHE = "avalanche",
+  AVALANCHE_FUJI = "avalanche-fuji",
   SOLANA_DEVNET = "solana-devnet",
   SOLANA = "solana",
 }
@@ -41,6 +45,10 @@ export declare const enum FreenameNetwork {
   SOLANA = "solana",
   SOLANA_DEVNET = "solana-devnet",
   AURORA = "aurora",
+  BASE = "base",
+  BASE_SEPOLIA = "base-sepolia",
+  AVALANCHE = "avalanche",
+  AVALANCHE_FUJI = "avalanche-fuji",
 }
 /**
  * Networks supported by Unstoppable Domains.
