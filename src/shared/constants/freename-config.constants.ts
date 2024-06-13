@@ -106,14 +106,14 @@ export const FREENAME_CONTRACT_CONFS: FreenameContractConfig[] = [
   {
     address: "0x490Bfb43b44Ae54e36818Ed295B0814B2dEef2cC",
     networkName: FreenameNetwork.BASE_SEPOLIA,
-    test: false,
+    test: true,
     type: "read",
     abi: FNS_ABI,
   },
   {
     address: "0x490Bfb43b44Ae54e36818Ed295B0814B2dEef2cC",
     networkName: FreenameNetwork.BASE_SEPOLIA,
-    test: false,
+    test: true,
     type: "write",
     abi: FNS_ABI,
   },
@@ -134,14 +134,14 @@ export const FREENAME_CONTRACT_CONFS: FreenameContractConfig[] = [
   {
     address: "0x490Bfb43b44Ae54e36818Ed295B0814B2dEef2cC",
     networkName: FreenameNetwork.AVALANCHE_FUJI,
-    test: false,
+    test: true,
     type: "read",
     abi: FNS_ABI,
   },
   {
     address: "0x490Bfb43b44Ae54e36818Ed295B0814B2dEef2cC",
     networkName: FreenameNetwork.AVALANCHE_FUJI,
-    test: false,
+    test: true,
     type: "write",
   },
   {
