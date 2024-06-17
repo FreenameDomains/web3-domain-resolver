@@ -143,6 +143,7 @@ export const FREENAME_CONTRACT_CONFS: FreenameContractConfig[] = [
     networkName: FreenameNetwork.AVALANCHE_FUJI,
     test: true,
     type: "write",
+    abi: FNS_ABI,
   },
   {
     address: "6cMUj75fcW7kaCJbFcSuAGjES22RMfnxg8QX8FJEprPL",
