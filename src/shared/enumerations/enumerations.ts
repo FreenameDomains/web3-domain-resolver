@@ -29,6 +29,8 @@ export declare const enum NetworkName {
   BASE_SEPOLIA = "base-sepolia",
   AVALANCHE = "avalanche",
   AVALANCHE_FUJI = "avalanche-fuji",
+  SEI = "sei",
+  SEI_TESTNET = "sei-testnet",
   SOLANA_DEVNET = "solana-devnet",
   SOLANA = "solana",
 }
@@ -47,6 +49,8 @@ export declare const enum FreenameNetwork {
   AURORA = "aurora",
   BASE = "base",
   BASE_SEPOLIA = "base-sepolia",
+  SEI = "sei",
+  SEI_TESTNET = "sei-testnet",
   AVALANCHE = "avalanche",
   AVALANCHE_FUJI = "avalanche-fuji",
 }

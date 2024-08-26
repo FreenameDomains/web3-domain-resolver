@@ -117,6 +117,37 @@ export const FREENAME_CONTRACT_CONFS: FreenameContractConfig[] = [
     type: "write",
     abi: FNS_ABI,
   },
+
+  {
+    address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+    networkName: FreenameNetwork.SEI,
+    test: false,
+    type: "read",
+    abi: FNS_ABI,
+  },
+  {
+    address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+    networkName: FreenameNetwork.SEI,
+    test: false,
+    type: "write",
+    abi: FNS_ABI,
+  },
+  {
+    address: "0x490Bfb43b44Ae54e36818Ed295B0814B2dEef2cC",
+    networkName: FreenameNetwork.SEI_TESTNET,
+    test: true,
+    type: "read",
+    abi: FNS_ABI,
+  },
+  {
+    address: "0x490Bfb43b44Ae54e36818Ed295B0814B2dEef2cC",
+    networkName: FreenameNetwork.SEI_TESTNET,
+    test: true,
+    type: "write",
+    abi: FNS_ABI,
+  },
+
+
   {
     address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
     networkName: FreenameNetwork.AVALANCHE,
