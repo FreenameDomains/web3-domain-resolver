@@ -19,6 +19,8 @@ export const DEFAULT_RPC_URL: Record<string, string> = {
   "avalanche-fuji": "https://avalanche-fuji-c-chain-rpc.publicnode.com",
   sei: "https://evm-rpc.sei-apis.com",
   "sei-testnet": "https://evm-rpc-testnet.sei-apis.com/",
+  etherlink: "https://node.mainnet.etherlink.com",
+  "etherlink-testnet": "https://node.ghostnet.etherlink.com",
 };
 
 //these urls can only connect to Freename smart contract addresses
@@ -45,4 +47,6 @@ export const DEFAULT_INFURA_RPC_URL: Record<string, string> = {
   "avalanche-fuji": "https://avalanche-fuji.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
   sei: "https://holy-lively-arrow.sei-pacific.quiknode.pro/34b5ebd726c71782cf46ee698fb2e0fb8344a56c/",
   "sei-testnet": "https://morning-evocative-cloud.sei-atlantic.quiknode.pro/4eb5a4fcd996b1fea968fd9870b811a82ae74413/",
+  etherlink: "https://node.mainnet.etherlink.com",
+  "etherlink-testnet": "https://node.ghostnet.etherlink.com",
 };

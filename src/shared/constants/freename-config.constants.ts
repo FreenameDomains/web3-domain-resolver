@@ -147,6 +147,35 @@ export const FREENAME_CONTRACT_CONFS: FreenameContractConfig[] = [
     abi: FNS_ABI,
   },
 
+  {
+      address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+      networkName: FreenameNetwork.ETHERLINK,
+      test: false,
+      type: "read",
+      abi: FNS_ABI,
+    },
+    {
+      address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+      networkName: FreenameNetwork.ETHERLINK,
+      test: false,
+      type: "write",
+      abi: FNS_ABI,
+    },
+    {
+      address: "0xB8257763c36c48a301A763277F6064D729fE4623",
+      networkName: FreenameNetwork.ETHERLINK_TESTNET,
+      test: true,
+      type: "read",
+      abi: FNS_ABI,
+    },
+    {
+      address: "0xB8257763c36c48a301A763277F6064D729fE4623",
+      networkName: FreenameNetwork.ETHERLINK_TESTNET,
+      test: true,
+      type: "write",
+      abi: FNS_ABI,
+    },
+
 
   {
     address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",

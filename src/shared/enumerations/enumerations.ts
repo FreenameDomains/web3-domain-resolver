@@ -31,6 +31,8 @@ export declare const enum NetworkName {
   AVALANCHE_FUJI = "avalanche-fuji",
   SEI = "sei",
   SEI_TESTNET = "sei-testnet",
+  ETHERLINK = "etherlink",
+  ETHERLINK_TESTNET = "etherlink-testnet",
   SOLANA_DEVNET = "solana-devnet",
   SOLANA = "solana",
 }
@@ -51,6 +53,8 @@ export declare const enum FreenameNetwork {
   BASE_SEPOLIA = "base-sepolia",
   SEI = "sei",
   SEI_TESTNET = "sei-testnet",
+  ETHERLINK = "etherlink",
+  ETHERLINK_TESTNET = "etherlink-testnet",
   AVALANCHE = "avalanche",
   AVALANCHE_FUJI = "avalanche-fuji",
 }
