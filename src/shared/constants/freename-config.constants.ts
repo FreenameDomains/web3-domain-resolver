@@ -191,14 +191,14 @@ export const FREENAME_CONTRACT_CONFS: FreenameContractConfig[] = [
     abi: FNS_ABI,
   },
   {
-    address: "0x490Bfb43b44Ae54e36818Ed295B0814B2dEef2cC",
+    address: "0x12D5dFDf88fEa9397Fcb3d24bCbE1781d282298A",
     networkName: FreenameNetwork.CHILIZ_TESTNET,
     test: true,
     type: "read",
     abi: FNS_ABI,
   },
   {
-    address: "0x490Bfb43b44Ae54e36818Ed295B0814B2dEef2cC",
+    address: "0x12D5dFDf88fEa9397Fcb3d24bCbE1781d282298A",
     networkName: FreenameNetwork.CHILIZ_TESTNET,
     test: true,
     type: "write",
