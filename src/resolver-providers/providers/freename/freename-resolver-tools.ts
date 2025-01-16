@@ -5,11 +5,24 @@ export class FreenameResolverTools {
 
 	public static networkNameFormFreenameNetwork(freenameNetwork: FreenameNetwork): NetworkName {
 		switch (freenameNetwork) {
-			case FreenameNetwork.BSC: return NetworkName.BSC;
-			case FreenameNetwork.ETHEREUM: return NetworkName.ETHEREUM;
-			case FreenameNetwork.POLYGON: return NetworkName.POLYGON;
-			case FreenameNetwork.POLYGON_MUMBAI: return NetworkName.POLYGON_MUMBAI;
+			case FreenameNetwork.AURORA:
+				return NetworkName.AURORA;
+			case FreenameNetwork.BASE:
+				return NetworkName.BASE;
+			case FreenameNetwork.BSC:
+				return NetworkName.BSC;
+			case FreenameNetwork.CHILIZ:
+				return NetworkName.CHILIZ;
+			case FreenameNetwork.CRONOS:
+				return NetworkName.CRONOS;
+			case FreenameNetwork.ETHEREUM:
+				return NetworkName.ETHEREUM;
+			case FreenameNetwork.ETHERLINK:
+				return NetworkName.ETHERLINK;
+			case FreenameNetwork.POLYGON:
+				return NetworkName.POLYGON;
+			case FreenameNetwork.SEI:
+				return NetworkName.SEI;
 		}
 	}
-
 }

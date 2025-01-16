@@ -1519,49 +1519,47 @@ export const FNS_ABI = [
 ];
 
 
-export const FREENAME_CONTRACT_CONFS: { networkName: NetworkName, address: string, type: "read" | "write", test: boolean, abi: any }[] = [
-	{
-		address: "0x6034C0d80e6d023FFd62Ba48e6B5c13afe72D143",
-		networkName: NetworkName.POLYGON_MUMBAI,
-		test: true,
-		type: "read",
-		abi: FNS_ABI,
-	},
-	{
-		address: "0x6034C0d80e6d023FFd62Ba48e6B5c13afe72D143",
-		networkName: NetworkName.POLYGON_MUMBAI,
-		test: true,
-		type: "write",
-		abi: FNS_ABI,
-	},
+export const FREENAME_CONTRACT_CONFS: {
+	networkName: NetworkName,
+	address: string,
+	type: "read" | "write",
+	test: boolean,
+	abi: any
+}[] = [
+
+	// AURORA
 	{
 		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
-		networkName: NetworkName.POLYGON,
+		networkName: NetworkName.AURORA,
 		test: false,
 		type: "read",
 		abi: FNS_ABI,
 	},
 	{
 		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
-		networkName: NetworkName.POLYGON,
+		networkName: NetworkName.AURORA,
 		test: false,
 		type: "write",
 		abi: FNS_ABI,
 	},
+
+	// BASE
 	{
 		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
-		networkName: NetworkName.CRONOS,
+		networkName: NetworkName.BASE,
 		test: false,
 		type: "read",
 		abi: FNS_ABI,
 	},
 	{
 		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
-		networkName: NetworkName.CRONOS,
+		networkName: NetworkName.BASE,
 		test: false,
 		type: "write",
 		abi: FNS_ABI,
 	},
+
+	// BSC
 	{
 		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
 		networkName: NetworkName.BSC,
@@ -1576,16 +1574,83 @@ export const FREENAME_CONTRACT_CONFS: { networkName: NetworkName, address: strin
 		type: "write",
 		abi: FNS_ABI,
 	},
+
+	// CHILIZ
 	{
 		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
-		networkName: NetworkName.AURORA,
+		networkName: NetworkName.CHILIZ,
 		test: false,
 		type: "read",
 		abi: FNS_ABI,
 	},
 	{
 		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
-		networkName: NetworkName.AURORA,
+		networkName: NetworkName.CHILIZ,
+		test: false,
+		type: "write",
+		abi: FNS_ABI,
+	},
+
+
+	// CRONOS
+	{
+		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+		networkName: NetworkName.CRONOS,
+		test: false,
+		type: "read",
+		abi: FNS_ABI,
+	},
+	{
+		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+		networkName: NetworkName.CRONOS,
+		test: false,
+		type: "write",
+		abi: FNS_ABI,
+	},
+
+	// ETHERLINK
+	{
+		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+		networkName: NetworkName.ETHERLINK,
+		test: false,
+		type: "read",
+		abi: FNS_ABI,
+	},
+	{
+		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+		networkName: NetworkName.ETHERLINK,
+		test: false,
+		type: "write",
+		abi: FNS_ABI,
+	},
+
+	// POLYGON
+	{
+		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+		networkName: NetworkName.POLYGON,
+		test: false,
+		type: "read",
+		abi: FNS_ABI,
+	},
+	{
+		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+		networkName: NetworkName.POLYGON,
+		test: false,
+		type: "write",
+		abi: FNS_ABI,
+	},
+
+	// SEI
+	{
+		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+		networkName: NetworkName.SEI,
+		test: false,
+		type: "read",
+		abi: FNS_ABI,
+	},
+	{
+		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+		networkName: NetworkName.SEI,
 		test: false,
 		type: "write",
 		abi: FNS_ABI,
