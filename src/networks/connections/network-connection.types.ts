@@ -1,4 +1,5 @@
 export enum NetworkName {
+	ABSTRACT = "abstract",
 	AURORA = "aurora",
 	BASE = "base",
 	BSC = "bsc",

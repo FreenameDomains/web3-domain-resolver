@@ -1527,6 +1527,22 @@ export const FREENAME_CONTRACT_CONFS: {
 	abi: any
 }[] = [
 
+	// ABSTRACT
+	{
+		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+		networkName: NetworkName.ABSTRACT,
+		test: false,
+		type: "read",
+		abi: FNS_ABI,
+	},
+	{
+		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",
+		networkName: NetworkName.ABSTRACT,
+		test: false,
+		type: "write",
+		abi: FNS_ABI,
+	},
+
 	// AURORA
 	{
 		address: "0x465ea4967479A96D4490d575b5a6cC2B4A4BEE65",

@@ -1,6 +1,7 @@
 import { NetworkConnection, NetworkName } from "../networks/connections/network-connection.types";
 
 export const DEFAULT_RPC_URL: Record<NetworkName, string> = {
+	abstract: "https://api.mainnet.abs.xyz",
 	aurora: "https://mainnet.aurora.dev",
 	base: "https://base.llamarpc.com",
 	bsc: "https://bsc-dataseed1.ninicoin.io",
@@ -15,6 +16,7 @@ export const DEFAULT_RPC_URL: Record<NetworkName, string> = {
 
 // theese urls can only connect to Freename smart contract addresses
 export const DEFAULT_INFURA_RPC_URL: Record<NetworkName, string> = {
+	abstract: "https://api.mainnet.abs.xyz",
 	aurora: "https://aurora-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
 	base: "https://base-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
 	bsc: "https://bsc-dataseed1.ninicoin.io",

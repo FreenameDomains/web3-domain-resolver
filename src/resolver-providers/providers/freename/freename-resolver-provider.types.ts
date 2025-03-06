@@ -5,6 +5,7 @@ enum FreenameItemType {
 }
 
 export enum FreenameNetwork {
+	ABSTRACT = "abstract",
 	AURORA = "aurora",
 	BASE = "base",
 	BSC = "bsc",
