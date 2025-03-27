@@ -17,26 +17,32 @@ export declare const enum ProviderName {
  * All supported networks.
  */
 export declare const enum NetworkName {
-    POLYGON = "polygon",
-    POLYGON_MUMBAI = "polygon-mumbai",
-    ETHEREUM = "ethereum",
-    BSC = "bsc",
-    ZILLIQA = "zil",
-    HARDHAT = "hardhat",
+
+    // MAINNET
+    ABSTRACT = "abstract",
     AURORA = "aurora",
-    CRONOS = "cronos",
-    BASE = "base",
-    BASE_SEPOLIA = "base-sepolia",
     AVALANCHE = "avalanche",
-    AVALANCHE_FUJI = "avalanche-fuji",
-    SEI = "sei",
-    SEI_TESTNET = "sei-testnet",
-    ETHERLINK = "etherlink",
-    ETHERLINK_TESTNET = "etherlink-testnet",
+    BASE = "base",
+    BSC = "bsc",
     CHILIZ = "chiliz",
-    CHILIZ_TESTNET = "chiliz-testnet",
-    SOLANA_DEVNET = "solana-devnet",
+    CRONOS = "cronos",
+    ETHEREUM = "ethereum",
+    ETHERLINK = "etherlink",
+    HARDHAT = "hardhat",
+    POLYGON = "polygon",
+    SEI = "sei",
     SOLANA = "solana",
+    ZILLIQA = "zil",
+
+    // TESTNET
+    ABSTRACT_SEPOLIA = "abstract-sepolia-testnet",
+    AVALANCHE_FUJI = "avalanche-fuji",
+    BASE_SEPOLIA = "base-sepolia",
+    CHILIZ_TESTNET = "chiliz-testnet",
+    ETHERLINK_TESTNET = "etherlink-testnet",
+    POLYGON_MUMBAI = "polygon-mumbai",
+    SEI_TESTNET = "sei-testnet",
+    SOLANA_DEVNET = "solana-devnet",
 }
 
 /**
