@@ -7,7 +7,7 @@ import { ContractConnection } from "../../../networks/connections/contract-conne
 import { MappedName } from "../../../shared/types/name-tools.types";
 import { IResolverProvider } from "../../../shared/interfaces/resolver-provider.interface";
 import { BaseResolverProvider } from "../base-resolver-provider";
-import { UD_SUPPORTED_TLDS, UD_ZIL_TLDS, UNS_ETH_CONTRACT_ADDRESS, UNS_POLYGON_CONTRACT_ADDRESS } from "../../../shared/constants/ud-resolver-provider.consts";
+import { UD_SUPPORTED_TLDS, UD_ZIL_TLDS, UNS_ETH_CONTRACT_ADDRESS, UNS_POLYGON_CONTRACT_ADDRESS, UNS_BASE_CONTRACT_ADDRESS } from "../../../shared/constants/ud-resolver-provider.consts";
 import { UDResolverTools } from "./ud-resolver-tools";
 import { NetworkName, ProviderName, UdNetwork } from "../../../shared/enumerations/enumerations";
 
@@ -20,7 +20,11 @@ export class UDResolverProvider extends BaseResolverProvider implements IResolve
 		const polygonConnection = options.connectionLibrary?.getConnection(UdNetwork.POLYGON) || DefaultTools.getDefaultConnection(NetworkName.POLYGON);
 		const polygonReadContractAddress = new ContractConnection({ network: polygonConnection, address: UNS_POLYGON_CONTRACT_ADDRESS, abi: ERC721_UD_PROXY_ABI });
 
-		super(ProviderName.UD, UD_SUPPORTED_TLDS, [polygonReadContractAddress, ethReadContractAddress], [polygonReadContractAddress, ethReadContractAddress]);
+		// Add Base network reader (read-only support for UD on Base)
+		const baseConnection = options.connectionLibrary?.getConnection(NetworkName.BASE) || DefaultTools.getDefaultConnection(NetworkName.BASE);
+		const baseReadContractAddress = new ContractConnection({ network: baseConnection, address: UNS_BASE_CONTRACT_ADDRESS, abi: ERC721_UD_PROXY_ABI });
+
+		super(ProviderName.UD, UD_SUPPORTED_TLDS, [polygonReadContractAddress, ethReadContractAddress, baseReadContractAddress], [polygonReadContractAddress, ethReadContractAddress, baseReadContractAddress]);
 		this._resolution = new Resolution();
 	}
 
@@ -39,6 +43,7 @@ export class UDResolverProvider extends BaseResolverProvider implements IResolve
 			return tokenId;
 		}
 		catch {
+			console.error('[UD] generateTokenId failed for', mappedName);
 			return undefined;
 		}
 	}

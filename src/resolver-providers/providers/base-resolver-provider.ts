@@ -126,9 +126,17 @@ export abstract class BaseResolverProvider implements IResolverProvider {
 
       console.log("BaseResolverProvider.resolve network", network);
 
+      // Use provider-specific tokenId generation (e.g., UD/ENS require namehash),
+      // instead of passing the raw name into token-related calls.
+      const tokenId = await this.generateTokenId(mappedName, network as any);
+      if (!tokenId) {
+        console.warn('[Base] Failed to generate tokenId for', mappedName, 'on network', network);
+        return undefined;
+      }
+
       const result = this.generateResolvedResource(
         mappedName,
-        domainOrTld,
+        tokenId,
         network
       );
 

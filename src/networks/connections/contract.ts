@@ -124,15 +124,22 @@ export class Contract {
 		return result;
 	}
 	/**
-	 * 
-	 * @param arg 
-	 * @returns 
+	 * Batched record read for EVM and Solana.
+	 * - EVM: normalizes tokenId (accepts name or uint256) via generateEVMTokenId,
+	 *   then calls contract.getManyRecords(keys, tokenId).
+	 * - Solana: if EVM not used or returned empty, maps keys to mint PDAs and
+	 *   returns NFT names.
+	 * Rationale: callers may pass a human name (Freename) or a numeric/hex
+	 * tokenId (UD/ENS). Normalizing here avoids duplicating logic elsewhere.
+	 * @param arg
+	 * @returns
 	 */
 	public async getMany(arg: { tokenId?: string, keys: string[] }): Promise<string[] | undefined> {
 		const { tokenId, keys } = arg || {};
 		let result: string[] | undefined = undefined;
 		if (this._ethers && tokenId) {
-			result = await this._ethers.getManyRecords(keys, tokenId);
+			const _tokenId = await this.generateEVMTokenId(tokenId);
+			result = await this._ethers.getManyRecords(keys, _tokenId);
 		}
 		if (this._metaplex && (!result || Array.isArray(result) && result.length == 0)) {
 			const _nftAddresses: PublicKey[] = keys.map(el => this._nftAddress({ nftName: el, programId: this._programId() as PublicKey })).filter(el => el !== null) as PublicKey[];
@@ -396,6 +403,16 @@ export class Contract {
 	}
 
 	private generateEVMTokenId(tokenId: string): _string {
+		// If tokenId is already a decimal or hex uint256, return as-is
+    //If the input looks like a tokenId (decimal or 0x-hex), return it as-is.
+    // Otherwise, derive the Freename-style tokenId from the name:
+    // If “domain.tld”: keccak("domain") → domainKeccak, then keccak(["string","uint256"], ["tld", domainKeccak]) → tokenId
+    // If “tld”: keccak("tld") → tokenId
+		if (tokenId) {
+			const isHex = /^0x[0-9a-fA-F]+$/.test(tokenId);
+			const isDec = /^[0-9]+$/.test(tokenId);
+			if (isHex || isDec) return tokenId;
+		}
 		const mappedName = NameTools.mapName(tokenId);
 		if (!mappedName) {
 			return undefined;

@@ -83,6 +83,7 @@ export declare const enum UdNetwork {
     POLYGON = "polygon",
     ETHEREUM = "ethereum",
     ZILLIQA = "zil",
+    BASE = "base",
 }
 
 /**

@@ -7,7 +7,7 @@ export const DEFAULT_RPC_URL: Record<string, string> = {
     base: "https://base.llamarpc.com",
     bsc: "https://bsc-dataseed1.ninicoin.io",
     chiliz: "https://rpc.chiliz.com",
-    cronos: "https://node.croswap.com/rpc",
+    cronos: "https://cronos-evm.publicnode.com", // https://node.croswap.com is often down so using publicnode rpc here 
     ethereum: "https://eth-mainnet.public.blastapi.io",
     etherlink: "https://node.mainnet.etherlink.com",
     sei: "https://evm-rpc.sei-apis.com",
@@ -35,7 +35,8 @@ export const DEFAULT_INFURA_RPC_URL: Record<string, string> = {
 
     // MAINNET
     abstract: "https://api.mainnet.abs.xyz",
-    aurora: "https://aurora-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
+    // aurora: "https://aurora-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
+    aurora: "https://mainnet.aurora.dev", // Infura aurora endpoint is down so using public rpc here
     avalanche: "https://avalanche-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
     base: "https://base-mainnet.infura.io/v3/de21d7dc37334e459e15e172ee9d45f2",
     chiliz: "https://rpc.chiliz.com",
